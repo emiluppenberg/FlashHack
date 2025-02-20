@@ -10,7 +10,6 @@ namespace FlashHack.Data
         {
 
         }
-        public DbSet<FlashHack.Models.User> User { get; set; } = default!;
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Comment>()
@@ -27,11 +26,14 @@ namespace FlashHack.Data
 
             base.OnModelCreating(modelBuilder);
         }
+        public DbSet<FlashHack.Models.User> User { get; set; } = default!;
         public DbSet<FlashHack.Models.HeadCategory> HeadCategory { get; set; } = default!;
         public DbSet<FlashHack.Models.SubCategory> SubCategory { get; set; } = default!;
         public DbSet<FlashHack.Models.Skill> Skill { get; set; } = default!;
         public DbSet<FlashHack.Models.Post> Post { get; set; } = default!;
         public DbSet<FlashHack.Models.Comment> Comment { get; set; } = default!;
+        public DbSet<FlashHack.Models.Company> Company{ get; set; } = default!;
+        public DbSet<FlashHack.Models.Jobblisting> Jobblisting { get; set; } = default!;
 
     }
 }
