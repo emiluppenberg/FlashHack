@@ -20,10 +20,22 @@ namespace FlashHack.Controllers
         }
 
         // GET: Posts
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? subCategoryId)
         {
-            var applicationDbContext = _context.Post.Include(p => p.SubCategory).Include(p => p.User);
-            return View(await applicationDbContext.ToListAsync());
+            if (subCategoryId == null)
+            {
+                var applicationDbContext = _context.Post.Include(p => p.SubCategory).Include(p => p.User);
+                return View(await applicationDbContext.ToListAsync());
+            }
+            else
+            {
+                var posts = await _context.Post
+                    .Where(p => p.SubCategoryId == subCategoryId)
+                    .Include(p => p.SubCategory)
+                    .Include(p => p.User)
+                    .ToListAsync();
+                return View(posts);
+            }
         }
 
         // GET: Posts/Details/5
