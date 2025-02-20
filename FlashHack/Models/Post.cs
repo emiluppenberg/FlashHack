@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FlashHack.Models
 {
+    [Table("Posts")]
     public class Post
     {
         public int Id { get; set; }
