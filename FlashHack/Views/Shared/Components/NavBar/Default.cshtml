@@ -12,7 +12,16 @@
                 <ul class="dropdown-menu">
                     @foreach (var subCategory in headCategory.SubCategories)
                     {
-                        <li><a class="dropdown-item" asp-area="" asp-controller="Posts" asp-action="Index" asp-route-subCategoryId="@subCategory.Id">@subCategory.Name</a></li>
+                        <li>
+                            @if (subCategory.Id == Model.CurrentSubCategoryId)
+                            {
+                                <a class="dropdown-item disabled">@subCategory.Name</a>
+                            }
+                            else
+                            {
+                                <a class="dropdown-item" asp-area="" asp-controller="Posts" asp-action="Index" asp-route-subCategoryId="@subCategory.Id">@subCategory.Name</a>
+                            }
+                        </li>
                     }
                 </ul>
             </li>

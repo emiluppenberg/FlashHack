@@ -15,7 +15,7 @@ namespace FlashHack.Views.Shared.Components
             _context = context;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync()
+        public async Task<IViewComponentResult> InvokeAsync(int? currentSubCategoryId)
         {
             var headCategories = await _context.HeadCategory
                 .Include(hc => hc.SubCategories)
@@ -23,7 +23,8 @@ namespace FlashHack.Views.Shared.Components
 
             var viewModel = new NavBarViewModel
             {
-                HeadCategories = headCategories
+                HeadCategories = headCategories,
+                CurrentSubCategoryId = currentSubCategoryId
             };
 
             return View(viewModel);
