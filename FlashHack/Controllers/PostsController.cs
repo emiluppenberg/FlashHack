@@ -66,9 +66,12 @@ namespace FlashHack.Controllers
         // GET: Posts/Create
         public IActionResult Create()
         {
+            Post testPod = new Post();
+            testPod.SubCategoryId = 1;
+            testPod.UserId = 7;
             ViewData["SubCategoryId"] = new SelectList(_context.SubCategory, "Id", "Name");
             ViewData["UserId"] = new SelectList(_context.User, "Id", "Email");
-            return View();
+            return View(testPod);
         }
 
         // POST: Posts/Create
@@ -76,14 +79,16 @@ namespace FlashHack.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Content,UpVotes,DownVotes,TimeCreated,UserId,SubCategoryId")] Post post)
+        public async Task<IActionResult> Create([Bind("Id,Title,Content,SubCategoryId,UserId")] Post post)
         {
+            
             if (ModelState.IsValid)
-            {
-                _context.Add(post);
-                await _context.SaveChangesAsync();
+            {                
+                post.TimeCreated = DateTime.Now;
+                await postRepository.AddAsync(post);
                 return RedirectToAction(nameof(Index));
             }
+            
             ViewData["SubCategoryId"] = new SelectList(_context.SubCategory, "Id", "Name", post.SubCategoryId);
             ViewData["UserId"] = new SelectList(_context.User, "Id", "Email", post.UserId);
             return View(post);

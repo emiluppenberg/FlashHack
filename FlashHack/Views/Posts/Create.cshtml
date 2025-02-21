@@ -12,6 +12,8 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" name="UserId" value="@Model.UserId" />
+            <input type="hidden" name="SubCategoryId" value="@Model.SubCategoryId" />
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
@@ -22,7 +24,7 @@
                 <input asp-for="Content" class="form-control" />
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            @* <div class="form-group">
                 <label asp-for="UpVotes" class="control-label"></label>
                 <input asp-for="UpVotes" class="form-control" />
                 <span asp-validation-for="UpVotes" class="text-danger"></span>
@@ -36,15 +38,15 @@
                 <label asp-for="TimeCreated" class="control-label"></label>
                 <input asp-for="TimeCreated" class="form-control" />
                 <span asp-validation-for="TimeCreated" class="text-danger"></span>
-            </div>
-            <div class="form-group">
+            </div> *@
+            @* <div class="form-group">
                 <label asp-for="UserId" class="control-label"></label>
                 <select asp-for="UserId" class ="form-control" asp-items="ViewBag.UserId"></select>
             </div>
             <div class="form-group">
                 <label asp-for="SubCategoryId" class="control-label"></label>
                 <select asp-for="SubCategoryId" class ="form-control" asp-items="ViewBag.SubCategoryId"></select>
-            </div>
+            </div> *@
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
