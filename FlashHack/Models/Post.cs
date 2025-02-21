@@ -21,9 +21,10 @@ namespace FlashHack.Models
         public List<Comment> Comments  { get; set; } = new List<Comment>();
         public DateTime TimeCreated { get; set; }
 
-        public int UserId { get; set; }
+        [Required]
+        public int UserId { get; set; }       
         public User? User { get; set; }
-
+        [Required]
         public int SubCategoryId { get; set; }
         public SubCategory? SubCategory { get; set; }
     }
