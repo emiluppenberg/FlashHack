@@ -45,38 +45,55 @@ namespace FlashHack.Controllers
         {
             return View();
         }
-
-        // POST: Users/Register – Hanterar registrering av besökare
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register([Bind("FirstName,LastName,Email,Password")] User user)
+        public async Task<IActionResult> Register([Bind("FirstName,LastName,PhoneNumber,Email,Password,Employer,Bio,ProfilePicURL,Signature,Rating")] User user)
+
         {
-            if (ModelState.IsValid)
+            // 🟡 Logga alla inkommande värden för felsökning
+            Console.WriteLine($"📨 Attempting to register user: {user.FirstName} {user.LastName}, Email: {user.Email}, Phone: {user.PhoneNumber}");
+
+            // 🔴 Logga ModelState-fel för att se varför den misslyckas
+            if (!ModelState.IsValid)
             {
-                // Kontrollera om e-post redan finns
-                var existingUser = (await _userRepository.GetAllAsync())
-                    .FirstOrDefault(u => u.Email == user.Email);
-
-                if (existingUser != null)
+                Console.WriteLine("🚨 ModelState is invalid. Errors:");
+                foreach (var state in ModelState)
                 {
-                    ModelState.AddModelError("Email", "E-postadressen är redan registrerad.");
-                    return View(user);
+                    foreach (var error in state.Value.Errors)
+                    {
+                        Console.WriteLine($"❌ {state.Key}: {error.ErrorMessage}");
+                    }
                 }
-
-                // Standardvärden för besökare som registrerar sig
-                user.IsAdmin = false;  // Besökare får inte admin-roll
-                user.Rating = 0;
-                user.ProfilePicURL = string.Empty;
-
-                // Spara användaren i databasen
-                _context.User.Add(user);
-                await _context.SaveChangesAsync();
-
-                // Omdirigera till login efter registrering
-                return RedirectToAction("Login");
+                return View(user);
             }
 
-            return View(user);
+            // Kontrollera om e-post redan finns
+            var existingUser = (await _userRepository.GetAllAsync())
+                .FirstOrDefault(u => u.Email == user.Email);
+
+            if (existingUser != null)
+            {
+                ModelState.AddModelError("Email", "This email is already registered.");
+                Console.WriteLine($"⚠️ Email {user.Email} already exists.");
+                return View(user);
+            }
+
+            // Standardvärden
+            user.IsAdmin = false;
+            user.IsPremium = false;
+            user.Rating = user.Rating > 0 ? user.Rating : 0;
+            user.ProfilePicURL ??= string.Empty;
+            user.Employer ??= string.Empty;
+            user.Bio ??= string.Empty;
+            user.Signature ??= string.Empty;
+
+            // Spara användaren i databasen
+            _context.User.Add(user);
+            await _context.SaveChangesAsync();
+
+            Console.WriteLine($"✅ User {user.Email} registered successfully!");
+
+            return RedirectToAction("Login");
         }
 
 

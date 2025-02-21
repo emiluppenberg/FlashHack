@@ -9,28 +9,74 @@
 <form asp-action="Register" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+    <!-- First Name -->
     <div class="form-group">
         <label asp-for="FirstName" class="control-label"></label>
-        <input asp-for="FirstName" class="form-control" required />
+        <input asp-for="FirstName" class="form-control" required autocomplete="given-name" />
         <span asp-validation-for="FirstName" class="text-danger"></span>
     </div>
 
+    <!-- Last Name -->
     <div class="form-group">
         <label asp-for="LastName" class="control-label"></label>
-        <input asp-for="LastName" class="form-control" required />
+        <input asp-for="LastName" class="form-control" required autocomplete="family-name" />
         <span asp-validation-for="LastName" class="text-danger"></span>
     </div>
 
+    <!-- Phone Number -->
+    <div class="form-group">
+        <label asp-for="PhoneNumber" class="control-label"></label>
+        <input asp-for="PhoneNumber" class="form-control" required autocomplete="tel" />
+        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+    </div>
+
+    <!-- Email -->
     <div class="form-group">
         <label asp-for="Email" class="control-label"></label>
-        <input asp-for="Email" type="email" class="form-control" required />
+        <input asp-for="Email" type="email" class="form-control" required autocomplete="email" />
         <span asp-validation-for="Email" class="text-danger"></span>
     </div>
 
+    <!-- Password -->
     <div class="form-group">
         <label asp-for="Password" class="control-label"></label>
-        <input asp-for="Password" type="password" class="form-control" required />
+        <input asp-for="Password" type="password" class="form-control" required autocomplete="new-password" />
         <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <!-- Employer -->
+    <div class="form-group">
+        <label asp-for="Employer" class="control-label"></label>
+        <input asp-for="Employer" class="form-control" autocomplete="organization" />
+        <span asp-validation-for="Employer" class="text-danger"></span>
+    </div>
+
+    <!-- Bio -->
+    <div class="form-group">
+        <label asp-for="Bio" class="control-label"></label>
+        <textarea asp-for="Bio" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Bio" class="text-danger"></span>
+    </div>
+
+    <!-- Profile Picture URL -->
+    <div class="form-group">
+        <label asp-for="ProfilePicURL" class="control-label"></label>
+        <input asp-for="ProfilePicURL" type="url" class="form-control" autocomplete="photo" />
+        <span asp-validation-for="ProfilePicURL" class="text-danger"></span>
+    </div>
+
+    <!-- Signature -->
+    <div class="form-group">
+        <label asp-for="Signature" class="control-label"></label>
+        <input asp-for="Signature" class="form-control" maxlength="20" />
+        <span asp-validation-for="Signature" class="text-danger"></span>
+    </div>
+
+    <!-- Rating -->
+    <div class="form-group">
+        <label asp-for="Rating" class="control-label"></label>
+        <input asp-for="Rating" type="number" class="form-control" min="0" max="5" />
+        <span asp-validation-for="Rating" class="text-danger"></span>
     </div>
 
     <div class="form-group mt-3">
