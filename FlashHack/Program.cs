@@ -1,5 +1,6 @@
 
 using FlashHack.Data;
+using FlashHack.Data.DataInterfaces;
 using FlashHack.Data.MockData;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,6 +11,8 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
 
 var app = builder.Build();
 
