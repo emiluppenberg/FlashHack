@@ -22,7 +22,7 @@ namespace FlashHack.Controllers
         // GET: SubCategories
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.SubCategory.Include(s => s.HeadCategory);
+            var applicationDbContext = _context.SubCategory.Include(s => s.HeadCategory);            
             return View(await applicationDbContext.ToListAsync());
         }
 

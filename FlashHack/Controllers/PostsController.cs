@@ -34,6 +34,7 @@ namespace FlashHack.Controllers
             }
             else
             {
+                TempData["PageId"] = subCategoryId;
                 var posts = await _context.Post
                     .Where(p => p.SubCategoryId == subCategoryId)
                     .Include(p => p.SubCategory)
@@ -64,14 +65,17 @@ namespace FlashHack.Controllers
         }
 
         // GET: Posts/Create
-        public IActionResult Create()
+        public IActionResult Create(int id)
         {
-            Post testPod = new Post();
-            testPod.SubCategoryId = 1;
-            testPod.UserId = 7;
+            if (TempData["PageId"] != null /*&& HttpContext.Session.GetInt32("CurrentUserId") != null*/)
+            {
+                var newPost = new Post { SubCategoryId = (int)TempData["PageId"], UserId = 7 };
+                return View(newPost);
+            }            
+
             ViewData["SubCategoryId"] = new SelectList(_context.SubCategory, "Id", "Name");
             ViewData["UserId"] = new SelectList(_context.User, "Id", "Email");
-            return View(testPod);
+            return View();
         }
 
         // POST: Posts/Create
