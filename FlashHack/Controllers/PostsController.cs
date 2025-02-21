@@ -34,6 +34,7 @@ namespace FlashHack.Controllers
             }
             else
             {
+                TempData["PageId"] = subCategoryId;
                 var posts = await _context.Post
                     .Where(p => p.SubCategoryId == subCategoryId)
                     .Include(p => p.SubCategory)
@@ -66,12 +67,21 @@ namespace FlashHack.Controllers
         // GET: Posts/Create
         public IActionResult Create()
         {
-            Post testPod = new Post();
-            testPod.SubCategoryId = 1;
-            testPod.UserId = 7;
-            ViewData["SubCategoryId"] = new SelectList(_context.SubCategory, "Id", "Name");
-            ViewData["UserId"] = new SelectList(_context.User, "Id", "Email");
-            return View(testPod);
+            try
+            {
+                if (TempData["PageId"] != null /*&& HttpContext.Session.GetInt32("UserId") != null*/)
+                {
+                    var newPost = new Post { SubCategoryId = (int)TempData["PageId"], UserId = 7/*HttpContext.Session.GetInt32("UserId")*/ };
+                    return View(newPost);
+                }
+                return View();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return View();
+            }           
         }
 
         // POST: Posts/Create
@@ -81,17 +91,21 @@ namespace FlashHack.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Content,SubCategoryId,UserId")] Post post)
         {
-            
-            if (ModelState.IsValid)
-            {                
-                post.TimeCreated = DateTime.Now;
-                await postRepository.AddAsync(post);
-                return RedirectToAction(nameof(Index));
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    post.TimeCreated = DateTime.Now;
+                    await postRepository.AddAsync(post);
+                    return RedirectToAction(nameof(Index)); //TO:DO Create a view for the created post so comments can start
+                }                
+                return View(post);
             }
-            
-            ViewData["SubCategoryId"] = new SelectList(_context.SubCategory, "Id", "Name", post.SubCategoryId);
-            ViewData["UserId"] = new SelectList(_context.User, "Id", "Email", post.UserId);
-            return View(post);
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return View();
+            }                      
         }
 
         // GET: Posts/Edit/5
@@ -121,16 +135,9 @@ namespace FlashHack.Controllers
                 {
                     await postRepository.Update(post);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception ex)
                 {
-                    if (!PostExists(post.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    Console.WriteLine(ex.Message);
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -140,21 +147,9 @@ namespace FlashHack.Controllers
         }
 
         // GET: Posts/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var post = await _context.Post
-                .Include(p => p.SubCategory)
-                .Include(p => p.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (post == null)
-            {
-                return NotFound();
-            }
+            var post = await postRepository.GetByIdAndIncludeAsync(id);
 
             return View(post);
         }
@@ -164,13 +159,20 @@ namespace FlashHack.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var post = await _context.Post.FindAsync(id);
+            var post = await postRepository.GetByIdAndIncludeAsync(id);
+
             if (post != null)
             {
-                _context.Post.Remove(post);
+                try
+                {
+                    await postRepository.Delete(post);
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

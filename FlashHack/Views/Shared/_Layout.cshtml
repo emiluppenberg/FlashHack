@@ -67,7 +67,7 @@
                         <div class="container-fluid">
                             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                                 <ul class="navbar-nav flex-grow-1">
-                                    @await Component.InvokeAsync("NavBar")
+                                    @await Component.InvokeAsync("NavBar", new { currentSubCategoryId = ViewData["CurrentSubCategoryId"] })
                                 </ul>
                             </div>
                         </div>
