@@ -35,6 +35,23 @@
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Posts" asp-action="Index">Posts</a>
                                 </li>
                             </ul>
+                            <ul class="navbar-nav">
+                                @if (Context.Session.GetString("UserEmail") != null)
+                                {
+                                    <li class="nav-item">
+                                        <span class="nav-link">Välkommen, @Context.Session.GetString("UserName")!</span>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="Users" asp-action="Logout">Logga ut</a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="Users" asp-action="Login">Logga in</a>
+                                    </li>
+                                }
+                            </ul>
                         </div>
                     </nav>
                 </div>
