@@ -1,16 +1,38 @@
 ﻿@model FlashHack.ViewModels.NavBarViewModel
 
-@foreach (var headCategory in Model.HeadCategories)
-{
-    <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            @headCategory.Name
-        </a>
-        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            @foreach (var subCategory in headCategory.SubCategories)
-            {
-                <li><a class="dropdown-item" asp-area="" asp-controller="Posts" asp-action="Index" asp-route-subCategoryId="@subCategory.Id">@subCategory.Name</a></li>
-            }
-        </ul>
-    </li>
-}
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="headCategoriesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fa-brands fa-stack-exchange"></i> Discussions
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="headCategoriesDropdown">
+        @foreach (var headCategory in Model.HeadCategories)
+        {
+            <li class="dropdown-submenu">
+                <a class="dropdown-item dropdown-toggle" href="#">@headCategory.Name</a>
+                <ul class="dropdown-menu">
+                    @foreach (var subCategory in headCategory.SubCategories)
+                    {
+                        <li><a class="dropdown-item" asp-area="" asp-controller="Posts" asp-action="Index" asp-route-subCategoryId="@subCategory.Id">@subCategory.Name</a></li>
+                    }
+                </ul>
+            </li>
+        }
+    </ul>
+</li>
+
+<style>
+    .dropdown-submenu {
+        position: relative;
+    }
+
+        .dropdown-submenu:hover .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-submenu .dropdown-menu {
+            display: none;
+            top: 0;
+            left: 100%;
+            margin-top: -1px;
+        }
+</style>
