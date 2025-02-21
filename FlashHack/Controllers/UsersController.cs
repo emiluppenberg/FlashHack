@@ -40,6 +40,46 @@ namespace FlashHack.Controllers
             return View(user);
         }
 
+        // GET: Users/Register – Visar registreringssidan för besökare
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        // POST: Users/Register – Hanterar registrering av besökare
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register([Bind("FirstName,LastName,Email,Password")] User user)
+        {
+            if (ModelState.IsValid)
+            {
+                // Kontrollera om e-post redan finns
+                var existingUser = (await _userRepository.GetAllAsync())
+                    .FirstOrDefault(u => u.Email == user.Email);
+
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError("Email", "E-postadressen är redan registrerad.");
+                    return View(user);
+                }
+
+                // Standardvärden för besökare som registrerar sig
+                user.IsAdmin = false;  // Besökare får inte admin-roll
+                user.Rating = 0;
+                user.ProfilePicURL = string.Empty;
+
+                // Spara användaren i databasen
+                _context.User.Add(user);
+                await _context.SaveChangesAsync();
+
+                // Omdirigera till login efter registrering
+                return RedirectToAction("Login");
+            }
+
+            return View(user);
+        }
+
+
         // GET: Users/Login (Visar inloggningssidan)
         public IActionResult Login()
         {
@@ -82,22 +122,45 @@ namespace FlashHack.Controllers
             return RedirectToAction("Login");
         }
 
-        // GET: Users/Create
-        public IActionResult Create() => View();
+        // GET: Users/Create – Endast för admin
+        public IActionResult Create()
+        {
+            if (HttpContext.Session.GetString("IsAdmin") != "True")
+            {
+                return RedirectToAction("Login");
+            }
 
-        // POST: Users/Create
+            return View();
+        }
+
+        // POST: Users/Create – Endast för admin
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FirstName,LastName,Employer,PhoneNumber,Email,Password,Bio,ProfilePicURL,Rating,Signature,IsPremium,IsAdmin,ShowEmail,ShowPhoneNumber,ShowEmployer,ShowToRecruiter,ShowRating")] User user)
+        public async Task<IActionResult> Create([Bind("FirstName,LastName,Email,Password,IsAdmin")] User user)
         {
             if (ModelState.IsValid)
             {
-                _context.User.Add(user); // Använder _context för att lägga till direkt
+                // Kontrollera om e-post redan finns
+                var existingUser = (await _userRepository.GetAllAsync())
+                    .FirstOrDefault(u => u.Email == user.Email);
+
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError("Email", "E-postadressen är redan registrerad.");
+                    return View(user);
+                }
+
+                // Lägg till användaren som admin eller vanlig användare
+                _context.User.Add(user);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(user);
         }
+
+
 
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(int? id)
