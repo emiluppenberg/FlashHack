@@ -27,8 +27,6 @@ namespace FlashHack.Controllers
         // GET: Posts
         public async Task<IActionResult> Index(int? subCategoryId)
         {
-            ViewData["CurrentSubCategoryId"] = subCategoryId;
-
             if (subCategoryId == null)
             {
                 var applicationDbContext = _context.Post.Include(p => p.SubCategory).Include(p => p.User);
@@ -127,16 +125,9 @@ namespace FlashHack.Controllers
                 {
                     await postRepository.Update(post);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception ex)
                 {
-                    if (!PostExists(post.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    Console.WriteLine(ex.Message);
                 }
                 return RedirectToAction(nameof(Index));
             }
