@@ -27,6 +27,8 @@ namespace FlashHack.Controllers
         // GET: Posts
         public async Task<IActionResult> Index(int? subCategoryId)
         {
+            ViewData["CurrentSubCategoryId"] = subCategoryId;
+
             if (subCategoryId == null)
             {
                 var applicationDbContext = _context.Post.Include(p => p.SubCategory).Include(p => p.User);
