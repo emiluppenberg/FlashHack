@@ -67,15 +67,21 @@ namespace FlashHack.Controllers
         // GET: Posts/Create
         public IActionResult Create()
         {
-            if (TempData["PageId"] != null /*&& HttpContext.Session.GetInt32("UserId") != null*/)
+            try
             {
-                var newPost = new Post { SubCategoryId = (int)TempData["PageId"], UserId = 7/*HttpContext.Session.GetInt32("UserId")*/ };
-                return View(newPost);
-            }            
+                if (TempData["PageId"] != null /*&& HttpContext.Session.GetInt32("UserId") != null*/)
+                {
+                    var newPost = new Post { SubCategoryId = (int)TempData["PageId"], UserId = 7/*HttpContext.Session.GetInt32("UserId")*/ };
+                    return View(newPost);
+                }
+                return View();
 
-            ViewData["SubCategoryId"] = new SelectList(_context.SubCategory, "Id", "Name");
-            ViewData["UserId"] = new SelectList(_context.User, "Id", "Email");
-            return View();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return View();
+            }           
         }
 
         // POST: Posts/Create
@@ -85,17 +91,21 @@ namespace FlashHack.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Content,SubCategoryId,UserId")] Post post)
         {
-            
-            if (ModelState.IsValid)
-            {                
-                post.TimeCreated = DateTime.Now;
-                await postRepository.AddAsync(post);
-                return RedirectToAction(nameof(Index));
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    post.TimeCreated = DateTime.Now;
+                    await postRepository.AddAsync(post);
+                    return RedirectToAction(nameof(Index));
+                }                
+                return View(post);
             }
-            
-            ViewData["SubCategoryId"] = new SelectList(_context.SubCategory, "Id", "Name", post.SubCategoryId);
-            ViewData["UserId"] = new SelectList(_context.User, "Id", "Email", post.UserId);
-            return View(post);
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return View();
+            }                      
         }
 
         // GET: Posts/Edit/5
