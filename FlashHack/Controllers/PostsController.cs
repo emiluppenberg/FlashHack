@@ -7,16 +7,21 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FlashHack.Data;
 using FlashHack.Models;
+using FlashHack.Data.DataInterfaces;
 
 namespace FlashHack.Controllers
 {
     public class PostsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IPostRepository postRepository;
+        private readonly ISubCategoryRepository subCategoryRepository;
 
-        public PostsController(ApplicationDbContext context)
+        public PostsController(ApplicationDbContext context, IPostRepository postRepository, ISubCategoryRepository subCategoryRepository)
         {
             _context = context;
+            this.postRepository = postRepository;
+            this.subCategoryRepository = subCategoryRepository;
         }
 
         // GET: Posts
