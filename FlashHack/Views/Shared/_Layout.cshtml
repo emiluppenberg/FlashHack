@@ -42,13 +42,13 @@
                                         <span class="nav-link">Välkommen, @Context.Session.GetString("UserName")!</span>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" asp-controller="Users" asp-action="Logout">Logga ut</a>
+                                        <a class="nav-link" asp-controller="Users" asp-action="Logout">Log out</a>
                                     </li>
                                 }
                                 else
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link" asp-controller="Users" asp-action="Login">Logga in</a>
+                                        <a class="nav-link" asp-controller="Users" asp-action="Login">Log in</a>
                                     </li>
                                 }
                             </ul>
