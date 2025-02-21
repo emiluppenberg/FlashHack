@@ -40,6 +40,48 @@ namespace FlashHack.Controllers
             return View(user);
         }
 
+        // GET: Users/Login (Visar inloggningssidan)
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        // POST: Users/Login (Hanterar inloggningsförsöket)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(string email, string password)
+        {
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+            {
+                ModelState.AddModelError(string.Empty, "E-post och lösenord krävs.");
+                return View();
+            }
+
+            // Hämta användaren baserat på e-post och lösenord
+            var user = (await _userRepository.GetAllAsync())
+                .FirstOrDefault(u => u.Email == email && u.Password == password);
+
+            if (user != null)
+            {
+                // Spara användarens session
+                HttpContext.Session.SetString("UserEmail", user.Email);
+                HttpContext.Session.SetString("UserName", user.FirstName);
+                HttpContext.Session.SetString("IsAdmin", user.IsAdmin.ToString());
+
+                return RedirectToAction("Index", "Home");
+            }
+
+            ModelState.AddModelError(string.Empty, "Fel e-post eller lösenord.");
+            return View();
+        }
+
+        // GET: Users/Logout (Loggar ut användaren)
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear(); // Tar bort all sessionsdata
+            return RedirectToAction("Login");
+        }
+
         // GET: Users/Create
         public IActionResult Create() => View();
 

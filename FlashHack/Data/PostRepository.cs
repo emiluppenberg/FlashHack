@@ -38,5 +38,13 @@ namespace FlashHack.Data
             applicationDbContext.Update(post);
             await applicationDbContext.SaveChangesAsync();
         }
+
+        public async Task<Post> GetByIdAndIncludeAsync(int id)
+        {
+            return await applicationDbContext.Post
+                .Include(x => x.User)
+                .Include(x => x.SubCategory)
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
     }
 }

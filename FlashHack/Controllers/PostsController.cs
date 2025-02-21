@@ -99,20 +99,16 @@ namespace FlashHack.Controllers
         }
 
         // GET: Posts/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var post = await postRepository.GetByIdAsync(id);
 
-            var post = await _context.Post.FindAsync(id);
             if (post == null)
             {
                 return NotFound();
             }
-            ViewData["SubCategoryId"] = new SelectList(_context.SubCategory, "Id", "Name", post.SubCategoryId);
-            ViewData["UserId"] = new SelectList(_context.User, "Id", "Email", post.UserId);
+
+            ViewData["SubCategory"] = new SelectList(await subCategoryRepository.GetAllAsync(), "Id", "Name", post.SubCategoryId);
             return View(post);
         }
 
@@ -121,19 +117,13 @@ namespace FlashHack.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Content,UpVotes,DownVotes,TimeCreated,UserId,SubCategoryId")] Post post)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Content,UpVotes,DownVotes,TimeCreated,UserId,SubCategoryId,Comments")] Post post)
         {
-            if (id != post.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(post);
-                    await _context.SaveChangesAsync();
+                    await postRepository.Update(post);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -148,27 +138,15 @@ namespace FlashHack.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SubCategoryId"] = new SelectList(_context.SubCategory, "Id", "Name", post.SubCategoryId);
-            ViewData["UserId"] = new SelectList(_context.User, "Id", "Email", post.UserId);
+
+            ViewData["SubCategory"] = new SelectList(await subCategoryRepository.GetAllAsync(), "Id", "Name", post.SubCategoryId);
             return View(post);
         }
 
         // GET: Posts/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var post = await _context.Post
-                .Include(p => p.SubCategory)
-                .Include(p => p.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (post == null)
-            {
-                return NotFound();
-            }
+            var post = await postRepository.GetByIdAndIncludeAsync(id);
 
             return View(post);
         }
@@ -178,13 +156,20 @@ namespace FlashHack.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var post = await _context.Post.FindAsync(id);
+            var post = await postRepository.GetByIdAndIncludeAsync(id);
+
             if (post != null)
             {
-                _context.Post.Remove(post);
+                try
+                {
+                    await postRepository.Delete(post);
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
