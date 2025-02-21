@@ -99,7 +99,7 @@ namespace FlashHack.Controllers
                 {
                     post.TimeCreated = DateTime.Now;
                     await postRepository.AddAsync(post);
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index)); //TO:DO Create a view for the created post so comments can start
                 }                
                 return View(post);
             }
