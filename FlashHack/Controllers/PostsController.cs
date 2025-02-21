@@ -65,11 +65,11 @@ namespace FlashHack.Controllers
         }
 
         // GET: Posts/Create
-        public IActionResult Create(int id)
+        public IActionResult Create()
         {
-            if (TempData["PageId"] != null /*&& HttpContext.Session.GetInt32("CurrentUserId") != null*/)
+            if (TempData["PageId"] != null /*&& HttpContext.Session.GetInt32("UserId") != null*/)
             {
-                var newPost = new Post { SubCategoryId = (int)TempData["PageId"], UserId = 7 };
+                var newPost = new Post { SubCategoryId = (int)TempData["PageId"], UserId = 7/*HttpContext.Session.GetInt32("UserId")*/ };
                 return View(newPost);
             }            
 
