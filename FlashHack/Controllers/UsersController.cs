@@ -50,13 +50,10 @@ namespace FlashHack.Controllers
         public async Task<IActionResult> Register([Bind("FirstName,LastName,PhoneNumber,Email,Password,Employer,Bio,ProfilePicURL,Signature,Rating")] User user)
 
         {
-            // 🟡 Logga alla inkommande värden för felsökning
-            Console.WriteLine($"📨 Attempting to register user: {user.FirstName} {user.LastName}, Email: {user.Email}, Phone: {user.PhoneNumber}");
-
-            // 🔴 Logga ModelState-fel för att se varför den misslyckas
+            
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("🚨 ModelState is invalid. Errors:");
+               
                 foreach (var state in ModelState)
                 {
                     foreach (var error in state.Value.Errors)
@@ -91,7 +88,7 @@ namespace FlashHack.Controllers
             _context.User.Add(user);
             await _context.SaveChangesAsync();
 
-            Console.WriteLine($"✅ User {user.Email} registered successfully!");
+            
 
             return RedirectToAction("Login");
         }
