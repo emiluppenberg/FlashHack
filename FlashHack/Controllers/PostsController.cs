@@ -69,9 +69,9 @@ namespace FlashHack.Controllers
         {
             try
             {
-                if (TempData["PageId"] != null /*&& HttpContext.Session.GetInt32("UserId") != null*/)
+                if (TempData["PageId"] != null && HttpContext.Session.GetInt32("UserId") != null)
                 {
-                    var newPost = new Post { SubCategoryId = (int)TempData["PageId"], UserId = 7/*HttpContext.Session.GetInt32("UserId")*/ };
+                    var newPost = new Post { SubCategoryId = (int)TempData["PageId"], UserId = (int)HttpContext.Session.GetInt32("UserId")};
                     return View(newPost);
                 }
                 return View();
