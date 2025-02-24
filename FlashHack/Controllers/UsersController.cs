@@ -71,9 +71,16 @@ namespace FlashHack.Controllers
             if (existingUser != null)
             {
                 ModelState.AddModelError("Email", "This email is already registered.");
-                Console.WriteLine($"⚠️ Email {user.Email} already exists.");
+                
                 return View(user);
             }
+
+            // Sätt standardvärden för valfria fält
+            user.Employer ??= string.Empty;
+            user.Bio ??= string.Empty;
+            user.ProfilePicURL ??= string.Empty;
+            user.Signature ??= string.Empty;
+            user.Rating ??= 0;
 
             // Standardvärden
             user.IsAdmin = false;
@@ -118,6 +125,7 @@ namespace FlashHack.Controllers
             if (user != null)
             {
                 // Spara användarens session
+                HttpContext.Session.SetInt32("UserId", user.Id);
                 HttpContext.Session.SetString("UserEmail", user.Email);
                 HttpContext.Session.SetString("UserName", user.FirstName);
                 HttpContext.Session.SetString("IsAdmin", user.IsAdmin.ToString());
