@@ -20,3 +20,11 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.navbar {
+    background-color: black !important;
+}
+
+    .navbar .nav-link, .navbar .navbar-brand {
+        color: white !important;
+    }
