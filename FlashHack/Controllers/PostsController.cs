@@ -74,13 +74,13 @@ namespace FlashHack.Controllers
                     var newPost = new Post { SubCategoryId = (int)TempData["PageId"], UserId = (int)HttpContext.Session.GetInt32("UserId")};
                     return View(newPost);
                 }
-                return View();
+                return RedirectToAction("Error", "Home");
 
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
-                return View();
+                return RedirectToAction("Error", "Home");
             }           
         }
 
@@ -104,7 +104,7 @@ namespace FlashHack.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
-                return View();
+                return RedirectToAction("Error", "Home");
             }                      
         }
 
