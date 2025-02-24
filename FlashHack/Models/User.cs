@@ -11,7 +11,7 @@ namespace FlashHack.Models
         public string FirstName { get; set; }
         [Required]
         public string LastName { get; set; }
-        public string? Employer { get; set; }
+        public string? Employer { get; set; } = string.Empty;
         [Required(ErrorMessage = "Phone number is required.")]
         [RegularExpression(@"^(\+46|0)[0-9]{7,10}$", ErrorMessage = "Please enter a valid Swedish phone number.")]
         public string PhoneNumber { get; set; }
@@ -23,12 +23,12 @@ namespace FlashHack.Models
         [MinLength(5)]
         public string Password { get; set; }
         [MaxLength(500)]
-        public string? Bio { get; set; }
+        public string? Bio { get; set; } = string.Empty;
         public List<Skill>? Skills { get; set; } = new List<Skill>();
-        public string ProfilePicURL { get; set; }
-        public int Rating { get; set; }
+        public string? ProfilePicURL { get; set; } = string.Empty;
+        public int? Rating { get; set; } = 0;
         [MaxLength(20)]
-        public string? Signature { get; set; }
+        public string? Signature { get; set; } = string.Empty;
 
         public List<Post>? Favorites { get; set; } = new List<Post>();
 
