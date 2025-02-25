@@ -28,6 +28,18 @@ namespace FlashHack.Data
             return await applicationDbContext.Comment.ToListAsync();
         }
 
+        public async Task<IEnumerable<Comment>> GetAllFromPostIdAsync(int? postId)
+        {
+            var comments = await applicationDbContext.Comment
+                .Include(c => c.Post)
+                .Include(c => c.User)
+                .Where(c => c.PostId == postId)
+                .OrderBy(c => c.TimeCreated)
+                .ToListAsync();
+                                             
+            return (comments);
+        }
+
         public async Task<Comment> GetByIdAsync(int id)
         {
             return await applicationDbContext.Comment.FirstOrDefaultAsync(c => c.Id == id);

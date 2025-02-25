@@ -7,23 +7,33 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FlashHack.Data;
 using FlashHack.Models;
+using FlashHack.Data.DataInterfaces;
 
 namespace FlashHack.Controllers
 {
     public class CommentsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly ICommentRepository commentRepository;
 
-        public CommentsController(ApplicationDbContext context)
+        public CommentsController(ApplicationDbContext context, ICommentRepository commentRepository)
         {
             _context = context;
+            this.commentRepository = commentRepository;
         }
 
         // GET: Comments
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? postId)
         {
-            var applicationDbContext = _context.Comment.Include(c => c.Post).Include(c => c.User);
-            return View(await applicationDbContext.ToListAsync());
+            if(postId == null)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+            else
+            {
+                var test = await commentRepository.GetAllFromPostIdAsync(postId);
+                return View(test);
+            }
         }
 
         // GET: Comments/Details/5
