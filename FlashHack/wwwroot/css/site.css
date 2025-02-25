@@ -378,3 +378,13 @@ footer {
         .nav-tabs .nav-link:focus {
             box-shadow: none;
         }
+
+.star-icon {
+    cursor: pointer;
+    color: gold;
+    font-size: 1.5rem;
+}
+
+    .star-icon.fa-regular {
+        color: gray;
+    }

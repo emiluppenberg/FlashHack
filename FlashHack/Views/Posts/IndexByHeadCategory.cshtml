@@ -39,8 +39,8 @@
     {
         <div class="card mb-3 post-item">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h3>@post.Title</h3>
-                <span class="text-muted">by @post.User.FirstName @post.User.LastName</span>
+                <h3>@post.Title<p class="text-muted">by @post.User.FirstName</p></h3>
+                <i class="fa-regular fa-star star-icon" onclick="toggleStar(this)"></i>
             </div>
             <div class="card-body">
                 <p>@post.Content.Substring(0, Math.Min(post.Content.Length, 100))...</p>
@@ -59,3 +59,9 @@
     }
 </div>
 
+<script>
+    function toggleStar(element) {
+        element.classList.toggle('fa-solid');
+        element.classList.toggle('fa-regular');
+    }
+</script>
