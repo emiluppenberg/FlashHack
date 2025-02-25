@@ -15,7 +15,7 @@
                         <li>
                             @if (subCategory.Id == Model.CurrentSubCategoryId)
                             {
-                                <a class="dropdown-item disabled">@subCategory.Name</a>
+                                <a class="dropdown-item disabled text-muted" aria-disabled="true">@subCategory.Name</a>
                             }
                             else
                             {
@@ -44,4 +44,26 @@
             left: 100%;
             margin-top: -1px;
         }
+
+    .navbar-nav .dropdown-menu {
+        background-color: black !important;
+        border: none;
+    }
+
+    .navbar-nav .dropdown-item {
+        color: white !important;
+    }
+
+        .navbar-nav .dropdown-item:hover {
+            background-color: darkgray !important;
+            color: white !important;
+        }
+
+        .navbar-nav .dropdown-item.disabled {
+            color: #6c757d !important;
+            pointer-events: none;
+            background-color: #343a40 !important; 
+        }
 </style>
+
+

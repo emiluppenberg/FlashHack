@@ -29,11 +29,19 @@ namespace FlashHack.Controllers
         {
             if (subCategoryId == null)
             {
+                ViewData["SubCategoryName"] = "All Posts";
                 var applicationDbContext = _context.Post.Include(p => p.SubCategory).Include(p => p.User);
                 return View(await applicationDbContext.ToListAsync());
             }
             else
             {
+                var subCategory = await _context.SubCategory.FindAsync(subCategoryId);
+                if (subCategory == null)
+                {
+                    return NotFound();
+                }
+
+                ViewData["SubCategoryName"] = subCategory.Name;
                 TempData["PageId"] = subCategoryId;
                 var posts = await _context.Post
                     .Where(p => p.SubCategoryId == subCategoryId)

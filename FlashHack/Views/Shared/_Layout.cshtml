@@ -51,7 +51,7 @@
                                     </li>
 
                                     <li class="nav-item">
-                                        <a class="nav-link" asp-controller="Users" asp-action="Register">Registrera</a>
+                                        <a class="nav-link" asp-controller="Users" asp-action="Register">Register</a>
                                     </li>
 
                                 }
@@ -67,6 +67,18 @@
                             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                                 <ul class="navbar-nav flex-grow-1">
                                     @await Component.InvokeAsync("NavBar", new { currentSubCategoryId = ViewData["CurrentSubCategoryId"] })
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="" asp-action="">Popular Discussions</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="" asp-action="">New Discussions</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="" asp-action="">Companies Hiring</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="" asp-action="">Favorites</a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>

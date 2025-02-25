@@ -22,11 +22,26 @@ namespace FlashHack.Controllers
         {
             var headCategories = await _context.HeadCategory
                 .Include(hc => hc.SubCategories)
+                .ThenInclude(sc => sc.Posts)
+                .ThenInclude(p => p.User)
                 .ToListAsync();
 
-            var viewModel = new NavBarViewModel
+            var viewModel = new HomeIndexViewModel
             {
-                HeadCategories = headCategories
+                HeadCategories = headCategories.Select(hc => new HeadCategoryViewModel
+                {
+                    Id = hc.Id,
+                    Name = hc.Name,
+                    SubCategories = hc.SubCategories.Select(sc => new SubCategoryViewModel
+                    {
+                        Id = sc.Id,
+                        Name = sc.Name,
+                        PostCount = sc.Posts.Count,
+                        MostRecentPostTitle = sc.Posts.OrderByDescending(p => p.TimeCreated).FirstOrDefault()?.Title,
+                        MostRecentPostUser = sc.Posts.OrderByDescending(p => p.TimeCreated).FirstOrDefault()?.User?.FirstName,
+                        HasPosts = sc.Posts.Any()
+                    }).ToList()
+                }).ToList()
             };
 
             return View(viewModel);
