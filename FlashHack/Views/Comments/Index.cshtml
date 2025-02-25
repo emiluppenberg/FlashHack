@@ -2,12 +2,15 @@
 
 @{
     ViewData["Title"] = "Index";
+    @inject IHttpContextAccessor HttpContextAccessor
+    var userId = HttpContextAccessor.HttpContext.Session.GetInt32("UserId"); 
+    var postId = Model.FirstOrDefault()?.PostId;
 }
 
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" asp-route-userId="@userId" asp-route-postId="@postId"> Answer</a>
 </p>
 <table class="table">
     <thead>

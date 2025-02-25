@@ -35,6 +35,7 @@ builder.Services.AddScoped<IJobblistingRepository, JobblistingRepository>();
 builder.Services.AddScoped<IHeadCategoryRepository, HeadCategoryRepository>();
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 var app = builder.Build();
 

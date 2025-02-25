@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using FlashHack.Data;
 using FlashHack.Models;
 using FlashHack.Data.DataInterfaces;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace FlashHack.Controllers
 {
@@ -25,15 +27,27 @@ namespace FlashHack.Controllers
         // GET: Comments
         public async Task<IActionResult> Index(int? postId)
         {
-            if(postId == null)
+            try
             {
+                if (postId != null)
+                {
+                    HttpContext.Session.SetInt32("PostId", (int)postId);
+                }
+                else
+                {
+                    postId = HttpContext.Session.GetInt32("PostId");
+                }
+                var commentsOnPost = await commentRepository.GetAllFromPostIdAsync(postId);
+                return View(commentsOnPost);
+
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
                 return RedirectToAction("Error", "Home");
             }
-            else
-            {
-                var test = await commentRepository.GetAllFromPostIdAsync(postId);
-                return View(test);
-            }
+            
+           
         }
 
         // GET: Comments/Details/5
@@ -57,11 +71,22 @@ namespace FlashHack.Controllers
         }
 
         // GET: Comments/Create
-        public IActionResult Create()
+        public IActionResult Create(int? postId, int? userId)
         {
-            ViewData["PostId"] = new SelectList(_context.Post, "Id", "Content");
-            ViewData["UserId"] = new SelectList(_context.User, "Id", "Email");
-            return View();
+            try
+            {
+                if (postId == null || userId == null)
+                {
+                    return RedirectToAction("Error", "Home");
+                }
+                var newPost = new Comment { PostId = (int)postId, UserId = (int)userId };
+                return View(newPost);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         // POST: Comments/Create
@@ -69,17 +94,24 @@ namespace FlashHack.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Content,TimeCreated,UpVotes,DownVotes,UserId,PostId")] Comment comment)
+        public async Task<IActionResult> Create([Bind("Id,Content,UserId,PostId")] Comment comment)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(comment);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    comment.TimeCreated = DateTime.Today;
+                    await commentRepository.AddAsync(comment);
+
+                    return RedirectToAction("Index");
+                }
+                return View(comment);
             }
-            ViewData["PostId"] = new SelectList(_context.Post, "Id", "Content", comment.PostId);
-            ViewData["UserId"] = new SelectList(_context.User, "Id", "Email", comment.UserId);
-            return View(comment);
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         // GET: Comments/Edit/5
