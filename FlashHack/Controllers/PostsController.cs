@@ -188,5 +188,28 @@ namespace FlashHack.Controllers
         {
             return _context.Post.Any(e => e.Id == id);
         }
+
+        public async Task<IActionResult> IndexByHeadCategory(int? headCategoryId)
+        {
+            if (headCategoryId == null)
+            {
+                return NotFound();
+            }
+
+            var posts = await _context.Post
+                .Where(p => p.SubCategory.HeadCategoryId == headCategoryId)
+                .Include(p => p.SubCategory)
+                .Include(p => p.User)
+                .ToListAsync();
+
+            var headCategory = await _context.HeadCategory.FindAsync(headCategoryId);
+            if (headCategory == null)
+            {
+                return NotFound();
+            }
+
+            ViewData["HeadCategoryName"] = headCategory.Name;
+            return View("IndexByHeadCategory", posts);
+        }
     }
 }

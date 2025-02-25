@@ -6,7 +6,7 @@
 
 <div class="text-center welcome-section">
     <h1 class="display-4">Welcome to Flash-Hack</h1>
-    
+
     <p>Welcome to FlashHack, your go-to platform for discussions and resources on various topics. Explore the categories below to find discussions that interest you.</p>
 </div>
 
@@ -54,7 +54,10 @@
                 </ul>
             </div>
         </div>
+        <div class="mt-3 mb-3">
+            <a asp-controller="Posts" asp-action="IndexByHeadCategory" asp-route-headCategoryId="@headCategory.Id" class="btn btn-custom">
+                View All Posts in @headCategory.Name
+            </a>
+        </div>
     }
 </div>
-
-

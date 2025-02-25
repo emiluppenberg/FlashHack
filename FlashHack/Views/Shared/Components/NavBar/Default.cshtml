@@ -8,7 +8,7 @@
         @foreach (var headCategory in Model.HeadCategories)
         {
             <li class="dropdown-submenu">
-                <a class="dropdown-item dropdown-toggle" href="#">@headCategory.Name</a>
+                <a class="dropdown-item dropdown-toggle" href="@Url.Action("IndexByHeadCategory", "Posts", new { headCategoryId = headCategory.Id })">@headCategory.Name</a>
                 <ul class="dropdown-menu">
                     @foreach (var subCategory in headCategory.SubCategories)
                     {

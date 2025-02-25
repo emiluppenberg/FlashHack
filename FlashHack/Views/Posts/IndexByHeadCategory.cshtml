@@ -1,0 +1,38 @@
+﻿@model IEnumerable<FlashHack.Models.Post>
+
+@{
+    ViewData["Title"] = "Posts by Head Category";
+    var headCategoryName = ViewData["HeadCategoryName"] as string ?? "Posts by Head Category";
+}
+
+<div class="text-center welcome-section">
+    <h1 class="display-4">@headCategoryName</h1>
+</div>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Post List</h2>
+        <a asp-controller="Posts" asp-action="Create" class="btn btn-primary">Create Post</a>
+    </div>
+    @foreach (var post in Model)
+    {
+        <div class="card mb-3 post-item">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3>@post.Title</h3>
+                <span class="text-muted">by @post.User.FirstName @post.User.LastName</span>
+            </div>
+            <div class="card-body">
+                <p>@post.Content.Substring(0, Math.Min(post.Content.Length, 100))...</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="badge bg-success">UpVotes: @post.UpVotes</span>
+                        <span class="badge bg-danger">DownVotes: @post.DownVotes</span>
+                    </div>
+                    <div>
+                        <a asp-action="Details" asp-route-id="@post.Id" class="btn btn-primary">Read More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
