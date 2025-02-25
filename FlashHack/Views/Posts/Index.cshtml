@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Index";
     var subCategoryName = ViewData["SubCategoryName"] as string ?? "All Posts";
+    var currentSortOrder = ViewData["CurrentSortOrder"] as string ?? "newest";
 }
 
 <div class="text-center welcome-section">
@@ -14,6 +15,26 @@
         <h2>Post List</h2>
         <a asp-controller="Posts" asp-action="Create" class="btn btn-primary">Create Post</a>
     </div>
+    <ul class="nav nav-tabs mb-3">
+        <li class="nav-item">
+            <a class="nav-link @(currentSortOrder == "newest" ? "active" : "")" asp-controller="Posts" asp-action="@(ViewData["SubCategoryId"] != null ? "IndexBySubCategory" : "Index")" asp-route-subCategoryId="@ViewData["SubCategoryId"]" asp-route-sortOrder="newest">Newest to Oldest</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(currentSortOrder == "oldest" ? "active" : "")" asp-controller="Posts" asp-action="@(ViewData["SubCategoryId"] != null ? "IndexBySubCategory" : "Index")" asp-route-subCategoryId="@ViewData["SubCategoryId"]" asp-route-sortOrder="oldest">Oldest to Newest</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(currentSortOrder == "mostLiked" ? "active" : "")" asp-controller="Posts" asp-action="@(ViewData["SubCategoryId"] != null ? "IndexBySubCategory" : "Index")" asp-route-subCategoryId="@ViewData["SubCategoryId"]" asp-route-sortOrder="mostLiked">Most Liked</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(currentSortOrder == "leastLiked" ? "active" : "")" asp-controller="Posts" asp-action="@(ViewData["SubCategoryId"] != null ? "IndexBySubCategory" : "Index")" asp-route-subCategoryId="@ViewData["SubCategoryId"]" asp-route-sortOrder="leastLiked">Least Liked</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(currentSortOrder == "mostCommented" ? "active" : "")" asp-controller="Posts" asp-action="@(ViewData["SubCategoryId"] != null ? "IndexBySubCategory" : "Index")" asp-route-subCategoryId="@ViewData["SubCategoryId"]" asp-route-sortOrder="mostCommented">Most Commented</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(currentSortOrder == "leastCommented" ? "active" : "")" asp-controller="Posts" asp-action="@(ViewData["SubCategoryId"] != null ? "IndexBySubCategory" : "Index")" asp-route-subCategoryId="@ViewData["SubCategoryId"]" asp-route-sortOrder="leastCommented">Least Commented</a>
+        </li>
+    </ul>
     @foreach (var post in Model)
     {
         <div class="card mb-3 post-item">
@@ -37,3 +58,4 @@
         </div>
     }
 </div>
+

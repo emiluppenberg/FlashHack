@@ -83,6 +83,10 @@
                                         <a class="nav-link" asp-controller="" asp-action="">Favorites</a>
                                     </li>
                                 </ul>
+                                <form class="d-flex ms-auto" asp-controller="Posts" asp-action="Index">
+                                    <input class="form-control me-2 search-input" type="search" name="searchTerm" placeholder="Search" aria-label="Search">
+                                    <button class="btn btn-outline-success search-button" type="submit">Search</button>
+                                </form>
                             </div>
                         </div>
                     </nav>
