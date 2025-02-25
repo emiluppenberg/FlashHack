@@ -20,5 +20,6 @@
         public string? MostRecentPostTitle { get; set; }
         public string? MostRecentPostUser { get; set; }
         public bool HasPosts { get; set; }
+        public int TotalComments { get; set; }
     }
 }

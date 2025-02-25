@@ -30,7 +30,7 @@ namespace FlashHack.Controllers
             if (subCategoryId == null)
             {
                 ViewData["SubCategoryName"] = "All Posts";
-                var applicationDbContext = _context.Post.Include(p => p.SubCategory).Include(p => p.User);
+                var applicationDbContext = _context.Post.Include(p => p.SubCategory).Include(p => p.User).Include(p => p.Comments);
                 return View(await applicationDbContext.ToListAsync());
             }
             else
@@ -47,6 +47,7 @@ namespace FlashHack.Controllers
                     .Where(p => p.SubCategoryId == subCategoryId)
                     .Include(p => p.SubCategory)
                     .Include(p => p.User)
+                    .Include(p => p.Comments)
                     .ToListAsync();
                 return View(posts);
             }
@@ -200,6 +201,7 @@ namespace FlashHack.Controllers
                 .Where(p => p.SubCategory.HeadCategoryId == headCategoryId)
                 .Include(p => p.SubCategory)
                 .Include(p => p.User)
+                .Include(p => p.Comments)
                 .ToListAsync();
 
             var headCategory = await _context.HeadCategory.FindAsync(headCategoryId);

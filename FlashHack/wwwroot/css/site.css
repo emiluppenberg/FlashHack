@@ -316,3 +316,8 @@ footer {
         border-color: #495057;
         color: white;
     }
+
+.badge-comments {
+    background-color: #6c757d; 
+    color: white;
+}

@@ -27,11 +27,16 @@
                                 <a asp-area="" asp-controller="Posts" asp-action="Index" asp-route-subCategoryId="@subCategory.Id">
                                     @subCategory.Name
                                 </a>
-                                <div class="text-muted">
-                                    @subCategory.PostCount posts
+                                <div class="d-flex align-items-center">
+                                    <div class="text-muted">
+                                        @subCategory.PostCount posts
+                                    </div>
+                                    <div class="divider mx-2"></div>
+                                    <div class="text-muted">
+                                        @subCategory.TotalComments comments
+                                    </div>
                                 </div>
                             </div>
-                            <div class="divider"></div>
                             <div class="d-flex flex-column align-items-end">
                                 @if (subCategory.HasPosts)
                                 {

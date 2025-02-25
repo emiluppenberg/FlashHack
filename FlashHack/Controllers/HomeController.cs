@@ -23,6 +23,9 @@ namespace FlashHack.Controllers
             var headCategories = await _context.HeadCategory
                 .Include(hc => hc.SubCategories)
                 .ThenInclude(sc => sc.Posts)
+                .ThenInclude(p => p.Comments)
+                .Include(hc => hc.SubCategories)
+                .ThenInclude(sc => sc.Posts)
                 .ThenInclude(p => p.User)
                 .ToListAsync();
 
@@ -39,7 +42,8 @@ namespace FlashHack.Controllers
                         PostCount = sc.Posts.Count,
                         MostRecentPostTitle = sc.Posts.OrderByDescending(p => p.TimeCreated).FirstOrDefault()?.Title,
                         MostRecentPostUser = sc.Posts.OrderByDescending(p => p.TimeCreated).FirstOrDefault()?.User?.FirstName,
-                        HasPosts = sc.Posts.Any()
+                        HasPosts = sc.Posts.Any(),
+                        TotalComments = sc.Posts.Sum(p => p.Comments.Count)
                     }).ToList()
                 }).ToList()
             };
