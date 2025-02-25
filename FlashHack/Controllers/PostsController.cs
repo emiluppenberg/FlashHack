@@ -16,12 +16,14 @@ namespace FlashHack.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IPostRepository postRepository;
         private readonly ISubCategoryRepository subCategoryRepository;
+        private readonly IUserRepository userRepository;
 
-        public PostsController(ApplicationDbContext context, IPostRepository postRepository, ISubCategoryRepository subCategoryRepository)
+        public PostsController(ApplicationDbContext context, IPostRepository postRepository, ISubCategoryRepository subCategoryRepository, IUserRepository userRepository)
         {
             _context = context;
             this.postRepository = postRepository;
             this.subCategoryRepository = subCategoryRepository;
+            this.userRepository = userRepository;
         }
 
         // GET: Posts
@@ -110,7 +112,7 @@ namespace FlashHack.Controllers
             {
                 if (TempData["PageId"] != null && HttpContext.Session.GetInt32("UserId") != null)
                 {
-                    var newPost = new Post { SubCategoryId = (int)TempData["PageId"], UserId = (int)HttpContext.Session.GetInt32("UserId")};
+                    var newPost = new Post { SubCategoryId = (int)TempData["PageId"], UserId = (int)HttpContext.Session.GetInt32("UserId") };
                     return View(newPost);
                 }
                 return RedirectToAction("Error", "Home");
@@ -120,7 +122,7 @@ namespace FlashHack.Controllers
             {
                 Console.WriteLine(ex.ToString());
                 return RedirectToAction("Error", "Home");
-            }           
+            }
         }
 
         // POST: Posts/Create
@@ -137,14 +139,14 @@ namespace FlashHack.Controllers
                     post.TimeCreated = DateTime.Now;
                     await postRepository.AddAsync(post);
                     return RedirectToAction(nameof(Index)); //TO:DO Create a view for the created post so comments can start
-                }                
+                }
                 return View(post);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
                 return RedirectToAction("Error", "Home");
-            }                      
+            }
         }
 
         // GET: Posts/Edit/5
@@ -206,13 +208,38 @@ namespace FlashHack.Controllers
                 {
                     await postRepository.Delete(post);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                 }
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet("Posts/AddToFavorites/{postId}")]
+        public async Task<IActionResult> AddToFavorites(int postId)
+        {
+            var post = await postRepository.GetByIdAsync(postId);
+
+            if (HttpContext.Session.GetInt32("UserId") == null || post == null)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+
+            var userId = Convert.ToInt32(HttpContext.Session.GetInt32("UserId"));
+            var user = await userRepository.GetByIdAsync(userId);
+
+            user.Favorites.Add(post);
+
+            await userRepository.Update(user);
+
+            if (TempData["PageId"] != null)
+            {
+                return RedirectToAction("Index", new { subCategoryId = (int?)TempData["PageId"] });
+            }
+
+            return RedirectToAction("Index");
         }
 
         private bool PostExists(int id)

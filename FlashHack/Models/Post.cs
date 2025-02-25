@@ -27,5 +27,7 @@ namespace FlashHack.Models
         [Required]
         public int SubCategoryId { get; set; }
         public SubCategory? SubCategory { get; set; }
+
+        public virtual List<User>? UserFavorites { get; set; } = new List<User>();
     }
 }
