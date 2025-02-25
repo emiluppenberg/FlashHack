@@ -193,10 +193,13 @@ namespace FlashHack.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateProfile(User updatedUser, string? skillName, string? skillDescription, int? skillRating)
         {
+            Console.WriteLine("🔵 UpdateProfile hit!");
+
             var userId = HttpContext.Session.GetInt32("UserId");
 
             if (userId == null)
             {
+                Console.WriteLine("❌ User ID not found in session.");
                 return RedirectToAction("Login");
             }
 
@@ -204,13 +207,15 @@ namespace FlashHack.Controllers
 
             if (user == null)
             {
+                Console.WriteLine("❌ User not found in database.");
                 return NotFound();
             }
 
-            //  Behåll lösenord om inget nytt anges
+            // Behåll lösenord om inget nytt anges
             if (string.IsNullOrEmpty(updatedUser.Password))
             {
                 updatedUser.Password = user.Password;
+                Console.WriteLine("🔑 No new password provided, using old one.");
             }
 
             ModelState.Clear();
@@ -218,25 +223,21 @@ namespace FlashHack.Controllers
 
             if (ModelState.IsValid)
             {
-                //  Uppdatera användarfält
+                Console.WriteLine("✅ ModelState is valid. Proceeding with update...");
+
                 user.FirstName = updatedUser.FirstName;
                 user.LastName = updatedUser.LastName;
                 user.Email = updatedUser.Email;
                 user.PhoneNumber = updatedUser.PhoneNumber;
-                user.Employer = updatedUser.Employer;
-                user.Bio = updatedUser.Bio;
-                user.Signature = updatedUser.Signature;
-               
+                user.Employer = updatedUser.Employer ?? string.Empty;
+                user.Bio = updatedUser.Bio ?? string.Empty;
+                user.Signature = updatedUser.Signature ?? string.Empty;
+                user.ProfilePicURL = updatedUser.ProfilePicURL ?? string.Empty;
 
-                // Uppdatera profilbild
-                if (!string.IsNullOrEmpty(updatedUser.ProfilePicURL))
-                {
-                    user.ProfilePicURL = updatedUser.ProfilePicURL;
-                }
-
-                //  Lägg till ny färdighet
+                // Lägg till ny färdighet (om det finns)
                 if (!string.IsNullOrEmpty(skillName) && !string.IsNullOrEmpty(skillDescription) && skillRating.HasValue)
                 {
+                    Console.WriteLine($"🟢 Adding skill: {skillName}, Rating: {skillRating}");
                     user.Skills.Add(new Skill
                     {
                         UserId = user.Id,
@@ -249,13 +250,19 @@ namespace FlashHack.Controllers
                 await _userRepository.Update(user);
                 HttpContext.Session.SetString("UserName", user.FirstName);
 
-                //  Omdirigera till Profile efter uppdatering
+                Console.WriteLine("🚀 Profile updated successfully!");
                 return RedirectToAction("Profile", new { id = user.Id });
             }
 
-            //  Vid fel, visa **UpdateProfile**-vyn igen
+            Console.WriteLine("❌ ModelState is invalid:");
+            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                Console.WriteLine($"   - {error.ErrorMessage}");
+            }
+
             return View("UpdateProfile", user);
         }
+
 
 
         [HttpPost]
@@ -289,10 +296,38 @@ namespace FlashHack.Controllers
                 
             }
 
-            return RedirectToAction("Profile");
+            return RedirectToAction("UpdateProfile");
         }
 
-       
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteSkill(int skillId)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var user = await _userRepository.GetByIdAsync(userId.Value);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Hitta och ta bort färdigheten
+            var skill = user.Skills?.FirstOrDefault(s => s.Id == skillId);
+            if (skill != null)
+            {
+                user.Skills.Remove(skill);
+                _context.Skill.Remove(skill); // Ta bort från databasen
+                await _userRepository.Update(user);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("UpdateProfile");
+        }
+
 
         // GET: Users/Create – Endast för admin
         public IActionResult Create()
