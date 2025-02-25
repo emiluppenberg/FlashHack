@@ -16,32 +16,73 @@ namespace FlashHack.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IPostRepository postRepository;
         private readonly ISubCategoryRepository subCategoryRepository;
+        private readonly IUserRepository userRepository;
 
-        public PostsController(ApplicationDbContext context, IPostRepository postRepository, ISubCategoryRepository subCategoryRepository)
+        public PostsController(ApplicationDbContext context, IPostRepository postRepository, ISubCategoryRepository subCategoryRepository, IUserRepository userRepository)
         {
             _context = context;
             this.postRepository = postRepository;
             this.subCategoryRepository = subCategoryRepository;
+            this.userRepository = userRepository;
         }
 
         // GET: Posts
-        public async Task<IActionResult> Index(int? subCategoryId)
+        public async Task<IActionResult> Index(int? subCategoryId, string searchTerm, string sortOrder)
         {
-            if (subCategoryId == null)
+            IQueryable<Post> postsQuery = _context.Post
+                .Include(p => p.SubCategory)
+                .Include(p => p.User)
+                .Include(p => p.Comments);
+
+            if (subCategoryId != null)
             {
-                var applicationDbContext = _context.Post.Include(p => p.SubCategory).Include(p => p.User);
-                return View(await applicationDbContext.ToListAsync());
+                postsQuery = postsQuery.Where(p => p.SubCategoryId == subCategoryId);
+                var subCategory = await _context.SubCategory.FindAsync(subCategoryId);
+                if (subCategory == null)
+                {
+                    return NotFound();
+                }
+                ViewData["SubCategoryName"] = subCategory.Name;
             }
             else
             {
-                TempData["PageId"] = subCategoryId;
-                var posts = await _context.Post
-                    .Where(p => p.SubCategoryId == subCategoryId)
-                    .Include(p => p.SubCategory)
-                    .Include(p => p.User)
-                    .ToListAsync();
-                return View(posts);
+                ViewData["SubCategoryName"] = "All Posts";
             }
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                postsQuery = postsQuery.Where(p => p.Title.Contains(searchTerm) || p.Content.Contains(searchTerm));
+            }
+
+            ViewData["CurrentSortOrder"] = sortOrder;
+
+            switch (sortOrder)
+            {
+                case "newest":
+                    postsQuery = postsQuery.OrderByDescending(p => p.TimeCreated);
+                    break;
+                case "oldest":
+                    postsQuery = postsQuery.OrderBy(p => p.TimeCreated);
+                    break;
+                case "mostLiked":
+                    postsQuery = postsQuery.OrderByDescending(p => p.UpVotes);
+                    break;
+                case "leastLiked":
+                    postsQuery = postsQuery.OrderBy(p => p.UpVotes);
+                    break;
+                case "mostCommented":
+                    postsQuery = postsQuery.OrderByDescending(p => p.Comments.Count);
+                    break;
+                case "leastCommented":
+                    postsQuery = postsQuery.OrderBy(p => p.Comments.Count);
+                    break;
+                default:
+                    postsQuery = postsQuery.OrderByDescending(p => p.TimeCreated);
+                    break;
+            }
+
+            var posts = await postsQuery.ToListAsync();
+            return View(posts);
         }
 
         // GET: Posts/Details/5
@@ -71,7 +112,7 @@ namespace FlashHack.Controllers
             {
                 if (TempData["PageId"] != null && HttpContext.Session.GetInt32("UserId") != null)
                 {
-                    var newPost = new Post { SubCategoryId = (int)TempData["PageId"], UserId = (int)HttpContext.Session.GetInt32("UserId")};
+                    var newPost = new Post { SubCategoryId = (int)TempData["PageId"], UserId = (int)HttpContext.Session.GetInt32("UserId") };
                     return View(newPost);
                 }
                 return RedirectToAction("Error", "Home");
@@ -81,7 +122,7 @@ namespace FlashHack.Controllers
             {
                 Console.WriteLine(ex.ToString());
                 return RedirectToAction("Error", "Home");
-            }           
+            }
         }
 
         // POST: Posts/Create
@@ -98,14 +139,14 @@ namespace FlashHack.Controllers
                     post.TimeCreated = DateTime.Now;
                     await postRepository.AddAsync(post);
                     return RedirectToAction(nameof(Index)); //TO:DO Create a view for the created post so comments can start
-                }                
+                }
                 return View(post);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
                 return RedirectToAction("Error", "Home");
-            }                      
+            }
         }
 
         // GET: Posts/Edit/5
@@ -167,7 +208,7 @@ namespace FlashHack.Controllers
                 {
                     await postRepository.Delete(post);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                 }
@@ -176,9 +217,138 @@ namespace FlashHack.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpGet("Posts/AddToFavorites/{postId}")]
+        public async Task<IActionResult> AddToFavorites(int postId)
+        {
+            var post = await postRepository.GetByIdAsync(postId);
+
+            if (HttpContext.Session.GetInt32("UserId") == null || post == null)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+
+            var userId = Convert.ToInt32(HttpContext.Session.GetInt32("UserId"));
+            var user = await userRepository.GetByIdAsync(userId);
+
+            user.Favorites.Add(post);
+
+            await userRepository.Update(user);
+
+            if (TempData["PageId"] != null)
+            {
+                return RedirectToAction("Index", new { subCategoryId = (int?)TempData["PageId"] });
+            }
+
+            return RedirectToAction("Index");
+        }
+
         private bool PostExists(int id)
         {
             return _context.Post.Any(e => e.Id == id);
+        }
+
+        public async Task<IActionResult> IndexByHeadCategory(int? headCategoryId, string sortOrder)
+        {
+            if (headCategoryId == null)
+            {
+                return NotFound();
+            }
+
+            IQueryable<Post> postsQuery = _context.Post
+                .Where(p => p.SubCategory.HeadCategoryId == headCategoryId)
+                .Include(p => p.SubCategory)
+                .Include(p => p.User)
+                .Include(p => p.Comments);
+
+            ViewData["CurrentSortOrder"] = sortOrder;
+
+            switch (sortOrder)
+            {
+                case "newest":
+                    postsQuery = postsQuery.OrderByDescending(p => p.TimeCreated);
+                    break;
+                case "oldest":
+                    postsQuery = postsQuery.OrderBy(p => p.TimeCreated);
+                    break;
+                case "mostLiked":
+                    postsQuery = postsQuery.OrderByDescending(p => p.UpVotes);
+                    break;
+                case "leastLiked":
+                    postsQuery = postsQuery.OrderBy(p => p.UpVotes);
+                    break;
+                case "mostCommented":
+                    postsQuery = postsQuery.OrderByDescending(p => p.Comments.Count);
+                    break;
+                case "leastCommented":
+                    postsQuery = postsQuery.OrderBy(p => p.Comments.Count);
+                    break;
+                default:
+                    postsQuery = postsQuery.OrderByDescending(p => p.TimeCreated);
+                    break;
+            }
+
+            var posts = await postsQuery.ToListAsync();
+            var headCategory = await _context.HeadCategory.FindAsync(headCategoryId);
+            if (headCategory == null)
+            {
+                return NotFound();
+            }
+
+            ViewData["HeadCategoryName"] = headCategory.Name;
+            ViewData["HeadCategoryId"] = headCategoryId;
+            return View("IndexByHeadCategory", posts);
+        }
+
+        public async Task<IActionResult> IndexBySubCategory(int? subCategoryId, string sortOrder)
+        {
+            if (subCategoryId == null)
+            {
+                return NotFound();
+            }
+
+            IQueryable<Post> postsQuery = _context.Post
+                .Where(p => p.SubCategoryId == subCategoryId)
+                .Include(p => p.SubCategory)
+                .Include(p => p.User)
+                .Include(p => p.Comments);
+
+            ViewData["CurrentSortOrder"] = sortOrder;
+
+            switch (sortOrder)
+            {
+                case "newest":
+                    postsQuery = postsQuery.OrderByDescending(p => p.TimeCreated);
+                    break;
+                case "oldest":
+                    postsQuery = postsQuery.OrderBy(p => p.TimeCreated);
+                    break;
+                case "mostLiked":
+                    postsQuery = postsQuery.OrderByDescending(p => p.UpVotes);
+                    break;
+                case "leastLiked":
+                    postsQuery = postsQuery.OrderBy(p => p.UpVotes);
+                    break;
+                case "mostCommented":
+                    postsQuery = postsQuery.OrderByDescending(p => p.Comments.Count);
+                    break;
+                case "leastCommented":
+                    postsQuery = postsQuery.OrderBy(p => p.Comments.Count);
+                    break;
+                default:
+                    postsQuery = postsQuery.OrderByDescending(p => p.TimeCreated);
+                    break;
+            }
+
+            var posts = await postsQuery.ToListAsync();
+            var subCategory = await _context.SubCategory.FindAsync(subCategoryId);
+            if (subCategory == null)
+            {
+                return NotFound();
+            }
+
+            ViewData["SubCategoryName"] = subCategory.Name;
+            ViewData["SubCategoryId"] = subCategoryId;
+            return View("IndexBySubCategory", posts);
         }
     }
 }

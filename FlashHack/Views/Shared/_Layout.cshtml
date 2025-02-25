@@ -31,6 +31,9 @@
                                     <a class="nav-link text-dark" asp-area="" asp-controller="HeadCategories" asp-action="Index">Head Categories</a>
                                 </li>
                                 <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="SubCategories" asp-action="Index">Sub Categories</a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Posts" asp-action="Index">Posts</a>
                                 </li>
                             </ul>
@@ -51,7 +54,7 @@
                                     </li>
 
                                     <li class="nav-item">
-                                        <a class="nav-link" asp-controller="Users" asp-action="Register">Registrera</a>
+                                        <a class="nav-link" asp-controller="Users" asp-action="Register">Register</a>
                                     </li>
 
                                 }
@@ -67,7 +70,29 @@
                             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                                 <ul class="navbar-nav flex-grow-1">
                                     @await Component.InvokeAsync("NavBar", new { currentSubCategoryId = ViewData["CurrentSubCategoryId"] })
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="Posts" asp-action="Index">All Posts</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="Posts" asp-action="Index" asp-route-sortOrder="newest">New Discussions</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="Posts" asp-action="Index" asp-route-sortOrder="mostCommented">Popular Discussions</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="Posts" asp-action="Index" asp-route-sortOrder="mostLiked">Most Liked Discussions</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="" asp-action="">Companies Hiring</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="" asp-action="">Favorites</a>
+                                    </li>
                                 </ul>
+                                <form class="d-flex ms-auto" asp-controller="Posts" asp-action="Index">
+                                    <input class="form-control me-2 search-input" type="search" name="searchTerm" placeholder="Search" aria-label="Search">
+                                    <button class="btn btn-outline-success search-button" type="submit">Search</button>
+                                </form>
                             </div>
                         </div>
                     </nav>

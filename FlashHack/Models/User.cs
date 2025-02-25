@@ -30,7 +30,8 @@ namespace FlashHack.Models
         [MaxLength(20)]
         public string? Signature { get; set; } = string.Empty;
 
-        public List<Post>? Favorites { get; set; } = new List<Post>();
+        public virtual List<Post>? Posts { get; set; } = new List<Post>();
+        public virtual List<Post>? Favorites { get; set; } = new List<Post>();
 
         public bool IsPremium { get; set; }
         public bool IsAdmin { get; set; }
