@@ -4,6 +4,7 @@ using FlashHack.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FlashHack.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250225094839_updateuser")]
+    partial class updateuser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -306,21 +309,6 @@ namespace FlashHack.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("UserPostFavorites", b =>
-                {
-                    b.Property<int>("PostId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("PostId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserPostFavorites");
-                });
-
             modelBuilder.Entity("FlashHack.Models.Comment", b =>
                 {
                     b.HasOne("FlashHack.Models.Post", "Post")
@@ -360,7 +348,7 @@ namespace FlashHack.Migrations
                         .IsRequired();
 
                     b.HasOne("FlashHack.Models.User", "User")
-                        .WithMany("Posts")
+                        .WithMany("Favorites")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -392,21 +380,6 @@ namespace FlashHack.Migrations
                     b.Navigation("HeadCategory");
                 });
 
-            modelBuilder.Entity("UserPostFavorites", b =>
-                {
-                    b.HasOne("FlashHack.Models.Post", null)
-                        .WithMany()
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("FlashHack.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("FlashHack.Models.Company", b =>
                 {
                     b.Navigation("Jobblistings");
@@ -429,7 +402,7 @@ namespace FlashHack.Migrations
 
             modelBuilder.Entity("FlashHack.Models.User", b =>
                 {
-                    b.Navigation("Posts");
+                    b.Navigation("Favorites");
 
                     b.Navigation("Skills");
                 });

@@ -24,7 +24,19 @@ namespace FlashHack.Data
                 .HasForeignKey(c => c.PostId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Favorites)
+                .WithMany(f => f.UserFavorites)
+                .UsingEntity<Dictionary<string, object>>(
+                    "UserPostFavorites",
+                    j => j.HasOne<Post>().WithMany().HasForeignKey("PostId").OnDelete(DeleteBehavior.Restrict),
+                    j => j.HasOne<User>().WithMany().HasForeignKey("UserId").OnDelete(DeleteBehavior.Restrict));
+
+            modelBuilder.Entity<Post>()
+                .HasOne(p => p.User)
+                .WithMany(u => u.Posts)
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
         public DbSet<FlashHack.Models.User> User { get; set; } = default!;
         public DbSet<FlashHack.Models.HeadCategory> HeadCategory { get; set; } = default!;
