@@ -39,16 +39,16 @@
     {
         <div class="card mb-3 post-item">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h3>@post.Title</h3>
-                <span class="text-muted">by @post.User.FirstName @post.User.LastName</span>
+                <h3>@post.Title<p class="text-muted">by <a asp-controller="Users" asp-action="Profile" asp-route-id="@post.User.Id">@post.User.FirstName</a></p></h3>
+                <i class="fa-regular fa-star star-icon" onclick="toggleStar(this)"></i>
             </div>
             <div class="card-body">
                 <p>@post.Content.Substring(0, Math.Min(post.Content.Length, 100))...</p>
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <span class="badge bg-success">UpVotes: @post.UpVotes</span>
-                        <span class="badge bg-danger">DownVotes: @post.DownVotes</span>
-                        <span class="badge badge-comments">Comments: @post.Comments.Count</span>
+                        <i class="fa-solid fa-thumbs-up"></i> @post.UpVotes
+                        <i class="fa-solid fa-thumbs-down ms-3"></i> @post.DownVotes
+                        <i class="fa-solid fa-comments ms-3"></i> @post.Comments.Count
                     </div>
                     <div>
                         <a asp-action="Details" asp-route-id="@post.Id" class="btn btn-primary">Read More</a>
@@ -58,5 +58,14 @@
         </div>
     }
 </div>
+
+<script>
+    function toggleStar(element) {
+        element.classList.toggle('fa-solid');
+        element.classList.toggle('fa-regular');
+    }
+</script>
+
+
 
 
