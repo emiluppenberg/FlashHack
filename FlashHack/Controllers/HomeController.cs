@@ -29,7 +29,7 @@ namespace FlashHack.Controllers
                 HeadCategories = headCategories
             };
 
-            return View(viewModel);
+            return View();
         }
 
         public IActionResult Privacy()
