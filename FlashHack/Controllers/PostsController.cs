@@ -21,7 +21,7 @@ namespace FlashHack.Controllers
         {
             _context = context;
             this.postRepository = postRepository;
-            this.subCategoryRepository = subCategoryRepository;
+            this.subCategoryRepository = subCategoryRepository; //test
         }
 
         // GET: Posts
