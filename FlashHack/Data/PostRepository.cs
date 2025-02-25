@@ -30,7 +30,11 @@ namespace FlashHack.Data
 
         public async Task<Post> GetByIdAsync(int id)
         {
-            return await applicationDbContext.Post.FirstOrDefaultAsync(p => p.Id == id);
+            return await applicationDbContext.Post
+                .Include( p => p.User)
+                .Include(p =>p.SubCategory)
+                .Include(p => p.Comments)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task Update(Post post)

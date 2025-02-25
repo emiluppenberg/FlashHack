@@ -17,11 +17,13 @@ namespace FlashHack.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly ICommentRepository commentRepository;
+        private readonly IUserRepository userRepository;
 
-        public CommentsController(ApplicationDbContext context, ICommentRepository commentRepository)
+        public CommentsController(ApplicationDbContext context, ICommentRepository commentRepository, IUserRepository userRepository)
         {
             _context = context;
             this.commentRepository = commentRepository;
+            this.userRepository = userRepository;
         }
 
         // GET: Comments
@@ -100,7 +102,7 @@ namespace FlashHack.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    comment.TimeCreated = DateTime.Today;
+                    comment.TimeCreated = DateTime.Now;
                     await commentRepository.AddAsync(comment);
 
                     return RedirectToAction("Index");

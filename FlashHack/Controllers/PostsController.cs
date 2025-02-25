@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using FlashHack.Data;
 using FlashHack.Models;
 using FlashHack.Data.DataInterfaces;
+using FlashHack.ViewModels;
 
 namespace FlashHack.Controllers
 {
@@ -88,21 +89,11 @@ namespace FlashHack.Controllers
         // GET: Posts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            CommentsViewModel commentsViewModel = new CommentsViewModel();
+            commentsViewModel.Post = await postRepository.GetByIdAsync((int)id);
+            commentsViewModel.Comments = commentsViewModel.Post.Comments;
 
-            var post = await _context.Post
-                .Include(p => p.SubCategory)
-                .Include(p => p.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (post == null)
-            {
-                return NotFound();
-            }
-
-            return View(post);
+            return View(commentsViewModel);
         }
 
         // GET: Posts/Create
