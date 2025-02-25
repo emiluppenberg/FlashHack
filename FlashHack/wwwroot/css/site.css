@@ -318,7 +318,7 @@ footer {
     }
 
 .badge-comments {
-    background-color: #6c757d; 
+    background-color: #6c757d;
     color: white;
 }
 
@@ -341,7 +341,7 @@ footer {
 }
 
     .search-button:hover {
-        background-color: #495057; 
+        background-color: #495057;
         color: white;
     }
 
@@ -388,3 +388,45 @@ footer {
     .star-icon.fa-regular {
         color: gray;
     }
+
+.post-item {
+    background-color: rgb(30, 43, 49);
+    color: white;
+    margin-bottom: 10px;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+    .post-item h3 {
+        margin-bottom: 10px;
+    }
+
+    .post-item p {
+        margin-bottom: 10px;
+    }
+
+    .post-item .badge {
+        margin-right: 10px;
+    }
+
+    .post-item .btn {
+        margin-left: 5px;
+    }
+
+    .post-item .fa-thumbs-up, .post-item .fa-thumbs-down {
+        margin-right: 5px;
+        color: white;
+        cursor: pointer;
+    }
+
+        .post-item .fa-thumbs-up:hover, .post-item .fa-thumbs-down:hover {
+            color: lightgray;
+        }
+
+        .post-item .fa-thumbs-up.selected {
+            color: green;
+        }
+
+        .post-item .fa-thumbs-down.selected {
+            color: red;
+        }
