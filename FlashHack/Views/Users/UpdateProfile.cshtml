@@ -4,85 +4,91 @@
     ViewData["Title"] = "Update Profile";
 }
 
-<div class="container mt-4">
-    <div class="card mb-3 post-item">
-        <div class="card-header">
-            <h3>@Model.FirstName @Model.LastName's Profile</h3>
+<h2>Update Your Profile</h2>
+
+<div class="card">
+    <div class="card-body">
+        <div class="text-center mb-3">
+            <img src="@Model.ProfilePicURL" alt="Profile Picture" class="rounded-circle" style="width: 150px; height: 150px;" />
         </div>
-        <div class="card-body">
-            <div class="text-center mb-4">
-                <img src="@Model.ProfilePicURL" alt="Profile Picture" class="rounded-circle" style="width: 150px; height: 150px;" />
+
+        <!-- 🟢 Huvudformulär för profiluppdatering -->
+        <form asp-controller="Users" asp-action="UpdateProfile" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+
+            <!-- First Name -->
+            <div class="form-group">
+                <label asp-for="FirstName">First Name</label>
+                <input asp-for="FirstName" class="form-control" required />
             </div>
 
-            <!-- Profile Update Form -->
-            <form asp-action="UpdateProfile" method="post" enctype="multipart/form-data">
-                <input type="hidden" asp-for="Id" />
+            <!-- Last Name -->
+            <div class="form-group">
+                <label asp-for="LastName">Last Name</label>
+                <input asp-for="LastName" class="form-control" required />
+            </div>
 
-                <!-- First Name -->
-                <div class="form-group mb-3">
-                    <label asp-for="FirstName" class="control-label"></label>
-                    <input asp-for="FirstName" class="form-control" />
-                </div>
+            <!-- Phone Number -->
+            <div class="form-group">
+                <label asp-for="PhoneNumber">Phone Number</label>
+                <input asp-for="PhoneNumber" class="form-control" />
+            </div>
 
-                <!-- Last Name -->
-                <div class="form-group mb-3">
-                    <label asp-for="LastName" class="control-label"></label>
-                    <input asp-for="LastName" class="form-control" />
-                </div>
+            <!-- Email -->
+            <div class="form-group">
+                <label asp-for="Email">Email</label>
+                <input asp-for="Email" class="form-control" required />
+            </div>
 
-                <!-- Phone Number -->
-                <div class="form-group mb-3">
-                    <label asp-for="PhoneNumber" class="control-label"></label>
-                    <input asp-for="PhoneNumber" class="form-control" />
-                </div>
+            <!-- Password (Optional) -->
+            <div class="form-group">
+                <label asp-for="Password">New Password (Optional)</label>
+                <input asp-for="Password" type="password" class="form-control" placeholder="Leave blank to keep current password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
 
-                <!-- Email -->
-                <div class="form-group mb-3">
-                    <label asp-for="Email" class="control-label"></label>
-                    <input asp-for="Email" class="form-control" />
-                </div>
+            <!-- Employer -->
+            <div class="form-group">
+                <label asp-for="Employer">Employer</label>
+                <input asp-for="Employer" class="form-control" />
+            </div>
 
-                <!-- Password (Optional) -->
-                <div class="form-group mb-3">
-                    <label asp-for="Password" class="control-label"></label>
-                    <input asp-for="Password" type="password" class="form-control" placeholder="Leave blank to keep current password" />
-                    <span asp-validation-for="Password" class="text-danger"></span>
-                </div>
+            <!-- Bio -->
+            <div class="form-group">
+                <label asp-for="Bio">Bio</label>
+                <textarea asp-for="Bio" class="form-control"></textarea>
+            </div>
 
-                <!-- Employer -->
-                <div class="form-group mb-3">
-                    <label asp-for="Employer" class="control-label"></label>
-                    <input asp-for="Employer" class="form-control" />
-                </div>
+            <!-- Signature -->
+            <div class="form-group">
+                <label asp-for="Signature">Signature</label>
+                <input asp-for="Signature" class="form-control" />
+            </div>
 
-                <!-- Bio -->
-                <div class="form-group mb-3">
-                    <label asp-for="Bio" class="control-label"></label>
-                    <textarea asp-for="Bio" class="form-control" rows="3"></textarea>
-                </div>
+            <!-- Profile Picture URL -->
+            <div class="form-group">
+                <label asp-for="ProfilePicURL">Profile Picture URL</label>
+                <input asp-for="ProfilePicURL" type="url" class="form-control" placeholder="Paste image URL here" />
+                <span asp-validation-for="ProfilePicURL" class="text-danger"></span>
+            </div>
 
-                <!-- Signature -->
-                <div class="form-group mb-3">
-                    <label asp-for="Signature" class="control-label"></label>
-                    <input asp-for="Signature" class="form-control" />
-                </div>
-
-                <!-- Profile Picture URL -->
-                <div class="form-group mb-3">
-                    <label asp-for="ProfilePicURL" class="control-label"></label>
-                    <input asp-for="ProfilePicURL" type="url" class="form-control" placeholder="Paste image URL here" />
-                    <span asp-validation-for="ProfilePicURL" class="text-danger"></span>
-                </div>
-
-                <button type="submit" class="btn btn-primary">Save Profile Changes</button>
-            </form>
+          
 
             <hr />
 
-            <!-- Existing Skills -->
-            <h4>Your Skills</h4>
-            @if (Model.Skills != null && Model.Skills.Any())
-            {
+            <!-- 🟢 Knapp för att spara profiländringar -->
+            <button type="submit" class="btn btn-primary">Save Profile Changes</button>
+        </form>
+
+        <hr />
+
+        <!-- 🟡 Skills Section -->
+        <h4>Your Skills</h4>
+
+        @if (Model.Skills != null && Model.Skills.Any())
+        {
+            <ul class="list-group">
                 @foreach (var skill in Model.Skills)
                 {
                     <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -106,28 +112,29 @@
             <p>No skills added yet.</p>
         }
 
-            <hr />
+        <hr />
 
-            <!-- Add Skill Form -->
-            <h5>Add New Skill</h5>
-            <form asp-action="AddSkill" method="post">
-                <div class="form-group mb-3">
-                    <label for="SkillName" class="control-label">Skill Name</label>
-                    <input type="text" name="SkillName" class="form-control" placeholder="Ex: C#, ASP.NET" required />
+        <!-- 🟢 Formulär för att lägga till ny färdighet -->
+        <h5>Add New Skill</h5>
+        <form asp-action="AddSkill" method="post">
+            @Html.AntiForgeryToken()
+            <div class="form-group">
+                <label for="SkillName">Skill Name</label>
+                <input type="text" name="SkillName" class="form-control" placeholder="Ex: C#, ASP.NET" required />
 
-                    <label for="SkillDescription" class="control-label">Skill Description</label>
-                    <textarea name="SkillDescription" class="form-control" placeholder="Brief description" required></textarea>
+                <label for="SkillDescription">Skill Description</label>
+                <textarea name="SkillDescription" class="form-control" placeholder="Brief description" required></textarea>
 
-                    <label for="SkillRating" class="control-label">Skill Rating (1-5)</label>
-                    <input type="number" name="SkillRating" class="form-control" min="1" max="5" required />
+                <label for="SkillRating">Skill Rating (1-5)</label>
+                <input type="number" name="SkillRating" class="form-control" min="1" max="5" required />
 
-                    <button type="submit" class="btn btn-success mt-2">Add Skill</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    <div class="mt-3">
-        <a asp-action="Index" class="btn btn-secondary">Back to Home</a>
+                <button type="submit" class="btn btn-success mt-2">Add Skill</button>
+            </div>
+        </form>
     </div>
 </div>
 
+<!-- 🟢 Tillbaka-knapp -->
+<div class="mt-3">
+    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to Home</a>
+</div>
