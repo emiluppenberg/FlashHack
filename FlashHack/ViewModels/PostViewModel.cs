@@ -2,7 +2,7 @@
 
 namespace FlashHack.ViewModels
 {
-    public class CommentsViewModel
+    public class PostViewModel
     {
         public Post Post { get; set; }
         public List<Comment> Comments { get; set; }
