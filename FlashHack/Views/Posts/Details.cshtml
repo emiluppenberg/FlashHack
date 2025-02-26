@@ -4,7 +4,7 @@
     ViewData["Title"] = "Details";
     @inject IHttpContextAccessor HttpContextAccessor
     var userId = HttpContextAccessor.HttpContext.Session.GetInt32("UserId");
-    //var postId = Model.Post.Id;
+    var postId = Model.Id;
 }
 
 <div class="container mt-4">
@@ -24,6 +24,11 @@
                 <div>
                     <span class="text-muted">by <a asp-controller="Users" asp-action="Profile" asp-route-id="@Model.User.Id">@Model.User.FirstName @Model.User.LastName</a></span>
                 </div>
+            </div>
+            <div>
+                <p>
+                    <a asp-action="Create" asp-controller="Comments" asp-route-userId="@userId" asp-route-postId="@postId"> Answer</a>
+                </p>
             </div>
             <div class="mt-3">
                 <h5>Comments:</h5>
