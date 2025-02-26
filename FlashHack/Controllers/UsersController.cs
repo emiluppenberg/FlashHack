@@ -65,7 +65,7 @@ namespace FlashHack.Controllers
                 {
                     foreach (var error in state.Value.Errors)
                     {
-                        Console.WriteLine($"❌ {state.Key}: {error.ErrorMessage}");
+                        Console.WriteLine($" {state.Key}: {error.ErrorMessage}");
                     }
                 }
                 return View(user);
@@ -200,13 +200,13 @@ namespace FlashHack.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateProfile(User updatedUser, string? skillName, string? skillDescription, int? skillRating)
         {
-            Console.WriteLine("🔵 UpdateProfile hit!");
+            
 
             var userId = HttpContext.Session.GetInt32("UserId");
 
             if (userId == null)
             {
-                Console.WriteLine("❌ User ID not found in session.");
+                
                 return RedirectToAction("Login");
             }
 
@@ -214,7 +214,7 @@ namespace FlashHack.Controllers
 
             if (user == null)
             {
-                Console.WriteLine("❌ User not found in database.");
+                
                 return NotFound();
             }
 
@@ -222,7 +222,7 @@ namespace FlashHack.Controllers
             if (string.IsNullOrEmpty(updatedUser.Password))
             {
                 updatedUser.Password = user.Password;
-                Console.WriteLine("🔑 No new password provided, using old one.");
+               
             }
 
             ModelState.Clear();
@@ -230,7 +230,7 @@ namespace FlashHack.Controllers
 
             if (ModelState.IsValid)
             {
-                Console.WriteLine("✅ ModelState is valid. Proceeding with update...");
+                
 
                 user.FirstName = updatedUser.FirstName;
                 user.LastName = updatedUser.LastName;
@@ -240,11 +240,11 @@ namespace FlashHack.Controllers
                 user.Bio = updatedUser.Bio ?? string.Empty;
                 user.Signature = updatedUser.Signature ?? string.Empty;
                 user.ProfilePicURL = updatedUser.ProfilePicURL ?? string.Empty;
+                user.IsPremium = updatedUser.IsPremium;
 
                 // Lägg till ny färdighet (om det finns)
                 if (!string.IsNullOrEmpty(skillName) && !string.IsNullOrEmpty(skillDescription) && skillRating.HasValue)
                 {
-                    Console.WriteLine($"🟢 Adding skill: {skillName}, Rating: {skillRating}");
                     user.Skills.Add(new Skill
                     {
                         UserId = user.Id,
@@ -257,11 +257,9 @@ namespace FlashHack.Controllers
                 await _userRepository.Update(user);
                 HttpContext.Session.SetString("UserName", user.FirstName);
 
-                Console.WriteLine("🚀 Profile updated successfully!");
                 return RedirectToAction("Profile", new { id = user.Id });
             }
 
-            Console.WriteLine("❌ ModelState is invalid:");
             foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
             {
                 Console.WriteLine($"   - {error.ErrorMessage}");

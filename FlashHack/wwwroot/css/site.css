@@ -430,3 +430,138 @@ footer {
         .post-item .fa-thumbs-down.selected {
             color: red;
         }
+
+.search-button {
+    border-radius: 0 20px 20px 0;
+    border-left: none;
+    background-color: #343a40;
+    color: white;
+    margin-left: -1px;
+    margin-right: 1px;
+    padding: 0.375rem 0.75rem;
+}
+
+    .search-button:hover {
+        background-color: #495057;
+        color: white;
+    }
+
+    .search-input:focus, .search-button:focus {
+        box-shadow: none;
+        outline: none;
+    }
+
+.answer-button {
+    background-color: #1abc9c;
+    border-color: #1abc9c;
+    color: white;
+    padding: 0.375rem 0.75rem;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+    .answer-button:hover {
+        background-color: #16a085;
+        border-color: #16a085;
+        color: white;
+    }
+
+
+.comments-section {
+    margin-top: 20px;
+}
+
+    .comments-section h5 {
+        margin-bottom: 15px;
+    }
+
+    .comments-section .list-group-item {
+        background-color: #2c3e50;
+        color: white;
+        border: 1px solid #495057;
+        margin-bottom: 10px;
+        border-radius: 5px;
+    }
+
+        .comments-section .list-group-item strong {
+            color: #1abc9c;
+        }
+
+
+.user-link {
+    color: #1abc9c;
+    text-decoration: none;
+}
+
+    .user-link:hover {
+        color: #16a085;
+        text-decoration: underline;
+    }
+
+.comment-form-container {
+    max-width: 800px; /* Increased width */
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #2c3e50;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    color: white;
+}
+
+    .comment-form-container h4 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .comment-form-container .form-group {
+        margin-bottom: 15px;
+        position: relative;
+    }
+
+    .comment-form-container .form-control {
+        background-color: #34495e;
+        color: white;
+        border: 1px solid #495057;
+        border-radius: 5px;
+        height: 200px; /* Increased height */
+    }
+
+        .comment-form-container .form-control:focus {
+            background-color: #3b4a57;
+            color: white;
+            border-color: #1abc9c;
+            box-shadow: none;
+        }
+
+    .comment-form-container .btn-primary {
+        background-color: #1abc9c;
+        border-color: #1abc9c;
+    }
+
+        .comment-form-container .btn-primary:hover {
+            background-color: #16a085;
+            border-color: #16a085;
+        }
+
+    .comment-form-container .char-count {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        font-size: 0.875rem;
+        color: #ccc;
+    }
+
+.back-button {
+    background-color: #34495e;
+    border-color: #34495e;
+    color: white;
+    margin-top: 20px;
+}
+
+    .back-button:hover {
+        background-color: #2c3e50;
+        border-color: #2c3e50;
+        color: white;
+    }
