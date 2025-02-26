@@ -525,7 +525,7 @@ footer {
         color: white;
         border: 1px solid #495057;
         border-radius: 5px;
-        height: 200px; /* Increased height */
+        height: 200px;
     }
 
         .comment-form-container .form-control:focus {
@@ -708,4 +708,180 @@ footer {
 
 .card-body img {
     border: 2px solid #1abc9c;
+}
+
+.filter-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #2c3e50;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+    .filter-bar .nav-tabs {
+        border-bottom: none; 
+    }
+
+    .filter-bar .nav-item {
+        margin: 0 10px;
+    }
+
+    .filter-bar .nav-link {
+        color: #ccc;
+        background-color: transparent;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+        .filter-bar .nav-link:hover {
+            color: white;
+            background-color: #495057;
+        }
+
+        .filter-bar .nav-link.active {
+            color: white;
+            background-color: #1abc9c;
+        }
+
+        .filter-bar .nav-link:focus {
+            box-shadow: none;
+        }
+
+
+.post-item .card-header {
+    background-color: #1c2a35; 
+    color: white;
+}
+
+.post-item .card-body {
+    background-color: #2c3e50; 
+    color: white;
+}
+
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+
+.welcome-section {
+    padding: 20px;
+    background-color: #1c2a35;
+    color: white;
+    margin-bottom: 20px;
+    border-radius: 10px;
+}
+
+
+.filter-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #2c3e50;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+    .filter-bar .nav-tabs {
+        border-bottom: none;
+    }
+
+    .filter-bar .nav-item {
+        margin: 0 10px;
+    }
+
+    .filter-bar .nav-link {
+        color: #ccc;
+        background-color: transparent;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+        .filter-bar .nav-link:hover {
+            color: white;
+            background-color: #495057;
+        }
+
+        .filter-bar .nav-link.active {
+            color: white;
+            background-color: #1abc9c;
+        }
+
+        .filter-bar .nav-link:focus {
+            box-shadow: none;
+        }
+
+
+.post-item {
+    background-color: #2c3e50;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+    .post-item .card-header {
+        background-color: #1c2a35;
+        color: white;
+        padding: 15px;
+        border-radius: 10px;
+    }
+
+    .post-item .card-body {
+        padding: 15px;
+    }
+
+        .post-item .card-body p {
+            margin-bottom: 10px;
+        }
+
+    .post-item .card-footer {
+        background-color: #1c2a35;
+        padding: 10px 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .post-item .btn-primary {
+        background-color: #1abc9c;
+        border-color: #1abc9c;
+    }
+
+        .post-item .btn-primary:hover {
+            background-color: #16a085;
+            border-color: #16a085;
+        }
+
+.star-icon {
+    cursor: pointer;
+    color: gold;
+    font-size: 1.5rem;
+}
+
+    .star-icon.fa-regular {
+        color: gray;
+    }
+
+.thumbs-icon {
+    cursor: pointer;
+    color: white;
+    font-size: 1.2rem;
+}
+
+    .thumbs-icon:hover {
+        color: lightgray;
+    }
+
+.text-muted {
+    color: #ccc;
 }

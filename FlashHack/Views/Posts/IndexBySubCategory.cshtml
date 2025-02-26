@@ -16,26 +16,28 @@
         <h2>Post List</h2>
         <a asp-controller="Posts" asp-action="Create" class="btn btn-primary">Create Post</a>
     </div>
-    <ul class="nav nav-tabs mb-3">
-        <li class="nav-item">
-            <a class="nav-link @(currentSortOrder == "newest" ? "active" : "")" asp-controller="Posts" asp-action="IndexBySubCategory" asp-route-subCategoryId="@ViewData["SubCategoryId"]" asp-route-sortOrder="newest">Newest to Oldest</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link @(currentSortOrder == "oldest" ? "active" : "")" asp-controller="Posts" asp-action="IndexBySubCategory" asp-route-subCategoryId="@ViewData["SubCategoryId"]" asp-route-sortOrder="oldest">Oldest to Newest</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link @(currentSortOrder == "mostLiked" ? "active" : "")" asp-controller="Posts" asp-action="IndexBySubCategory" asp-route-subCategoryId="@ViewData["SubCategoryId"]" asp-route-sortOrder="mostLiked">Most Liked</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link @(currentSortOrder == "leastLiked" ? "active" : "")" asp-controller="Posts" asp-action="IndexBySubCategory" asp-route-subCategoryId="@ViewData["SubCategoryId"]" asp-route-sortOrder="leastLiked">Least Liked</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link @(currentSortOrder == "mostCommented" ? "active" : "")" asp-controller="Posts" asp-action="IndexBySubCategory" asp-route-subCategoryId="@ViewData["SubCategoryId"]" asp-route-sortOrder="mostCommented">Most Commented</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link @(currentSortOrder == "leastCommented" ? "active" : "")" asp-controller="Posts" asp-action="IndexBySubCategory" asp-route-subCategoryId="@ViewData["SubCategoryId"]" asp-route-sortOrder="leastCommented">Least Commented</a>
-        </li>
-    </ul>
+    <div class="filter-bar">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link @(currentSortOrder == "newest" ? "active" : "")" asp-controller="Posts" asp-action="IndexBySubCategory" asp-route-subCategoryId="@ViewData["SubCategoryId"]" asp-route-sortOrder="newest">Newest to Oldest</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(currentSortOrder == "oldest" ? "active" : "")" asp-controller="Posts" asp-action="IndexBySubCategory" asp-route-subCategoryId="@ViewData["SubCategoryId"]" asp-route-sortOrder="oldest">Oldest to Newest</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(currentSortOrder == "mostLiked" ? "active" : "")" asp-controller="Posts" asp-action="IndexBySubCategory" asp-route-subCategoryId="@ViewData["SubCategoryId"]" asp-route-sortOrder="mostLiked">Most Liked</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(currentSortOrder == "leastLiked" ? "active" : "")" asp-controller="Posts" asp-action="IndexBySubCategory" asp-route-subCategoryId="@ViewData["SubCategoryId"]" asp-route-sortOrder="leastLiked">Least Liked</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(currentSortOrder == "mostCommented" ? "active" : "")" asp-controller="Posts" asp-action="IndexBySubCategory" asp-route-subCategoryId="@ViewData["SubCategoryId"]" asp-route-sortOrder="mostCommented">Most Commented</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(currentSortOrder == "leastCommented" ? "active" : "")" asp-controller="Posts" asp-action="IndexBySubCategory" asp-route-subCategoryId="@ViewData["SubCategoryId"]" asp-route-sortOrder="leastCommented">Least Commented</a>
+            </li>
+        </ul>
+    </div>
     @foreach (var post in Model.Posts)
     {
         <div class="card mb-3 post-item">
@@ -96,3 +98,4 @@
         element.classList.toggle('fa-regular');
     }
 </script>
+
