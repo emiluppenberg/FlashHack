@@ -82,9 +82,6 @@
                                 <ul class="navbar-nav flex-grow-1">
                                     @await Component.InvokeAsync("NavBar", new { currentSubCategoryId = ViewData["CurrentSubCategoryId"] })
                                     <li class="nav-item">
-                                        <a class="nav-link" asp-controller="Posts" asp-action="Index">All Posts</a>
-                                    </li>
-                                    <li class="nav-item">
                                         <a class="nav-link" asp-controller="Posts" asp-action="Index" asp-route-sortOrder="newest">New Discussions</a>
                                     </li>
                                     <li class="nav-item">
