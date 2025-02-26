@@ -102,13 +102,13 @@ namespace FlashHack.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Content,UserId,PostId")] Comment comment, string returnUrl)
+        public async Task<IActionResult> Create([Bind("Id,Content,UserId,PostId","UseSignature")] Comment comment, string returnUrl)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    comment.TimeCreated = DateTime.Now;
+                    comment.TimeCreated = DateTime.Now;                  
                     await commentRepository.AddAsync(comment);
                     return Redirect(returnUrl);
 

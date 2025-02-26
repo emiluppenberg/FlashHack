@@ -36,7 +36,12 @@
                     @foreach (var comment in Model.Comments)
                     {
                         <li class="list-group-item">
-                            <strong>@comment.User.FirstName @comment.User.LastName:</strong> @comment.Content
+                            <strong>@comment.User.FirstName @comment.User.LastName:</strong> @comment.Content 
+                            @if(comment.UseSignature)
+                            {
+                                <br /> @comment.User.Signature;
+                                
+                            }                         
                         </li>
                     }
                 </ul>

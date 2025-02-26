@@ -12,6 +12,7 @@
     <div class="col-md-4">
         <form asp-action="Create" asp-route-returnUrl="@ViewBag.ReturnUrl">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="User.Signature"/>
             <input type="hidden" name="UserId" value="@Model.UserId" />
             <input type="hidden" name="PostId" value="@Model.PostId" />
             <div class="form-group">
@@ -19,6 +20,13 @@
                 <input asp-for="Content" class="form-control" />
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
+            <div>
+                <label>
+                    <input asp-for="UseSignature" type="checkbox" />
+                    Attach Signature
+                </label>
+            </div>
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
