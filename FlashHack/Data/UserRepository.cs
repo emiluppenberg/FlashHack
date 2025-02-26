@@ -68,5 +68,11 @@ namespace FlashHack.Data
             applicationDbContext.User.Update(user);
             await applicationDbContext.SaveChangesAsync();
         }
+
+        public async Task RemoveSkillAsync(Skill skill)
+        {
+            applicationDbContext.Skill.Remove(skill);
+            await applicationDbContext.SaveChangesAsync();
+        }
     }
 }

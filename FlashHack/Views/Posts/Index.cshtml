@@ -50,16 +50,15 @@
                     {
                         <i class="fa-solid fa-star star-icon" onclick="toggleFavorite(this, @post.Id)"></i>
                     }
-
                 }
             </div>
             <div class="card-body">
                 <p>@post.Content.Substring(0, Math.Min(post.Content.Length, 100))...</p>
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <span class="badge bg-success">UpVotes: @post.UpVotes</span>
-                        <span class="badge bg-danger">DownVotes: @post.DownVotes</span>
-                        <span class="badge badge-comments">Comments: @post.Comments.Count</span>
+                        <i class="fa-solid fa-thumbs-up"></i> @post.UpVotes
+                        <i class="fa-solid fa-thumbs-down ms-3"></i> @post.DownVotes
+                        <i class="fa-solid fa-comments ms-3"></i> @post.Comments.Count
                     </div>
                     <div>
                         <a asp-action="Details" asp-route-id="@post.Id" class="btn btn-primary">Read More</a>
@@ -69,7 +68,6 @@
         </div>
     }
 </div>
-
 
 <script>
     async function toggleFavorite(element, postId) {
