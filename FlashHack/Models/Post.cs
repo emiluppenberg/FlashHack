@@ -13,17 +13,17 @@ namespace FlashHack.Models
         [Required]
         [MaxLength(1000)]
         public string Content { get; set; }
+
         public int UpVotes { get; set; }
         public int DownVotes { get; set; }
-        
-        
+        public virtual List<Vote> Votes { get; set; } = new List<Vote>();
 
         public List<Comment> Comments  { get; set; } = new List<Comment>();
         public DateTime TimeCreated { get; set; }
 
         [Required]
-        public int UserId { get; set; }       
-        public User? User { get; set; }
+        public int UserId { get; set; }
+        public virtual User User { get; set; } = null!;
         [Required]
         public int SubCategoryId { get; set; }
         public SubCategory? SubCategory { get; set; }
