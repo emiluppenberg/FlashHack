@@ -11,7 +11,7 @@
     <div class="row">
         <div class="col-md-12 comment-form-container">
             <h4>Comment</h4>
-            <form asp-action="Create" asp-route-returnUrl="@returnUrl">
+            <form asp-action="Create" asp-route-postId="@Model.PostId">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" name="UserId" value="@Model.UserId" />
                 <input type="hidden" name="PostId" value="@Model.PostId" />
