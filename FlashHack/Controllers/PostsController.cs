@@ -84,8 +84,19 @@ namespace FlashHack.Controllers
                     break;
             }
 
-            var posts = await postsQuery.ToListAsync();
-            return View(posts);
+            var vm = new PostsIndexViewModel()
+            {
+                Posts = await postsQuery.ToListAsync()
+            };
+
+            var userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId != null)
+            {
+                vm.Favorites = await postRepository.GetUserFavorites(Convert.ToInt32(userId));
+            }
+
+            return View(vm);
         }
 
         // GET: Posts/Details/5
@@ -208,14 +219,19 @@ namespace FlashHack.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [HttpGet("Posts/AddToFavorites/{postId}")]
+        [HttpPost("Posts/AddToFavorites/{postId}")]
         public async Task<IActionResult> AddToFavorites(int postId)
         {
             var post = await postRepository.GetByIdAsync(postId);
 
-            if (HttpContext.Session.GetInt32("UserId") == null || post == null)
+            if (HttpContext.Session.GetInt32("UserId") == null)
             {
-                return RedirectToAction("Error", "Home");
+                return new JsonResult(new { result = "Login required" });
+            }
+
+            if (post == null)
+            {
+                return new JsonResult(new { result = "Post does not exist" });
             }
 
             var userId = Convert.ToInt32(HttpContext.Session.GetInt32("UserId"));
@@ -223,14 +239,49 @@ namespace FlashHack.Controllers
 
             user.Favorites.Add(post);
 
-            await userRepository.Update(user);
+            await userRepository.UpdateAsync(user);
 
-            if (TempData["PageId"] != null)
+            return new JsonResult(new { result = "Post added to favorites" });
+        }
+
+        [HttpPost("Posts/RemoveFromFavorites/{postId}")]
+        public async Task<IActionResult> RemoveFromFavorites(int postId)
+        {
+            var post = await postRepository.GetByIdAsync(postId);
+
+            if (HttpContext.Session.GetInt32("UserId") == null)
             {
-                return RedirectToAction("Index", new { subCategoryId = (int?)TempData["PageId"] });
+                return new JsonResult(new { result = "Login required" });
             }
 
-            return RedirectToAction("Index");
+            if (post == null)
+            {
+                return new JsonResult(new { result = "Post does not exist" });
+            }
+
+            var userId = Convert.ToInt32(HttpContext.Session.GetInt32("UserId"));
+            var user = await userRepository.GetByIdAsync(userId);
+
+            user.Favorites.Remove(post);
+
+            await userRepository.UpdateAsync(user);
+
+            return new JsonResult(new { result = "Post removed from favorites" });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Favorites()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+
+            var favorites = await postRepository.GetUserFavorites(Convert.ToInt32(userId));
+
+            return View(favorites);
         }
 
         private bool PostExists(int id)
@@ -278,16 +329,27 @@ namespace FlashHack.Controllers
                     break;
             }
 
-            var posts = await postsQuery.ToListAsync();
             var headCategory = await _context.HeadCategory.FindAsync(headCategoryId);
             if (headCategory == null)
             {
                 return NotFound();
             }
 
+            var vm = new PostsIndexViewModel()
+            {
+                Posts = await postsQuery.ToListAsync()
+            };
+
+            var userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId != null)
+            {
+                vm.Favorites = await postRepository.GetUserFavorites(Convert.ToInt32(userId));
+            }
+
             ViewData["HeadCategoryName"] = headCategory.Name;
             ViewData["HeadCategoryId"] = headCategoryId;
-            return View("IndexByHeadCategory", posts);
+            return View("IndexByHeadCategory", vm);
         }
 
         public async Task<IActionResult> IndexBySubCategory(int? subCategoryId, string sortOrder)
@@ -330,16 +392,27 @@ namespace FlashHack.Controllers
                     break;
             }
 
-            var posts = await postsQuery.ToListAsync();
             var subCategory = await _context.SubCategory.FindAsync(subCategoryId);
             if (subCategory == null)
             {
                 return NotFound();
             }
 
+            var vm = new PostsIndexViewModel()
+            {
+                Posts = await postsQuery.ToListAsync()
+            };
+
+            var userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId != null)
+            {
+                vm.Favorites = await postRepository.GetUserFavorites(Convert.ToInt32(userId));
+            }
+
             ViewData["SubCategoryName"] = subCategory.Name;
             ViewData["SubCategoryId"] = subCategoryId;
-            return View("IndexBySubCategory", posts);
+            return View("IndexBySubCategory", vm);
         }
     }
 }

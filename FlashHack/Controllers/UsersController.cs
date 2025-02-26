@@ -22,12 +22,19 @@ namespace FlashHack.Controllers
             _userRepository = userRepository;
         }
 
-        // GET: Users
         public async Task<IActionResult> Index()
         {
+            var isAdmin = HttpContext.Session.GetString("IsAdmin");
+
+            if (string.IsNullOrEmpty(isAdmin) || isAdmin != "True")
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             var users = await _userRepository.GetAllAsync();
             return View(users);
         }
+
 
         // GET: Users/Details/5
         public async Task<IActionResult> Details(int? id)

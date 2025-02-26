@@ -1,0 +1,34 @@
+﻿@model IEnumerable<FlashHack.Models.Post>
+
+@{
+    ViewData["Title"] = "Favorites";
+}
+
+<div class="text-center welcome-section">
+    <h1 class="display-4">Favorites</h1>
+</div>
+
+<div class="container mt-4">
+    @foreach (var post in Model)
+    {
+        <div class="card mb-3 post-item">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3>@post.Title<p class="text-muted">by @post.User.FirstName</p></h3>
+                <i class="fa-regular fa-star star-icon" onclick="toggleStar(this, @post.Id)"></i>
+            </div>
+            <div class="card-body">
+                <p>@post.Content.Substring(0, Math.Min(post.Content.Length, 100))...</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="badge bg-success">UpVotes: @post.UpVotes</span>
+                        <span class="badge bg-danger">DownVotes: @post.DownVotes</span>
+                        <span class="badge badge-comments">Comments: @post.Comments.Count</span>
+                    </div>
+                    <div>
+                        <a asp-action="Details" asp-route-id="@post.Id" class="btn btn-primary">Read More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
