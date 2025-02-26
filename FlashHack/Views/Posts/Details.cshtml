@@ -35,13 +35,29 @@
                 <ul class="list-group">
                     @foreach (var comment in Model.Comments)
                     {
-                        <li class="list-group-item">
-                            <strong><a asp-controller="Users" asp-action="Profile" asp-route-id="@comment.User.Id" class="user-link">@comment.User.FirstName @comment.User.LastName</a>:</strong> @comment.Content
-                            @if(comment.UseSignature)
-                            {
-                                <br />
-                                @comment.User.Signature
-                            }
+                        <li class="list-group-item comment-item">
+                            <div class="comment-container">
+                                <div class="comment-user-info">
+                                    <img src="@comment.User.ProfilePicURL" class="profile-pic" alt="Profile Picture" />
+                                    @if (comment.User.IsPremium)
+                                    {
+                                        <div class="premium-badge">Premium</div>
+                                    }
+                                    <div class="user-name">
+                                        <a asp-controller="Users" asp-action="Profile" asp-route-id="@comment.User.Id" class="user-link">
+                                            by @comment.User.FirstName @comment.User.LastName
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="comment-content">
+                                    @comment.Content
+                                    @if (comment.UseSignature)
+                                    {
+                                        <br />
+                                        @comment.User.Signature
+                                    }
+                                </div>
+                            </div>
                         </li>
                     }
                 </ul>
