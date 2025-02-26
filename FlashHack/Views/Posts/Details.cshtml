@@ -37,6 +37,11 @@
                     {
                         <li class="list-group-item">
                             <strong><a asp-controller="Users" asp-action="Profile" asp-route-id="@comment.User.Id" class="user-link">@comment.User.FirstName @comment.User.LastName</a>:</strong> @comment.Content
+                            @if(comment.UseSignature)
+                            {
+                                <br />
+                                @comment.User.Signature
+                            }
                         </li>
                     }
                 </ul>
