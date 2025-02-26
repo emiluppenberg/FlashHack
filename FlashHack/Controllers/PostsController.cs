@@ -91,11 +91,9 @@ namespace FlashHack.Controllers
         // GET: Posts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            PostViewModel postViewModel = new PostViewModel();
-            postViewModel.Post = await postRepository.GetByIdAsync((int)id);
-            postViewModel.Comments = postViewModel.Post.Comments;
+            var getPost = await postRepository.GetByIdAsync((int)id);
 
-            return View(postViewModel);
+            return View(getPost);
         }
 
         // GET: Posts/Create
