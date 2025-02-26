@@ -60,13 +60,27 @@
 </div>
 
 <script>
-    function toggleStar(element) {
+    async function toggleFavorite(element, postId) {
+        let response;
+
+        if (element.classList.contains('fa-regular')) {
+            response = await fetch(`/Posts/AddToFavorites/${postId}`,
+                {
+                    method: "POST"
+                });
+        }
+        if (element.classList.contains('fa-solid')) {
+            response = await fetch(`/Posts/RemoveFromFavorites/${postId}`,
+                {
+                    method: "POST"
+                });
+        }
+
+        const data = await response.json();
+
+        document.getElementById("result-" + postId).textContent = data.result;
+
         element.classList.toggle('fa-solid');
         element.classList.toggle('fa-regular');
-
-        await fetch(`/Posts/AddToFavorites/${postId}`,
-            {
-                method: "POST"
-            });
     }
 </script>

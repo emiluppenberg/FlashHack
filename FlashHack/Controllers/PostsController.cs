@@ -91,7 +91,7 @@ namespace FlashHack.Controllers
 
             if (userId != null)
             {
-                vm.Favorites = await postRepository.GetUserFavorites(Convert.ToInt32(userId)); 
+                vm.Favorites = await postRepository.GetUserFavorites(Convert.ToInt32(userId));
             }
 
             return View(vm);
@@ -234,9 +234,14 @@ namespace FlashHack.Controllers
         {
             var post = await postRepository.GetByIdAsync(postId);
 
-            if (HttpContext.Session.GetInt32("UserId") == null || post == null)
+            if (HttpContext.Session.GetInt32("UserId") == null)
             {
-                return RedirectToAction("Error", "Home");
+                return new JsonResult(new { result = "Login required" });
+            }
+
+            if (post == null)
+            {
+                return new JsonResult(new { result = "Post does not exist" });
             }
 
             var userId = Convert.ToInt32(HttpContext.Session.GetInt32("UserId"));
@@ -246,12 +251,7 @@ namespace FlashHack.Controllers
 
             await userRepository.UpdateAsync(user);
 
-            if (TempData["PageId"] != null)
-            {
-                return RedirectToAction("Index", new { subCategoryId = (int?)TempData["PageId"] });
-            }
-
-            return RedirectToAction("Index");
+            return new JsonResult(new { result = "Post removed from favorites" });
         }
 
         [HttpPost("Posts/RemoveFromFavorites/{postId}")]
@@ -259,9 +259,14 @@ namespace FlashHack.Controllers
         {
             var post = await postRepository.GetByIdAsync(postId);
 
-            if (HttpContext.Session.GetInt32("UserId") == null || post == null)
+            if (HttpContext.Session.GetInt32("UserId") == null)
             {
-                return RedirectToAction("Error", "Home");
+                return new JsonResult(new { result = "Login required" });
+            }
+
+            if (post == null)
+            {
+                return new JsonResult(new { result = "Post does not exist" });
             }
 
             var userId = Convert.ToInt32(HttpContext.Session.GetInt32("UserId"));
@@ -271,12 +276,7 @@ namespace FlashHack.Controllers
 
             await userRepository.UpdateAsync(user);
 
-            if (TempData["PageId"] != null)
-            {
-                return RedirectToAction("Index", new { subCategoryId = (int?)TempData["PageId"] });
-            }
-
-            return RedirectToAction("Index");
+            return new JsonResult(new { result = "Post removed from favorites" });
         }
 
         [HttpGet]
@@ -353,6 +353,8 @@ namespace FlashHack.Controllers
 
         public async Task<IActionResult> IndexBySubCategory(int? subCategoryId, string sortOrder)
         {
+            var userId = HttpContext.Session.GetInt32("UserId");
+
             if (subCategoryId == null)
             {
                 return NotFound();

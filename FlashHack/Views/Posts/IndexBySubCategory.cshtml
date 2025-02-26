@@ -39,6 +39,7 @@
     @foreach (var post in Model.Posts)
     {
         <div class="card mb-3 post-item">
+        <p id="result-@post.Id"></p>
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h3>@post.Title<p class="text-muted">by @post.User.FirstName</p></h3>
                 @if (!Model.Favorites.Contains(post))
@@ -69,20 +70,26 @@
 
 <script>
     async function toggleFavorite(element, postId) {
-        element.classList.toggle('fa-solid');
-        element.classList.toggle('fa-regular');
+        let response;
 
         if (element.classList.contains('fa-regular')) {
-            await fetch(`/Posts/AddToFavorites/${postId}`,
+            response = await fetch(`/Posts/AddToFavorites/${postId}`,
                 {
                     method: "POST"
                 });
         }
         if (element.classList.contains('fa-solid')) {
-            await fetch(`/Posts/RemoveFromFavorites/${postId}`,
+            response = await fetch(`/Posts/RemoveFromFavorites/${postId}`,
                 {
                     method: "POST"
                 });
         }
+
+        const data = await response.json();
+
+        document.getElementById("result-" + postId).textContent = data.result;
+
+        element.classList.toggle('fa-solid');
+        element.classList.toggle('fa-regular');
     }
 </script>
