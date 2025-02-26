@@ -1,4 +1,5 @@
-﻿@model IEnumerable<FlashHack.Models.Post>
+﻿@using FlashHack.ViewModels
+@model PostsIndexViewModel
 
 @{
     ViewData["Title"] = "Posts by SubCategory";
@@ -35,12 +36,19 @@
             <a class="nav-link @(currentSortOrder == "leastCommented" ? "active" : "")" asp-controller="Posts" asp-action="IndexBySubCategory" asp-route-subCategoryId="@ViewData["SubCategoryId"]" asp-route-sortOrder="leastCommented">Least Commented</a>
         </li>
     </ul>
-    @foreach (var post in Model)
+    @foreach (var post in Model.Posts)
     {
         <div class="card mb-3 post-item">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h3>@post.Title<p class="text-muted">by @post.User.FirstName</p></h3>
-                <i class="fa-regular fa-star star-icon" onclick="toggleStar(this)"></i>
+                @if (!Model.Favorites.Contains(post))
+                {
+                    <i class="fa-regular fa-star star-icon" onclick="toggleFavorite(this, @post.Id)"></i>
+                }
+                @if (Model.Favorites.Contains(post))
+                {
+                    <i class="fa-solid fa-star star-icon" onclick="toggleFavorite(this, @post.Id)"></i>
+                }
             </div>
             <div class="card-body">
                 <p>@post.Content.Substring(0, Math.Min(post.Content.Length, 100))...</p>
@@ -60,8 +68,21 @@
 </div>
 
 <script>
-    function toggleStar(element) {
+    async function toggleFavorite(element, postId) {
         element.classList.toggle('fa-solid');
         element.classList.toggle('fa-regular');
+
+        if (element.classList.contains('fa-regular')) {
+            await fetch(`/Posts/AddToFavorites/${postId}`,
+                {
+                    method: "POST"
+                });
+        }
+        if (element.classList.contains('fa-solid')) {
+            await fetch(`/Posts/RemoveFromFavorites/${postId}`,
+                {
+                    method: "POST"
+                });
+        }
     }
 </script>

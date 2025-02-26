@@ -40,7 +40,7 @@
         <div class="card mb-3 post-item">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h3>@post.Title<p class="text-muted">by @post.User.FirstName</p></h3>
-                <i class="fa-regular fa-star star-icon" onclick="toggleStar(this)"></i>
+                <i class="fa-regular fa-star star-icon" onclick="toggleStar(this, @post.Id)"></i>
             </div>
             <div class="card-body">
                 <p>@post.Content.Substring(0, Math.Min(post.Content.Length, 100))...</p>
@@ -63,5 +63,10 @@
     function toggleStar(element) {
         element.classList.toggle('fa-solid');
         element.classList.toggle('fa-regular');
+
+        await fetch(`/Posts/AddToFavorites/${postId}`,
+            {
+                method: "POST"
+            });
     }
 </script>
