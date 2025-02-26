@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using FlashHack.Data;
 using FlashHack.Models;
 using FlashHack.Data.DataInterfaces;
+using FlashHack.ViewModels;
 
 namespace FlashHack.Controllers
 {
@@ -17,13 +18,15 @@ namespace FlashHack.Controllers
         private readonly IPostRepository postRepository;
         private readonly ISubCategoryRepository subCategoryRepository;
         private readonly IUserRepository userRepository;
+        private readonly ICommentRepository commentRepository;
 
-        public PostsController(ApplicationDbContext context, IPostRepository postRepository, ISubCategoryRepository subCategoryRepository, IUserRepository userRepository)
+        public PostsController(ApplicationDbContext context, IPostRepository postRepository, ISubCategoryRepository subCategoryRepository, IUserRepository userRepository, ICommentRepository commentRepository)
         {
             _context = context;
             this.postRepository = postRepository;
             this.subCategoryRepository = subCategoryRepository;
             this.userRepository = userRepository;
+            this.commentRepository = commentRepository;
         }
 
         // GET: Posts
@@ -88,21 +91,11 @@ namespace FlashHack.Controllers
         // GET: Posts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            PostViewModel postViewModel = new PostViewModel();
+            postViewModel.Post = await postRepository.GetByIdAsync((int)id);
+            postViewModel.Comments = postViewModel.Post.Comments;
 
-            var post = await _context.Post
-                .Include(p => p.SubCategory)
-                .Include(p => p.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (post == null)
-            {
-                return NotFound();
-            }
-
-            return View(post);
+            return View(postViewModel);
         }
 
         // GET: Posts/Create

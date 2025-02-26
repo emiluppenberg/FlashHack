@@ -2,6 +2,9 @@
 
 @{
     ViewData["Title"] = "Details";
+    @inject IHttpContextAccessor HttpContextAccessor
+    var userId = HttpContextAccessor.HttpContext.Session.GetInt32("UserId");
+    //var postId = Model.Post.Id;
 }
 
 <div class="container mt-4">
@@ -60,8 +63,4 @@
         }
     }
 </script>
-
-
-
-
 
