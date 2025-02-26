@@ -1,13 +1,13 @@
-﻿@model FlashHack.ViewModels.PostViewModel
+﻿@model FlashHack.Models.Post
 
 @{
     ViewData["Title"] = "Details";
     @inject IHttpContextAccessor HttpContextAccessor
     var userId = HttpContextAccessor.HttpContext.Session.GetInt32("UserId");
-    var postId = Model.Post.Id;
+    //var postId = Model.Post.Id;
 }
 
-<h1>Details</h1>
+@* <h1>Details</h1>
 
 <div>
     <h4>Post</h4>
@@ -101,3 +101,4 @@
     <a asp-action="Edit" asp-route-id="@Model?.Post.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+ *@
