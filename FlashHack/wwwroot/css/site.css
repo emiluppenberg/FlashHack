@@ -499,3 +499,69 @@ footer {
         color: #16a085;
         text-decoration: underline;
     }
+
+.comment-form-container {
+    max-width: 800px; /* Increased width */
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #2c3e50;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    color: white;
+}
+
+    .comment-form-container h4 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .comment-form-container .form-group {
+        margin-bottom: 15px;
+        position: relative;
+    }
+
+    .comment-form-container .form-control {
+        background-color: #34495e;
+        color: white;
+        border: 1px solid #495057;
+        border-radius: 5px;
+        height: 200px; /* Increased height */
+    }
+
+        .comment-form-container .form-control:focus {
+            background-color: #3b4a57;
+            color: white;
+            border-color: #1abc9c;
+            box-shadow: none;
+        }
+
+    .comment-form-container .btn-primary {
+        background-color: #1abc9c;
+        border-color: #1abc9c;
+    }
+
+        .comment-form-container .btn-primary:hover {
+            background-color: #16a085;
+            border-color: #16a085;
+        }
+
+    .comment-form-container .char-count {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        font-size: 0.875rem;
+        color: #ccc;
+    }
+
+.back-button {
+    background-color: #34495e;
+    border-color: #34495e;
+    color: white;
+    margin-top: 20px;
+}
+
+    .back-button:hover {
+        background-color: #2c3e50;
+        border-color: #2c3e50;
+        color: white;
+    }
