@@ -251,7 +251,7 @@ namespace FlashHack.Controllers
 
             await userRepository.UpdateAsync(user);
 
-            return new JsonResult(new { result = "Post removed from favorites" });
+            return new JsonResult(new { result = "Post added to favorites" });
         }
 
         [HttpPost("Posts/RemoveFromFavorites/{postId}")]
@@ -339,22 +339,31 @@ namespace FlashHack.Controllers
                     break;
             }
 
-            var posts = await postsQuery.ToListAsync();
             var headCategory = await _context.HeadCategory.FindAsync(headCategoryId);
             if (headCategory == null)
             {
                 return NotFound();
             }
 
+            var vm = new PostsIndexViewModel()
+            {
+                Posts = await postsQuery.ToListAsync()
+            };
+
+            var userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId != null)
+            {
+                vm.Favorites = await postRepository.GetUserFavorites(Convert.ToInt32(userId));
+            }
+
             ViewData["HeadCategoryName"] = headCategory.Name;
             ViewData["HeadCategoryId"] = headCategoryId;
-            return View("IndexByHeadCategory", posts);
+            return View("IndexByHeadCategory", vm);
         }
 
         public async Task<IActionResult> IndexBySubCategory(int? subCategoryId, string sortOrder)
         {
-            var userId = HttpContext.Session.GetInt32("UserId");
-
             if (subCategoryId == null)
             {
                 return NotFound();
