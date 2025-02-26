@@ -885,3 +885,22 @@ footer {
 .text-muted {
     color: #ccc;
 }
+
+.loading-screen {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(255, 255, 255, 0.8);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: none;
+}
+
+    .loading-screen .spinner-border {
+        width: 3rem;
+        height: 3rem;
+    }

@@ -1,4 +1,17 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿
+// site.js
+$(document).ready(function () {
+    $(".loading-screen").hide();
 
-// Write your JavaScript code.
+    $(document).ajaxStart(function () {
+        $(".loading-screen").show();
+    }).ajaxStop(function () {
+        $(".loading-screen").hide();
+    });
+
+    $(window).on('load', function () {
+        $(".loading-screen").hide();
+    });
+
+    $(".loading-screen").show();
+});
