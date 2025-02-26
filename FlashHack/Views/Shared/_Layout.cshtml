@@ -36,6 +36,15 @@
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Posts" asp-action="Index">Posts</a>
                                 </li>
+                                @if (Context.Session.GetString("UserEmail") != null)
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="Users" asp-action="Profile" asp-route-id="@Context.Session.GetInt32("UserId")">My Profile</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="Users" asp-action="UpdateProfile">Edit Profile</a>
+                                    </li>
+                                }
                             </ul>
                             <ul class="navbar-nav">
                                 @if (Context.Session.GetString("UserEmail") != null)
@@ -91,7 +100,7 @@
                                 </ul>
                                 <form class="d-flex ms-auto" asp-controller="Posts" asp-action="Index">
                                     <input class="form-control me-2 search-input" type="search" name="searchTerm" placeholder="Search" aria-label="Search">
-                                    <button class="btn btn-outline-success search-button" type="submit">Search</button>
+                                    <button type="submit">Search</button>
                                 </form>
                             </div>
                         </div>

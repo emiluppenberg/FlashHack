@@ -144,43 +144,229 @@ namespace FlashHack.Controllers
             return RedirectToAction("Login");
         }
 
-        // GET: Users/Create – Endast för admin
-        public IActionResult Create()
+
+        // GET: Users/Profile
+        public async Task<IActionResult> Profile(int? id)
         {
-            if (HttpContext.Session.GetString("IsAdmin") != "True")
+            if (id == null)
             {
-                return RedirectToAction("Login");
+                //  Hämta ID från session om det inte skickas
+                id = HttpContext.Session.GetInt32("UserId");
+                if (id == null)
+                {
+                    return RedirectToAction("Login");
+                }
             }
 
-            return View();
-        }
-
-        // POST: Users/Create – Endast för admin
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FirstName,LastName,Email,Password,IsAdmin")] User user)
-        {
-            if (ModelState.IsValid)
+            var user = await _userRepository.GetByIdAsync(id.Value);
+            if (user == null)
             {
-                // Kontrollera om e-post redan finns
-                var existingUser = (await _userRepository.GetAllAsync())
-                    .FirstOrDefault(u => u.Email == user.Email);
-
-                if (existingUser != null)
-                {
-                    ModelState.AddModelError("Email", "E-postadressen är redan registrerad.");
-                    return View(user);
-                }
-
-                // Lägg till användaren som admin eller vanlig användare
-                _context.User.Add(user);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
 
             return View(user);
         }
+
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> UpdateProfile()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var user = await _userRepository.GetByIdAsync(userId.Value);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return View(user);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateProfile(User updatedUser, string? skillName, string? skillDescription, int? skillRating)
+        {
+            Console.WriteLine("🔵 UpdateProfile hit!");
+
+            var userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                Console.WriteLine("❌ User ID not found in session.");
+                return RedirectToAction("Login");
+            }
+
+            var user = await _userRepository.GetByIdAsync(userId.Value);
+
+            if (user == null)
+            {
+                Console.WriteLine("❌ User not found in database.");
+                return NotFound();
+            }
+
+            // Behåll lösenord om inget nytt anges
+            if (string.IsNullOrEmpty(updatedUser.Password))
+            {
+                updatedUser.Password = user.Password;
+                Console.WriteLine("🔑 No new password provided, using old one.");
+            }
+
+            ModelState.Clear();
+            TryValidateModel(updatedUser);
+
+            if (ModelState.IsValid)
+            {
+                Console.WriteLine("✅ ModelState is valid. Proceeding with update...");
+
+                user.FirstName = updatedUser.FirstName;
+                user.LastName = updatedUser.LastName;
+                user.Email = updatedUser.Email;
+                user.PhoneNumber = updatedUser.PhoneNumber;
+                user.Employer = updatedUser.Employer ?? string.Empty;
+                user.Bio = updatedUser.Bio ?? string.Empty;
+                user.Signature = updatedUser.Signature ?? string.Empty;
+                user.ProfilePicURL = updatedUser.ProfilePicURL ?? string.Empty;
+
+                // Lägg till ny färdighet (om det finns)
+                if (!string.IsNullOrEmpty(skillName) && !string.IsNullOrEmpty(skillDescription) && skillRating.HasValue)
+                {
+                    Console.WriteLine($"🟢 Adding skill: {skillName}, Rating: {skillRating}");
+                    user.Skills.Add(new Skill
+                    {
+                        UserId = user.Id,
+                        SkillName = skillName,
+                        SkillDescription = skillDescription,
+                        SkillRating = skillRating.Value
+                    });
+                }
+
+                await _userRepository.Update(user);
+                HttpContext.Session.SetString("UserName", user.FirstName);
+
+                Console.WriteLine("🚀 Profile updated successfully!");
+                return RedirectToAction("Profile", new { id = user.Id });
+            }
+
+            Console.WriteLine("❌ ModelState is invalid:");
+            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                Console.WriteLine($"   - {error.ErrorMessage}");
+            }
+
+            return View("UpdateProfile", user);
+        }
+
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddSkill(string skillName, string skillDescription, int skillRating)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var user = await _userRepository.GetByIdAsync(userId.Value);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            //  Lägg till ny färdighet
+            if (!string.IsNullOrEmpty(skillName) && !string.IsNullOrEmpty(skillDescription) && skillRating > 0)
+            {
+                user.Skills.Add(new Skill
+                {
+                    UserId = user.Id,
+                    SkillName = skillName,
+                    SkillDescription = skillDescription,
+                    SkillRating = skillRating
+                });
+
+                await _userRepository.Update(user);
+                
+            }
+
+            return RedirectToAction("UpdateProfile");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteSkill(int skillId)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var user = await _userRepository.GetByIdAsync(userId.Value);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Hitta och ta bort färdigheten
+            var skill = user.Skills?.FirstOrDefault(s => s.Id == skillId);
+            if (skill != null)
+            {
+                user.Skills.Remove(skill);
+                _context.Skill.Remove(skill); // Ta bort från databasen
+                await _userRepository.Update(user);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("UpdateProfile");
+        }
+
+
+        // GET: Users/Create – Endast för admin
+        public IActionResult Create()
+            {
+                if (HttpContext.Session.GetString("IsAdmin") != "True")
+                {
+                    return RedirectToAction("Login");
+                }
+
+                return View();
+            }
+
+            // POST: Users/Create – Endast för admin
+            [HttpPost]
+            [ValidateAntiForgeryToken]
+            public async Task<IActionResult> Create([Bind("FirstName,LastName,Email,Password,IsAdmin")] User user)
+            {
+                if (ModelState.IsValid)
+                {
+                    // Kontrollera om e-post redan finns
+                    var existingUser = (await _userRepository.GetAllAsync())
+                        .FirstOrDefault(u => u.Email == user.Email);
+
+                    if (existingUser != null)
+                    {
+                        ModelState.AddModelError("Email", "E-postadressen är redan registrerad.");
+                        return View(user);
+                    }
+
+                    // Lägg till användaren som admin eller vanlig användare
+                    _context.User.Add(user);
+                    await _context.SaveChangesAsync();
+
+                    return RedirectToAction(nameof(Index));
+                }
+
+                return View(user);
+            }
+        
 
 
 

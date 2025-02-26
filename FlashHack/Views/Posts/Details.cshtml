@@ -7,98 +7,60 @@
     //var postId = Model.Post.Id;
 }
 
-@* <h1>Details</h1>
-
-<div>
-    <h4>Post</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => Model.Post.Title )
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Post.Title)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Post.Content)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Post.Content)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Post.UpVotes)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Post.UpVotes)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Post.DownVotes)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Post.DownVotes)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Post.TimeCreated)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Post.TimeCreated)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Post.User)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Post.User.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Post.SubCategory)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Post.SubCategory.Name)
-        </dd>
-    </dl>
+<div class="container mt-4">
+    <div class="card mb-3 post-item">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3>@Model.Title</h3>
+            <i class="fa-regular fa-star star-icon" onclick="toggleStar(this)"></i>
+        </div>
+        <div class="card-body">
+            <p>@Model.Content</p>
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <i class="fa-solid fa-thumbs-up thumbs-icon" onclick="toggleThumbs(this, 'up')"></i> @Model.UpVotes
+                    <i class="fa-solid fa-thumbs-down thumbs-icon ms-3" onclick="toggleThumbs(this, 'down')"></i> @Model.DownVotes
+                    <i class="fa-solid fa-comments ms-3"></i> @Model.Comments.Count
+                </div>
+                <div>
+                    <span class="text-muted">by <a asp-controller="Users" asp-action="Profile" asp-route-id="@Model.User.Id">@Model.User.FirstName @Model.User.LastName</a></span>
+                </div>
+            </div>
+            <div class="mt-3">
+                <h5>Comments:</h5>
+                <ul class="list-group">
+                    @foreach (var comment in Model.Comments)
+                    {
+                        <li class="list-group-item">
+                            <strong>@comment.User.FirstName @comment.User.LastName:</strong> @comment.Content
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="mt-3">
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
 </div>
-<div>
-    <p>
-        <a asp-action="Create" asp-controller="Comments" asp-route-userId="@userId" asp-route-postId="@postId"> Answer</a>
-    </p>
-    <table class="table">
-        <thead>
-            <tr>
 
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Comments)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Content)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.TimeCreated)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.UpVotes)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.DownVotes)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.User.Email)
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-controller="Comments" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Details" asp-controller="Comments" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="Delete" asp-controller="Comments" asp-route-id="@item.Id">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+<script>
+    function toggleStar(element) {
+        element.classList.toggle('fa-solid');
+        element.classList.toggle('fa-regular');
+    }
 
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Post.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
- *@
+    function toggleThumbs(element, type) {
+        const thumbsUp = document.querySelector('.fa-thumbs-up');
+        const thumbsDown = document.querySelector('.fa-thumbs-down');
+
+        if (type === 'up') {
+            thumbsUp.classList.toggle('selected');
+            thumbsDown.classList.remove('selected');
+        } else {
+            thumbsDown.classList.toggle('selected');
+            thumbsUp.classList.remove('selected');
+        }
+    }
+</script>
+
