@@ -34,6 +34,7 @@ namespace FlashHack.Data
                 .Include( p => p.User)
                 .Include(p =>p.SubCategory)
                 .Include(p => p.Comments)
+                .ThenInclude(p=>p.User)
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 

@@ -18,13 +18,15 @@ namespace FlashHack.Controllers
         private readonly IPostRepository postRepository;
         private readonly ISubCategoryRepository subCategoryRepository;
         private readonly IUserRepository userRepository;
+        private readonly ICommentRepository commentRepository;
 
-        public PostsController(ApplicationDbContext context, IPostRepository postRepository, ISubCategoryRepository subCategoryRepository, IUserRepository userRepository)
+        public PostsController(ApplicationDbContext context, IPostRepository postRepository, ISubCategoryRepository subCategoryRepository, IUserRepository userRepository, ICommentRepository commentRepository)
         {
             _context = context;
             this.postRepository = postRepository;
             this.subCategoryRepository = subCategoryRepository;
             this.userRepository = userRepository;
+            this.commentRepository = commentRepository;
         }
 
         // GET: Posts
