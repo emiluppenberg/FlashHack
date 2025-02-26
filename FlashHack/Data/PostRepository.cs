@@ -51,5 +51,13 @@ namespace FlashHack.Data
                 .Include(x => x.SubCategory)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
+
+        public async Task<IEnumerable<Post>> GetUserFavorites(int userId)
+        {
+            return await applicationDbContext.Post
+                .Where(p => p.UserFavorites.Any(u => u.Id == userId))
+                .Include(p => p.User)
+                .ToListAsync();
+        }
     }
 }

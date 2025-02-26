@@ -40,6 +40,7 @@ namespace FlashHack.Data
         {
             return await applicationDbContext.User
                 .Include(u => u.Skills)  // 🟡 Viktigt! Inkludera Skills här
+                .Include(u => u.Favorites)
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
 
@@ -62,12 +63,16 @@ namespace FlashHack.Data
             }
         }
 
+        public async Task UpdateAsync(User user)
+        {
+            applicationDbContext.User.Update(user);
+            await applicationDbContext.SaveChangesAsync();
+        }
+
         public async Task RemoveSkillAsync(Skill skill)
         {
             applicationDbContext.Skill.Remove(skill);
             await applicationDbContext.SaveChangesAsync();
         }
-
-
     }
 }
