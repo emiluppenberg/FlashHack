@@ -73,10 +73,16 @@ namespace FlashHack.Controllers
         }
 
         // GET: Comments/Create
-        public IActionResult Create(int? postId, int? userId)
+        public IActionResult Create(int? postId, int? userId, string returnUrl)
         {
             try
             {
+                ViewBag.ReturnUrl = returnUrl;
+                if(HttpContext.Session.GetString("UserId") == null)
+                {
+                    return RedirectToAction("Login", "Users");
+                }
+
                 if (postId == null || userId == null)
                 {
                     return RedirectToAction("Error", "Home");
@@ -96,7 +102,7 @@ namespace FlashHack.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Content,UserId,PostId")] Comment comment)
+        public async Task<IActionResult> Create([Bind("Id,Content,UserId,PostId")] Comment comment, string returnUrl)
         {
             try
             {
@@ -104,8 +110,9 @@ namespace FlashHack.Controllers
                 {
                     comment.TimeCreated = DateTime.Now;
                     await commentRepository.AddAsync(comment);
+                    return Redirect(returnUrl);
 
-                    return RedirectToAction("Index");
+                    //return RedirectToAction("Index");
                 }
                 return View(comment);
             }

@@ -27,7 +27,7 @@
             </div>
             <div>
                 <p>
-                    <a asp-action="Create" asp-controller="Comments" asp-route-userId="@userId" asp-route-postId="@postId"> Answer</a>
+                    <a asp-action="Create" asp-controller="Comments" asp-route-userId="@userId" asp-route-postId="@postId" asp-route-returnUrl="@Context.Request.Path"> Answer</a>
                 </p>
             </div>
             <div class="mt-3">
