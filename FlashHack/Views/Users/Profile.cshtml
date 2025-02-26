@@ -7,7 +7,12 @@
 <div class="container mt-4">
     <div class="card mb-3 post-item">
         <div class="card-header">
-            <h3>@Model.FirstName @Model.LastName's Profile</h3>
+            <h3>
+                @Model.FirstName @Model.LastName's Profile @if (Model.IsPremium)
+                {
+                    <span class="badge bg-warning text-dark">Premium Member</span>
+                }
+            </h3>
         </div>
         <div class="card-body">
             <div class="text-center mb-4">
