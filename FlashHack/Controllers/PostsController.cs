@@ -470,5 +470,25 @@ namespace FlashHack.Controllers
 
             return new JsonResult(new { result = result, value = 1 });
         }
+
+        [HttpGet("Posts/CountUpVotes/{postId}")]
+        public async Task<IActionResult> CountUpVotes(int postId)
+        {
+            var post = await postRepository.GetByIdAsync(postId);
+
+            var count = post.Votes.Count(v => v.IsUpVote);
+
+            return new JsonResult(new { value = count });
+        }
+
+        [HttpGet("Posts/CountDownVotes/{postId}")]
+        public async Task<IActionResult> CountDownVotes(int postId)
+        {
+            var post = await postRepository.GetByIdAsync(postId);
+
+            var count = post.Votes.Count(v => v.IsDownVote);
+
+            return new JsonResult(new { value = count });
+        }
     }
 }
