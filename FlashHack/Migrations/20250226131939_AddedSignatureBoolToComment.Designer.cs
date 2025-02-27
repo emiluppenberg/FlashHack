@@ -4,6 +4,7 @@ using FlashHack.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FlashHack.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250226131939_AddedSignatureBoolToComment")]
+    partial class AddedSignatureBoolToComment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -309,40 +312,6 @@ namespace FlashHack.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("FlashHack.Models.Vote", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("CommentId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsDownVote")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsUpVote")
-                        .HasColumnType("bit");
-
-                    b.Property<int?>("PostId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CommentId");
-
-                    b.HasIndex("PostId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Vote");
-                });
-
             modelBuilder.Entity("UserPostFavorites", b =>
                 {
                     b.Property<int>("PostId")
@@ -429,29 +398,6 @@ namespace FlashHack.Migrations
                     b.Navigation("HeadCategory");
                 });
 
-            modelBuilder.Entity("FlashHack.Models.Vote", b =>
-                {
-                    b.HasOne("FlashHack.Models.Comment", "Comment")
-                        .WithMany("Votes")
-                        .HasForeignKey("CommentId");
-
-                    b.HasOne("FlashHack.Models.Post", "Post")
-                        .WithMany("Votes")
-                        .HasForeignKey("PostId");
-
-                    b.HasOne("FlashHack.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Comment");
-
-                    b.Navigation("Post");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("UserPostFavorites", b =>
                 {
                     b.HasOne("FlashHack.Models.Post", null)
@@ -467,11 +413,6 @@ namespace FlashHack.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FlashHack.Models.Comment", b =>
-                {
-                    b.Navigation("Votes");
-                });
-
             modelBuilder.Entity("FlashHack.Models.Company", b =>
                 {
                     b.Navigation("Jobblistings");
@@ -485,8 +426,6 @@ namespace FlashHack.Migrations
             modelBuilder.Entity("FlashHack.Models.Post", b =>
                 {
                     b.Navigation("Comments");
-
-                    b.Navigation("Votes");
                 });
 
             modelBuilder.Entity("FlashHack.Models.SubCategory", b =>

@@ -1,4 +1,13 @@
-﻿@model IEnumerable<FlashHack.Models.User>
+﻿@{
+    var isAdmin = Context.Session.GetString("IsAdmin") == "True";
+
+    if (!isAdmin)
+    {
+        Context.Response.Redirect("/Home/Index");
+    }
+}
+
+@model IEnumerable<FlashHack.Models.User>
 
 @{
     ViewData["Title"] = "Index";

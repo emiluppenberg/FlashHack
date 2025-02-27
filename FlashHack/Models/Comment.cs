@@ -15,6 +15,8 @@ namespace FlashHack.Models
         public int DownVotes { get; set; }
         public List<Vote> Votes { get; set; } = new List<Vote>();
 
+        public bool UseSignature { get; set; }
+
         public int UserId { get; set; }
         [ForeignKey("UserId")]
         public User? User { get; set; }

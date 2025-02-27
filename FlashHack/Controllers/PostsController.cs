@@ -39,6 +39,7 @@ namespace FlashHack.Controllers
                 .Include(p => p.User)
                 .Include(p => p.Comments);
 
+
             if (subCategoryId != null)
             {
                 postsQuery = postsQuery.Where(p => p.SubCategoryId == subCategoryId);
@@ -113,8 +114,11 @@ namespace FlashHack.Controllers
         public IActionResult Create()
         {
             try
-            {
-                if (TempData["PageId"] != null && HttpContext.Session.GetInt32("UserId") != null)
+            {   
+                if(HttpContext.Session.GetInt32("UserId") == null)
+                    return RedirectToAction("Login", "Users");
+
+                if (TempData["PageId"] != null)
                 {
                     var newPost = new Post { SubCategoryId = (int)TempData["PageId"], UserId = (int)HttpContext.Session.GetInt32("UserId") };
                     return View(newPost);
@@ -142,7 +146,9 @@ namespace FlashHack.Controllers
                 {
                     post.TimeCreated = DateTime.Now;
                     await postRepository.AddAsync(post);
-                    return RedirectToAction(nameof(Index)); //TO:DO Create a view for the created post so comments can start
+                    var getMadePost = _context.Post.Where(t => t.Title == post.Title).OrderByDescending(t=>t.TimeCreated).FirstOrDefault();
+
+                    return RedirectToAction("Details", new {id = getMadePost.Id}); 
                 }
                 return View(post);
             }
@@ -367,6 +373,7 @@ namespace FlashHack.Controllers
                 .Include(p => p.User)
                 .Include(p => p.Comments);
 
+            TempData["PageId"] = subCategoryId;
             ViewData["CurrentSortOrder"] = sortOrder;
 
             switch (sortOrder)
