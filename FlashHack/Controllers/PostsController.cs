@@ -19,14 +19,16 @@ namespace FlashHack.Controllers
         private readonly ISubCategoryRepository subCategoryRepository;
         private readonly IUserRepository userRepository;
         private readonly ICommentRepository commentRepository;
+        private readonly IVoteRepository voteRepository;
 
-        public PostsController(ApplicationDbContext context, IPostRepository postRepository, ISubCategoryRepository subCategoryRepository, IUserRepository userRepository, ICommentRepository commentRepository)
+        public PostsController(ApplicationDbContext context, IPostRepository postRepository, ISubCategoryRepository subCategoryRepository, IUserRepository userRepository, ICommentRepository commentRepository, IVoteRepository voteRepository)
         {
             _context = context;
             this.postRepository = postRepository;
             this.subCategoryRepository = subCategoryRepository;
             this.userRepository = userRepository;
             this.commentRepository = commentRepository;
+            this.voteRepository = voteRepository;
         }
 
         // GET: Posts
@@ -420,6 +422,80 @@ namespace FlashHack.Controllers
             ViewData["SubCategoryName"] = subCategory.Name;
             ViewData["SubCategoryId"] = subCategoryId;
             return View("IndexBySubCategory", vm);
+        }
+
+        [HttpPost("Posts/UpVote/{postId}")]
+        public async Task<IActionResult> UpVote(int postId)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return new JsonResult(new { result = "Login required", value = 0});
+            }
+            
+            var vote = new Vote() 
+            { 
+                IsUpVote = true, 
+                UserId = Convert.ToInt32(userId), 
+                PostId = postId 
+            };
+
+            var result = await voteRepository.AddAsync(vote);
+
+            if (result == null)
+            {
+                return new JsonResult(new { result = "Vote removed", value = 0 });
+            }
+
+            return new JsonResult(new { result = result, value = 1});
+        }
+
+        [HttpPost("Posts/DownVote/{postId}")]
+        public async Task<IActionResult> DownVote(int postId)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return new JsonResult(new { result = "Login required", value = 0 });
+            }
+
+            var vote = new Vote()
+            {
+                IsDownVote = true,
+                UserId = Convert.ToInt32(userId),
+                PostId = postId
+            };
+
+            var result = await voteRepository.AddAsync(vote);
+
+            if (result == null)
+            {
+                return new JsonResult(new { result = "Vote removed", value = 0 });
+            }
+
+            return new JsonResult(new { result = result, value = 1 });
+        }
+
+        [HttpGet("Posts/CountUpVotes/{postId}")]
+        public async Task<IActionResult> CountUpVotes(int postId)
+        {
+            var post = await postRepository.GetByIdAsync(postId);
+
+            var count = post.UpVotes;
+
+            return new JsonResult(new { value = count });
+        }
+
+        [HttpGet("Posts/CountDownVotes/{postId}")]
+        public async Task<IActionResult> CountDownVotes(int postId)
+        {
+            var post = await postRepository.GetByIdAsync(postId);
+
+            var count = post.DownVotes;
+
+            return new JsonResult(new { value = count });
         }
     }
 }

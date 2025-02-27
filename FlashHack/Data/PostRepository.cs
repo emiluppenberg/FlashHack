@@ -31,6 +31,7 @@ namespace FlashHack.Data
         public async Task<Post> GetByIdAsync(int id)
         {
             return await applicationDbContext.Post
+                .Include(p => p.Votes)
                 .Include( p => p.User)
                 .Include(p =>p.SubCategory)
                 .Include(p => p.Comments)

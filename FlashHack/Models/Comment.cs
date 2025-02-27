@@ -13,6 +13,7 @@ namespace FlashHack.Models
 
         public int UpVotes { get; set; }
         public int DownVotes { get; set; }
+        public List<Vote> Votes { get; set; } = new List<Vote>();
 
         public bool UseSignature { get; set; }
 
