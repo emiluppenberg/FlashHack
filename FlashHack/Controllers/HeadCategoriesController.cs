@@ -123,8 +123,7 @@ namespace FlashHack.Controllers
         // GET: HeadCategories/Delete/5
         [AdminAuthorize]
         public async Task<IActionResult> Delete(int? id)
-        {
-            var test = HttpContext.Session.GetString("isAdmin");
+        {           
             if (id == null)
             {
                 return NotFound();

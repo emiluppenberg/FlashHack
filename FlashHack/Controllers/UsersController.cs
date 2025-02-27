@@ -135,10 +135,7 @@ namespace FlashHack.Controllers
                 HttpContext.Session.SetInt32("UserId", user.Id);
                 HttpContext.Session.SetString("UserEmail", user.Email);
                 HttpContext.Session.SetString("UserName", user.FirstName);
-                if(user.IsAdmin)
-                {
-                    HttpContext.Session.SetString("IsAdmin", "true");
-                }
+                HttpContext.Session.SetString("IsAdmin", user.IsAdmin.ToString());
 
                 return RedirectToAction("Index", "Home");
             }
