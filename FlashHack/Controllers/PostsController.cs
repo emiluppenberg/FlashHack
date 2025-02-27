@@ -105,9 +105,18 @@ namespace FlashHack.Controllers
         // GET: Posts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            var getPost = await postRepository.GetByIdAsync((int)id);
+            var vm = new PostDetailsViewModel();
 
-            return View(getPost);
+            var userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId != null)
+            {
+                vm.Favorites = await postRepository.GetUserFavorites(Convert.ToInt32(userId));
+            }
+
+            vm.Post = await postRepository.GetByIdAsync((int)id);
+
+            return View(vm);
         }
 
         // GET: Posts/Create
@@ -424,8 +433,8 @@ namespace FlashHack.Controllers
             return View("IndexBySubCategory", vm);
         }
 
-        [HttpPost("Posts/UpVote/{postId}")]
-        public async Task<IActionResult> UpVote(int postId)
+        [HttpPost("Posts/Vote/{postId}/{isUpDown}")]
+        public async Task<IActionResult> Vote(int postId, bool isUpDown)
         {
             var userId = HttpContext.Session.GetInt32("UserId");
 
@@ -436,10 +445,12 @@ namespace FlashHack.Controllers
             
             var vote = new Vote() 
             { 
-                IsUpVote = true, 
                 UserId = Convert.ToInt32(userId), 
                 PostId = postId 
             };
+
+            if (isUpDown) vote.IsUpVote = true;
+            if (!isUpDown) vote.IsDownVote = true;
 
             var result = await voteRepository.AddAsync(vote);
 
@@ -451,51 +462,15 @@ namespace FlashHack.Controllers
             return new JsonResult(new { result = result, value = 1});
         }
 
-        [HttpPost("Posts/DownVote/{postId}")]
-        public async Task<IActionResult> DownVote(int postId)
-        {
-            var userId = HttpContext.Session.GetInt32("UserId");
-
-            if (userId == null)
-            {
-                return new JsonResult(new { result = "Login required", value = 0 });
-            }
-
-            var vote = new Vote()
-            {
-                IsDownVote = true,
-                UserId = Convert.ToInt32(userId),
-                PostId = postId
-            };
-
-            var result = await voteRepository.AddAsync(vote);
-
-            if (result == null)
-            {
-                return new JsonResult(new { result = "Vote removed", value = 0 });
-            }
-
-            return new JsonResult(new { result = result, value = 1 });
-        }
-
-        [HttpGet("Posts/CountUpVotes/{postId}")]
-        public async Task<IActionResult> CountUpVotes(int postId)
+        [HttpGet("Posts/CountVotes/{postId}")]
+        public async Task<IActionResult> CountVotes(int postId)
         {
             var post = await postRepository.GetByIdAsync(postId);
 
-            var count = post.UpVotes;
+            var upVotes = post.UpVotes;
+            var downVotes = post.DownVotes;
 
-            return new JsonResult(new { value = count });
-        }
-
-        [HttpGet("Posts/CountDownVotes/{postId}")]
-        public async Task<IActionResult> CountDownVotes(int postId)
-        {
-            var post = await postRepository.GetByIdAsync(postId);
-
-            var count = post.DownVotes;
-
-            return new JsonResult(new { value = count });
+            return new JsonResult(new { upVotes = upVotes, downVotes = downVotes });
         }
     }
 }

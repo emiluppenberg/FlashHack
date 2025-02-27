@@ -59,8 +59,8 @@
                 <p>@post.Content.Substring(0, Math.Min(post.Content.Length, 100))...</p>
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <i class="fa-solid fa-thumbs-up" onclick="upVote(@post.Id)"></i><span id="upvotes-@post.Id">@post.UpVotes</span>
-                        <i class="fa-solid fa-thumbs-down ms-3" onclick="downVote(@post.Id)"></i><span id="downvotes-@post.Id">@post.DownVotes</span>
+                        <i class="fa-solid fa-thumbs-up" onclick="vote(@post.Id), 'true'"></i><span id="upvotes-@post.Id">@post.UpVotes</span>
+                        <i class="fa-solid fa-thumbs-down ms-3" onclick="vote(@post.Id, 'false')"></i><span id="downvotes-@post.Id">@post.DownVotes</span>
                         <i class="fa-solid fa-comments ms-3"></i> @post.Comments.Count
                     </div>
                     <div>
@@ -97,21 +97,8 @@
         element.classList.toggle('fa-regular');
     }
 
-    async function upVote(postId){
-        const response = await fetch(`/Posts/UpVote/${postId}`,
-        {
-            method: "POST"
-        });
-
-        const data = await response.json();
-
-        document.getElementById("result-" + postId).textContent = data.result;
-
-        countVotes(postId);
-    }
-
-    async function downVote(postId){
-        const response = await fetch(`/Posts/DownVote/${postId}`,
+    async function vote(postId, isUpDown){
+        const response = await fetch(`/Posts/Vote/${postId}/${isUpDown}`,
         {
             method: "POST"
         });
@@ -124,23 +111,16 @@
     }
 
     async function countVotes(postId){
-        response = await fetch(`/Posts/CountUpVotes/${postId}`,
+        response = await fetch(`/Posts/CountVotes/${postId}`,
         {
             method: "GET"
-        })
+        });
 
         data = await response.json();
 
-        document.getElementById("upvotes-" + postId).textContent = data.value;
+        document.getElementById("upvotes-" + postId).textContent = data.upVotes;
 
-        response = await fetch(`/Posts/CountDownVotes/${postId}`,
-        {
-            method: "GET"
-        })
-
-        data = await response.json();
-
-        document.getElementById("downvotes-" + postId).textContent = data.value;
+        document.getElementById("downvotes-" + postId).textContent = data.downVotes;
     }
 </script>
 
