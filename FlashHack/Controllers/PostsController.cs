@@ -438,7 +438,7 @@ namespace FlashHack.Controllers
 
             if (result == null)
             {
-                return new JsonResult(new { result = "You have already voted on this post", value = 0 });
+                return new JsonResult(new { result = "Vote removed", value = 0 });
             }
 
             return new JsonResult(new { result = result, value = 1});
@@ -465,7 +465,7 @@ namespace FlashHack.Controllers
 
             if (result == null)
             {
-                return new JsonResult(new { result = "You have already voted on this comment", value = 0 });
+                return new JsonResult(new { result = "Vote removed", value = 0 });
             }
 
             return new JsonResult(new { result = result, value = 1 });
@@ -476,7 +476,7 @@ namespace FlashHack.Controllers
         {
             var post = await postRepository.GetByIdAsync(postId);
 
-            var count = post.Votes.Count(v => v.IsUpVote);
+            var count = post.UpVotes;
 
             return new JsonResult(new { value = count });
         }
@@ -486,7 +486,7 @@ namespace FlashHack.Controllers
         {
             var post = await postRepository.GetByIdAsync(postId);
 
-            var count = post.Votes.Count(v => v.IsDownVote);
+            var count = post.DownVotes;
 
             return new JsonResult(new { value = count });
         }

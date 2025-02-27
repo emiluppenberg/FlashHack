@@ -24,9 +24,21 @@ namespace FlashHack.Data
 
                 if (userVote != null)
                 {
-                    if (userVote.IsUpVote && vote.IsUpVote) return null;
+                    if (userVote.IsUpVote && vote.IsUpVote)
+                    {
+                        post.UpVotes--;
+                        applicationDbContext.Remove(userVote);
+                        await applicationDbContext.SaveChangesAsync();
+                        return null;
+                    }
 
-                    if (userVote.IsDownVote && vote.IsDownVote) return null;
+                    if (userVote.IsDownVote && vote.IsDownVote)
+                    {
+                        post.DownVotes--;
+                        applicationDbContext.Remove(userVote);
+                        await applicationDbContext.SaveChangesAsync();
+                        return null;
+                    }
 
                     userVote.IsUpVote = vote.IsUpVote;
                     userVote.IsDownVote = vote.IsDownVote;
@@ -62,11 +74,23 @@ namespace FlashHack.Data
 
                 if (userVote != null)
                 {
-                    if (userVote.IsUpVote && vote.IsUpVote) return null;
+                    if (userVote.IsUpVote && vote.IsUpVote)
+                    {
+                        comment.UpVotes--;
+                        applicationDbContext.Remove(userVote);
+                        await applicationDbContext.SaveChangesAsync();
+                        return null;
+                    }
 
-                    if (userVote.IsDownVote && vote.IsDownVote) return null;
+                    if (userVote.IsDownVote && vote.IsDownVote)
+                    {
+                        comment.DownVotes--;
+                        applicationDbContext.Remove(userVote);
+                        await applicationDbContext.SaveChangesAsync();
+                        return null;
+                    }
 
-                    userVote.IsUpVote = vote.IsUpVote;
+                        userVote.IsUpVote = vote.IsUpVote;
                     userVote.IsDownVote = vote.IsDownVote;
 
                     comment.UpVotes = comment.Votes.Count(v => v.IsUpVote);
