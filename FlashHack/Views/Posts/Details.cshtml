@@ -1,29 +1,39 @@
-﻿@model FlashHack.Models.Post
+﻿@model FlashHack.ViewModels.PostDetailsViewModel
 
 @{
     ViewData["Title"] = "Details";
     @inject IHttpContextAccessor HttpContextAccessor
     var userId = HttpContextAccessor.HttpContext.Session.GetInt32("UserId");
-    var postId = Model.Id;
+    var postId = Model.Post.Id;
 }
 
 <div class="container mt-4">
     <div class="card mb-3 post-item">
-        <p id="result-@Model.Id"></p>
+        <p id="result-@Model.Post.Id"></p>
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h3>@Model.Title</h3>
-            <i class="fa-regular fa-star star-icon" onclick="toggleFavorite(this, @Model.Id)"></i>
+            <h3>@Model.Post.Title</h3>
+            @if (Model.Favorites != null)
+            {
+                if (!Model.Favorites.Contains(Model.Post))
+                {
+                    <i class="fa-regular fa-star star-icon" onclick="toggleFavorite(this, @Model.Post.Id)"></i>
+                }
+                if (Model.Favorites.Contains(Model.Post))
+                {
+                    <i class="fa-solid fa-star star-icon" onclick="toggleFavorite(this, @Model.Post.Id)"></i>
+                }
+            }
         </div>
         <div class="card-body">
-            <p>@Model.Content</p>
+            <p>@Model.Post.Content</p>
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <i class="fa-solid fa-thumbs-up thumbs-icon" onclick="upVote(@Model.Id)"></i><span id="upvotes-@Model.Id">@Model.UpVotes</span>
-                    <i class="fa-solid fa-thumbs-down thumbs-icon ms-3" onclick="downVote(@Model.Id)"></i><span id="downvotes-@Model.Id">@Model.DownVotes</span>
-                    <i class="fa-solid fa-comments ms-3"></i> @Model.Comments.Count
+                    <i class="fa-solid fa-thumbs-up thumbs-icon" onclick="vote(@Model.Post.Id, 'true')"></i><span id="upvotes-@Model.Post.Id">@Model.Post.UpVotes</span>
+                    <i class="fa-solid fa-thumbs-down thumbs-icon ms-3" onclick="vote(@Model.Post.Id, 'false')"></i><span id="downvotes-@Model.Post.Id">@Model.Post.DownVotes</span>
+                    <i class="fa-solid fa-comments ms-3"></i> @Model.Post.Comments.Count
                 </div>
                 <div>
-                    <span class="text-muted">by <a asp-controller="Users" asp-action="Profile" asp-route-id="@Model.User.Id" class="user-link">@Model.User.FirstName @Model.User.LastName</a></span>
+                    <span class="text-muted">by <a asp-controller="Users" asp-action="Profile" asp-route-id="@Model.Post.User.Id" class="user-link">@Model.Post.User.FirstName @Model.Post.User.LastName</a></span>
                 </div>
             </div>
             <div>
@@ -34,7 +44,7 @@
             <div class="comments-section mt-3">
                 <h5>Comments:</h5>
                 <ul class="list-group">
-                    @foreach (var comment in Model.Comments)
+                    @foreach (var comment in Model.Post.Comments)
                     {
                         <li class="list-group-item comment-item">
                             <div class="comment-container">
@@ -66,7 +76,7 @@
         </div>
     </div>
     <div class="mt-3">
-        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
+        <a asp-action="Edit" asp-route-id="@Model?.Post.Id" class="btn btn-primary">Edit</a>
         <a asp-action="Index" class="btn btn-secondary">Back to List</a>
     </div>
 </div>
@@ -96,31 +106,13 @@
             element.classList.toggle('fa-regular');
         }
 
-    async function upVote(postId){
+    async function vote(postId, isUpDown){
         // const thumbsUp = document.querySelector('.fa-thumbs-up');
         // const thumbsDown = document.querySelector('.fa-thumbs-down');
         // thumbsUp.classList.toggle('selected');
         // thumbsDown.classList.toggle('selected');
 
-        const response = await fetch(`/Posts/UpVote/${postId}`,
-        {
-            method: "POST"
-        });
-
-        const data = await response.json();
-
-        document.getElementById("result-" + postId).textContent = data.result;
-
-        countVotes(postId);
-    }
-
-    async function downVote(postId){
-        // const thumbsUp = document.querySelector('.fa-thumbs-up');
-        // const thumbsDown = document.querySelector('.fa-thumbs-down');
-        // thumbsUp.classList.toggle('selected');
-        // thumbsDown.classList.toggle('selected');
-
-        const response = await fetch(`/Posts/DownVote/${postId}`,
+        const response = await fetch(`/Posts/Vote/${postId}/${isUpDown}`,
         {
             method: "POST"
         });
@@ -133,22 +125,15 @@
     }
 
     async function countVotes(postId){
-        response = await fetch(`/Posts/CountUpVotes/${postId}`,
+        response = await fetch(`/Posts/CountVotes/${postId}`,
         {
             method: "GET"
-        })
+        });
 
         data = await response.json();
 
-        document.getElementById("upvotes-" + postId).textContent = data.value;
+        document.getElementById("upvotes-" + postId).textContent = data.upVotes;
 
-        response = await fetch(`/Posts/CountDownVotes/${postId}`,
-        {
-            method: "GET"
-        })
-
-        data = await response.json();
-
-        document.getElementById("downvotes-" + postId).textContent = data.value;
+        document.getElementById("downvotes-" + postId).textContent = data.downVotes;
     }
 </script>
