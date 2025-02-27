@@ -46,6 +46,7 @@ namespace FlashHack.Controllers
         }
 
         // GET: SubCategories/Create
+        [AdminAuthorize]
         public IActionResult Create()
         {
             ViewData["HeadCategoryId"] = new SelectList(_context.HeadCategory, "Id", "Name");
@@ -57,6 +58,7 @@ namespace FlashHack.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AdminAuthorize]
         public async Task<IActionResult> Create([Bind("Id,Name,HeadCategoryId")] SubCategory subCategory)
         {
             if (ModelState.IsValid)
@@ -70,6 +72,7 @@ namespace FlashHack.Controllers
         }
 
         // GET: SubCategories/Edit/5
+        [AdminAuthorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -91,6 +94,7 @@ namespace FlashHack.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AdminAuthorize]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,HeadCategoryId")] SubCategory subCategory)
         {
             if (id != subCategory.Id)
@@ -123,6 +127,7 @@ namespace FlashHack.Controllers
         }
 
         // GET: SubCategories/Delete/5
+        [AdminAuthorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -144,6 +149,7 @@ namespace FlashHack.Controllers
         // POST: SubCategories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [AdminAuthorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var subCategory = await _context.SubCategory.FindAsync(id);
