@@ -23,7 +23,7 @@ namespace FlashHack.Models
 
         [Required]
         public int UserId { get; set; }
-        public virtual User User { get; set; } = null!;
+        public virtual User? User { get; set; } = null!;
         [Required]
         public int SubCategoryId { get; set; }
         public SubCategory? SubCategory { get; set; }
