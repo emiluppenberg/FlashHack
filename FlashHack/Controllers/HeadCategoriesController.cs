@@ -44,6 +44,7 @@ namespace FlashHack.Controllers
         }
 
         // GET: HeadCategories/Create
+        [AdminAuthorize]
         public IActionResult Create()
         {
             return View();
@@ -54,6 +55,7 @@ namespace FlashHack.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AdminAuthorize]
         public async Task<IActionResult> Create([Bind("Id,Name")] HeadCategory headCategory)
         {
             if (ModelState.IsValid)
@@ -66,6 +68,7 @@ namespace FlashHack.Controllers
         }
 
         // GET: HeadCategories/Edit/5
+        [AdminAuthorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -86,6 +89,7 @@ namespace FlashHack.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AdminAuthorize]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] HeadCategory headCategory)
         {
             if (id != headCategory.Id)
@@ -117,8 +121,10 @@ namespace FlashHack.Controllers
         }
 
         // GET: HeadCategories/Delete/5
+        [AdminAuthorize]
         public async Task<IActionResult> Delete(int? id)
         {
+            var test = HttpContext.Session.GetString("isAdmin");
             if (id == null)
             {
                 return NotFound();
@@ -137,6 +143,7 @@ namespace FlashHack.Controllers
         // POST: HeadCategories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [AdminAuthorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var headCategory = await _context.HeadCategory.FindAsync(id);
