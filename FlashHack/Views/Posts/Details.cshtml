@@ -33,7 +33,7 @@
                     <i class="fa-solid fa-comments ms-3"></i> @Model.Post.Comments.Count
                 </div>
                 <div>
-                    <span class="text-muted">by <a asp-controller="Users" asp-action="Profile" asp-route-id="@Model.Post.User.Id" class="user-link">@Model.Post.User.FirstName @Model.Post.User.LastName</a></span>
+                    <span class="text-muted">by <a asp-controller="Users" asp-action="Profile" asp-route-id="@Model.Post.User.Id" class="user-link no-underline">@Model.Post.User.FirstName @Model.Post.User.LastName</a></span>
                 </div>
             </div>
             <div>

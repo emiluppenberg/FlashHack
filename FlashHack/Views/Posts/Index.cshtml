@@ -6,72 +6,55 @@
     var currentSortOrder = ViewData["CurrentSortOrder"] as string ?? "newest";
 }
 
-<div class="text-center welcome-section">
-    <h1 class="display-4">@subCategoryName</h1>
-</div>
+<div class="welcome-section">
+    <h1 class="display-4 text-center">@subCategoryName</h1>
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Post List</h2>
-        
-    </div>
-    <div class="filter-bar">
-        <ul class="nav nav-tabs">
-            <li class="nav-item">
-                <a class="nav-link @(currentSortOrder == "newest" ? "active" : "")" asp-controller="Posts" asp-action="@(ViewData["SubCategoryId"] != null ? "IndexBySubCategory" : "Index")" asp-route-subCategoryId="@ViewData["SubCategoryId"]" asp-route-sortOrder="newest">Newest to Oldest</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link @(currentSortOrder == "oldest" ? "active" : "")" asp-controller="Posts" asp-action="@(ViewData["SubCategoryId"] != null ? "IndexBySubCategory" : "Index")" asp-route-subCategoryId="@ViewData["SubCategoryId"]" asp-route-sortOrder="oldest">Oldest to Newest</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link @(currentSortOrder == "mostLiked" ? "active" : "")" asp-controller="Posts" asp-action="@(ViewData["SubCategoryId"] != null ? "IndexBySubCategory" : "Index")" asp-route-subCategoryId="@ViewData["SubCategoryId"]" asp-route-sortOrder="mostLiked">Most Liked</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link @(currentSortOrder == "leastLiked" ? "active" : "")" asp-controller="Posts" asp-action="@(ViewData["SubCategoryId"] != null ? "IndexBySubCategory" : "Index")" asp-route-subCategoryId="@ViewData["SubCategoryId"]" asp-route-sortOrder="leastLiked">Least Liked</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link @(currentSortOrder == "mostCommented" ? "active" : "")" asp-controller="Posts" asp-action="@(ViewData["SubCategoryId"] != null ? "IndexBySubCategory" : "Index")" asp-route-subCategoryId="@ViewData["SubCategoryId"]" asp-route-sortOrder="mostCommented">Most Commented</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link @(currentSortOrder == "leastCommented" ? "active" : "")" asp-controller="Posts" asp-action="@(ViewData["SubCategoryId"] != null ? "IndexBySubCategory" : "Index")" asp-route-subCategoryId="@ViewData["SubCategoryId"]" asp-route-sortOrder="leastCommented">Least Commented</a>
-            </li>
-        </ul>
-    </div>
-    @foreach (var post in Model.Posts)
-    {
-        <div class="card mb-3 post-item">
-            <p id="result-@post.Id"></p>
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h3>@post.Title<p class="text-muted">by @post.User.FirstName</p></h3>
-                @if (Model.Favorites != null)
-                {
-                    @if (!Model.Favorites.Contains(post))
-                    {
-                        <i class="fa-regular fa-star star-icon" onclick="toggleFavorite(this, @post.Id)"></i>
-                    }
-                    @if (Model.Favorites.Contains(post))
-                    {
-                        <i class="fa-solid fa-star star-icon" onclick="toggleFavorite(this, @post.Id)"></i>
-                    }
-                }
-            </div>
-            <div class="card-body">
-                <p>@post.Content.Substring(0, Math.Min(post.Content.Length, 100))...</p>
-                <div class="d-flex justify-content-between align-items-center">
+
+    <div class="container mt-4">
+        <div class="filter-bar solid-line">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link @(currentSortOrder == "newest" ? "active" : "")" asp-controller="Posts" asp-action="Index" asp-route-subCategoryId="@ViewData["SubCategoryId"]" asp-route-sortOrder="newest">Newest to Oldest</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(currentSortOrder == "oldest" ? "active" : "")" asp-controller="Posts" asp-action="Index" asp-route-subCategoryId="@ViewData["SubCategoryId"]" asp-route-sortOrder="oldest">Oldest to Newest</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(currentSortOrder == "mostLiked" ? "active" : "")" asp-controller="Posts" asp-action="Index" asp-route-subCategoryId="@ViewData["SubCategoryId"]" asp-route-sortOrder="mostLiked">Most Liked</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(currentSortOrder == "mostCommented" ? "active" : "")" asp-controller="Posts" asp-action="Index" asp-route-subCategoryId="@ViewData["SubCategoryId"]" asp-route-sortOrder="mostCommented">Most Commented</a>
+                </li>
+            </ul>
+        </div>
+
+        @foreach (var post in Model.Posts)
+        {
+            <div class="card mb-3 post-item solid-line">
+                <div class="card-header d-flex flex-column" style="background-color: black; color: white; border-radius: 10px; outline: white;">
+                    <h3>@post.Title</h3>
                     <div>
-                        <i class="fa-solid fa-thumbs-up" onclick="vote(@post.Id, 'true')"></i><span id="upvotes-@post.Id">@post.UpVotes</span>
-                        <i class="fa-solid fa-thumbs-down ms-3" onclick="vote(@post.Id, 'false')"></i><span id="downvotes-@post.Id">@post.DownVotes</span>
-                        <i class="fa-solid fa-comments ms-3"></i> @post.Comments.Count
+                        <p>@post.Content.Substring(0, Math.Min(post.Content.Length, 100))...</p>
                     </div>
-                    <div>
-                        <a asp-action="Details" asp-route-id="@post.Id" class="btn btn-primary">Read More</a>
+                </div>
+                <div class="card-body ms-2 mt-1">
+                    <span class="text-muted">by <a asp-controller="Users" asp-action="Profile" asp-route-id="@post.User.Id" class="user-link no-underline">@post.User.FirstName @post.User.LastName</a></span>
+                    <p>@post.SubCategory.Name</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fa-solid fa-thumbs-up" onclick="vote(@post.Id, 'true')"></i><span id="upvotes-@post.Id">@post.UpVotes</span>
+                            <i class="fa-solid fa-thumbs-down ms-3" onclick="vote(@post.Id, 'false')"></i><span id="downvotes-@post.Id">@post.DownVotes</span>
+                            <i class="fa-solid fa-comments ms-3"></i> @post.Comments.Count
+                        </div>
+                        <div>
+                            <a asp-action="Details" asp-route-id="@post.Id" class="btn btn-sm btn-custom-dark solid-line">Read More</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 </div>
-
 <script>
     async function toggleFavorite(element, postId) {
         let response;

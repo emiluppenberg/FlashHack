@@ -32,13 +32,12 @@ namespace FlashHack.Controllers
         }
 
         // GET: Posts
-        public async Task<IActionResult> Index(int? subCategoryId, string searchTerm, string sortOrder)
+        public async Task<IActionResult> Index(int? subCategoryId, string sortOrder)
         {
             IQueryable<Post> postsQuery = _context.Post
                 .Include(p => p.SubCategory)
                 .Include(p => p.User)
                 .Include(p => p.Comments);
-
 
             if (subCategoryId != null)
             {
@@ -53,11 +52,6 @@ namespace FlashHack.Controllers
             else
             {
                 ViewData["SubCategoryName"] = "All Posts";
-            }
-
-            if (!string.IsNullOrEmpty(searchTerm))
-            {
-                postsQuery = postsQuery.Where(p => p.Title.Contains(searchTerm) || p.Content.Contains(searchTerm));
             }
 
             ViewData["CurrentSortOrder"] = sortOrder;
@@ -101,6 +95,7 @@ namespace FlashHack.Controllers
 
             return View(vm);
         }
+
 
         // GET: Posts/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -369,6 +364,7 @@ namespace FlashHack.Controllers
             return View("IndexByHeadCategory", vm);
         }
 
+
         public async Task<IActionResult> IndexBySubCategory(int? subCategoryId, string sortOrder)
         {
             if (subCategoryId == null)
@@ -432,6 +428,7 @@ namespace FlashHack.Controllers
             ViewData["SubCategoryId"] = subCategoryId;
             return View("IndexBySubCategory", vm);
         }
+
 
         [HttpPost("Posts/Vote/{postId}/{isUpDown}")]
         public async Task<IActionResult> Vote(int postId, bool isUpDown)
