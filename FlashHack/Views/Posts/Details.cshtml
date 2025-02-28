@@ -10,22 +10,29 @@
 <div class="container mt-4">
     <div class="card mb-3 post-item">
         <p id="result-@Model.Post.Id"></p>
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h3>@Model.Post.Title</h3>
-            @if (Model.Favorites != null)
-            {
-                if (!Model.Favorites.Contains(Model.Post))
+        <div class="card-header d-flex flex-column align-items-start card-header-custom solid-line">
+            <div class="d-flex justify-content-between w-100">
+                <h3>@Model.Post.Title</h3>
+                @if (Model.Favorites != null)
                 {
-                    <i class="fa-regular fa-star star-icon" onclick="toggleFavorite(this, @Model.Post.Id)"></i>
+                    if (!Model.Favorites.Contains(Model.Post))
+                    {
+                        <i class="fa-regular fa-star star-icon" onclick="toggleFavorite(this, @Model.Post.Id)"></i>
+                    }
+                    if (Model.Favorites.Contains(Model.Post))
+                    {
+                        <i class="fa-solid fa-star star-icon" onclick="toggleFavorite(this, @Model.Post.Id)"></i>
+                    }
                 }
-                if (Model.Favorites.Contains(Model.Post))
-                {
-                    <i class="fa-solid fa-star star-icon" onclick="toggleFavorite(this, @Model.Post.Id)"></i>
-                }
-            }
+            </div>
+            <div class="post-content">
+                <p style="color: white;">@Model.Post.Content</p>
+            </div>
         </div>
+
+
         <div class="card-body">
-            <p>@Model.Post.Content</p>
+            
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <i class="fa-solid fa-thumbs-up thumbs-icon" onclick="vote(@Model.Post.Id, 'true')"></i><span id="upvotes-@Model.Post.Id">@Model.Post.UpVotes</span>
@@ -36,17 +43,15 @@
                     <span class="text-muted">by <a asp-controller="Users" asp-action="Profile" asp-route-id="@Model.Post.User.Id" class="user-link no-underline">@Model.Post.User.FirstName @Model.Post.User.LastName</a></span>
                 </div>
             </div>
-            <div>
-                <p>
-                    <a asp-action="Create" asp-controller="Comments" asp-route-userId="@userId" asp-route-postId="@postId" asp-route-returnUrl="@Context.Request.Path" class="answer-button">Answer</a>
-                </p>
-            </div>
             <div class="comments-section mt-3">
                 <h5>Comments:</h5>
+                <p>
+                    <a asp-action="Create" asp-controller="Comments" asp-route-userId="@userId" asp-route-postId="@postId" asp-route-returnUrl="@Context.Request.Path" class="btn btn-sm btn-custom-dark solid-line mt-2">Answer</a>
+                </p>
                 <ul class="list-group">
                     @foreach (var comment in Model.Post.Comments)
                     {
-                        <li class="list-group-item comment-item">
+                        <li class="comment-item solid-line">
                             <div class="comment-container">
                                 <div class="comment-user-info">
                                     <img src="@comment.User.ProfilePicURL" class="profile-pic" alt="Profile Picture" />
@@ -55,7 +60,7 @@
                                         <div class="premium-badge">Premium</div>
                                     }
                                     <div class="user-name">
-                                        <a asp-controller="Users" asp-action="Profile" asp-route-id="@comment.User.Id" class="user-link">
+                                        <a asp-controller="Users" asp-action="Profile" asp-route-id="@comment.User.Id" class="user-link no-underline">
                                             by @comment.User.FirstName @comment.User.LastName
                                         </a>
                                     </div>

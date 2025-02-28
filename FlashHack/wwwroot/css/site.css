@@ -92,8 +92,32 @@ footer {
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 60px;
+    height: 6%;
 }
+    footer h5 {
+        color: #1abc9c;
+        margin-bottom: 10px;
+    }
+
+    footer a {
+        color: #1abc9c;
+        text-decoration: none;
+    }
+
+        footer a:hover {
+            color: #16a085;
+            text-decoration: underline;
+        }
+
+    footer .fab {
+        font-size: 1.5rem;
+        margin-right: 10px;
+        color: #1abc9c;
+    }
+
+        footer .fab:hover {
+            color: #16a085;
+        }
 
 .card-header {
     background-color: rgb(30, 43, 49);
@@ -426,7 +450,8 @@ footer {
 .star-icon {
     cursor: pointer;
     color: gold;
-    font-size: 1.5rem;
+    font-size: 1rem; 
+    margin-top: 0.5rem; 
 }
 
     .star-icon.fa-regular {
@@ -594,10 +619,44 @@ body .text-muted {
 
 .no-underline {
     text-decoration: none;
-    color: inherit; /* Inherit the color from the parent element */
+    color: inherit; 
 }
 
     .no-underline:hover {
         text-decoration: none;
-        color: inherit; /* Ensure the color remains the same on hover */
+        color: inherit; 
     }
+
+.mt-2 {
+    margin-top: 1rem; /* Adjust the value as needed */
+}
+
+.pt-2 {
+    padding-top: 1rem; /* Adjust the value as needed */
+}
+
+.card-header-custom {
+    background-color: #0a1a2a; /* Same color as comment-container */
+    color: white; /* Ensure text color is white */
+    margin-bottom: 15px;
+    border-radius: 10px;
+}
+
+.post-content {
+    background-color: #1b2b3b; /* Same color as comment-content */
+    padding: 10px;
+    border-radius: 5px;
+    color: white; /* Ensure text color is white */
+    margin-top: 10px; /* Add some margin to separate from the title */
+    width: 100%; /* Ensure it takes the full width */
+    margin-bottom: 10px; 
+}
+
+.profile-header {
+    background-color: rgb(30, 43, 49);
+    color: white;
+    border-radius: 10px;
+    padding: 15px;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
