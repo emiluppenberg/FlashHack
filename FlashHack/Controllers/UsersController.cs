@@ -240,6 +240,7 @@ namespace FlashHack.Controllers
                 user.ShowPhoneNumber = updatedUser.ShowPhoneNumber;
 
 
+
                 if (!string.IsNullOrEmpty(updatedUser.Password))
                 {
                     user.Password = updatedUser.Password;
