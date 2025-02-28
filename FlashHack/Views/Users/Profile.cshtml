@@ -46,27 +46,71 @@
                         @phoneNumber
                     }
                 </li>
-                <li class="list-group-item"><strong>Employer:</strong> @Model.Employer</li>
-                <li class="list-group-item"><strong>Bio:</strong> @Model.Bio</li>
-                <li class="list-group-item"><strong>Signature:</strong> @Model.Signature</li>
-                <li class="list-group-item"><strong>Rating:</strong> @Model.Rating</li>
+                <li class="list-group-item">
+                    <strong>Employer:</strong>
+                    @if (Model.ShowEmployer || userId == Model.Id)
+                    {
+                        @Model.Employer
+                    }
+                    else
+                    {
+                        var employer = new string('*', Model.Employer.Length);
+                        @employer
+                    }
+                </li>
+                <li class="list-group-item">
+                    <strong>Bio:</strong>
+                    @if (Model.ShowBio || userId == Model.Id)
+                    {
+                        @Model.Bio
+                    }
+                    else
+                    {
+                        var bio = new string('*', Model.Bio.Length);
+                        @bio
+                    }
+                </li>
+                <li class="list-group-item">
+                    <strong>Signature:</strong> @Model.Signature
+                </li>
+                <li class="list-group-item">
+                    <strong>Rating:</strong>
+                    @if (Model.ShowRating || userId == Model.Id)
+                    {
+                        @Model.Rating
+                    }
+                    else
+                    {
+                        var rating = new string('*', Model.Rating.ToString().Length);
+                        @rating
+                    }
+                </li>
+            
             </ul>
 
             <!-- Skills Section -->
             <h4>Skills</h4>
-            @if (Model.Skills != null && Model.Skills.Any())
+            @if (Model.ShowSkills || userId == Model.Id)
             {
-                @foreach (var skill in Model.Skills)
+                if (Model.Skills != null && Model.Skills.Any())
                 {
-                    <div class="mb-2">
-                        <strong>@skill.SkillName</strong> (Rating: @skill.SkillRating/5)
-                        <p>@skill.SkillDescription</p>
-                    </div>
+                    @foreach (var skill in Model.Skills)
+                    {
+                        <div class="mb-2">
+                            <strong>@skill.SkillName</strong> (Rating: @skill.SkillRating/5)
+                            <p>@skill.SkillDescription</p>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p>No skills added yet.</p>
                 }
             }
             else
             {
-                <p>No skills added yet.</p>
+                var hiddenSkills = new string('*', 10);
+                <p>@hiddenSkills</p>
             }
 
             @if (Context.Session.GetInt32("UserId") == Model.Id)

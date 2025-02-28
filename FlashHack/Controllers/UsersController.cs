@@ -238,6 +238,12 @@ namespace FlashHack.Controllers
                 user.IsPremium = updatedUser.IsPremium;
                 user.ShowEmail = updatedUser.ShowEmail;
                 user.ShowPhoneNumber = updatedUser.ShowPhoneNumber;
+                user.ShowEmployer = updatedUser.ShowEmployer;
+                user.ShowBio = updatedUser.ShowBio;
+                user.ShowRating = updatedUser.ShowRating;
+                user.ShowSkills = updatedUser.ShowSkills;
+                
+
 
 
 
