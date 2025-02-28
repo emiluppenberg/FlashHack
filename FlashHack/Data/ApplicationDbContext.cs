@@ -46,7 +46,7 @@ namespace FlashHack.Data
         public DbSet<FlashHack.Models.Comment> Comment { get; set; } = default!;
         public DbSet<FlashHack.Models.Company> Company{ get; set; } = default!;
         public DbSet<FlashHack.Models.Jobblisting> Jobblisting { get; set; } = default!;
-
+        public DbSet<FlashHack.Models.Vote> Vote { get; set; } = default!;
     }
 }
 

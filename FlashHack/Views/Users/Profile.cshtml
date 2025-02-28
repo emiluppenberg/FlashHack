@@ -49,7 +49,18 @@
                 <li class="list-group-item"><strong>Employer:</strong> @Model.Employer</li>
                 <li class="list-group-item"><strong>Bio:</strong> @Model.Bio</li>
                 <li class="list-group-item"><strong>Signature:</strong> @Model.Signature</li>
-                <li class="list-group-item"><strong>Rating:</strong> @Model.Rating</li>
+                <li class="list-group-item">
+                    <strong>Rating:</strong>
+                    @if (Model.ShowRating || userId == Model.Id)
+                    {
+                        @Model.Rating
+                    }
+                    else
+                    {
+                        var rating = new string('*', Model.Rating.ToString().Length);
+                        @rating
+                    }
+                </li>
             </ul>
 
             <!-- Skills Section -->
