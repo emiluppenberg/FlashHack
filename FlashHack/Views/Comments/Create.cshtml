@@ -1,0 +1,51 @@
+﻿@model FlashHack.Models.Comment
+
+@{
+    ViewData["Title"] = "Create";
+    var returnUrl = ViewBag.ReturnUrl ?? Url.Action("Details", "Posts", new { id = Model.PostId });
+}
+
+<div class="container mt-4 welcome-section">
+    <h1 class="text-center">Create Comment</h1>
+    <hr />
+    <div class="row">
+        <div class="col-md-12 comment-form-container create-comment-color">
+            <h4>Comment</h4>
+            <form asp-action="Create" asp-route-postId="@Model.PostId">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" name="UserId" value="@Model.UserId" />
+                <input type="hidden" name="PostId" value="@Model.PostId" />
+                <div class="form-group">
+                    <label asp-for="Content" class="control-label"></label>
+                    <textarea asp-for="Content" class="form-control" rows="10" maxlength="1000" oninput="updateCharCount(this)"></textarea>
+                    <div class="char-count" id="charCount">1000 characters left</div>
+                    <span asp-validation-for="Content" class="text-danger"></span>
+                </div>
+                <div>
+                    <label>
+                        <input asp-for="UseSignature" type="checkbox" />
+                        Attach Signature
+                    </label>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="text-center">
+        <a asp-action="Details" asp-controller="Posts" asp-route-id="@Model.PostId" class="btn btn-sm btn-custom-dark solid-line">Back to Post</a>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script>
+        function updateCharCount(textarea) {
+            const maxLength = textarea.getAttribute('maxlength');
+            const currentLength = textarea.value.length;
+            const charCountElement = document.getElementById('charCount');
+            charCountElement.textContent = `${maxLength - currentLength} characters left`;
+        }
+    </script>
+}

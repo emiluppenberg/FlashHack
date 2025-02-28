@@ -1,0 +1,30 @@
+﻿@model FlashHack.ViewModels.NavBarViewModel
+
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="headCategoriesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fa-brands fa-stack-exchange"></i> Discussions
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="headCategoriesDropdown">
+        @foreach (var headCategory in Model.HeadCategories)
+        {
+            <li class="dropdown-submenu">
+                <a class="dropdown-item dropdown-toggle" href="@Url.Action("IndexByHeadCategory", "Posts", new { headCategoryId = headCategory.Id })">@headCategory.Name</a>
+                <ul class="dropdown-menu">
+                    @foreach (var subCategory in headCategory.SubCategories)
+                    {
+                        <li>
+                            @if (subCategory.Id == Model.CurrentSubCategoryId)
+                            {
+                                <a class="dropdown-item disabled text-muted" aria-disabled="true">@subCategory.Name</a>
+                            }
+                            else
+                            {
+                                <a class="dropdown-item" asp-area="" asp-controller="Posts" asp-action="IndexBySubCategory" asp-route-subCategoryId="@subCategory.Id">@subCategory.Name</a>
+                            }
+                        </li>
+                    }
+                </ul>
+            </li>
+        }
+    </ul>
+</li>

@@ -1,21 +1,56 @@
 using System.Diagnostics;
+using FlashHack.Data;
 using FlashHack.Models;
+using FlashHack.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FlashHack.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var headCategories = await _context.HeadCategory
+                .Include(hc => hc.SubCategories)
+                .ThenInclude(sc => sc.Posts)
+                .ThenInclude(p => p.Comments)
+                .Include(hc => hc.SubCategories)
+                .ThenInclude(sc => sc.Posts)
+                .ThenInclude(p => p.User)
+                .ToListAsync();
+
+            var viewModel = new HomeIndexViewModel
+            {
+                HeadCategories = headCategories.Select(hc => new HeadCategoryViewModel
+                {
+                    Id = hc.Id,
+                    Name = hc.Name,
+                    SubCategories = hc.SubCategories.Select(sc => new SubCategoryViewModel
+                    {
+                        Id = sc.Id,
+                        Name = sc.Name,
+                        PostCount = sc.Posts.Count,
+                        MostRecentPostId = sc.Posts.OrderByDescending(p => p.TimeCreated).FirstOrDefault()?.Id,
+                        MostRecentPostTitle = sc.Posts.OrderByDescending(p => p.TimeCreated).FirstOrDefault()?.Title,
+                        MostRecentPostUser = sc.Posts.OrderByDescending(p => p.TimeCreated).FirstOrDefault()?.User?.FirstName + " " + sc.Posts.OrderByDescending(p => p.TimeCreated).FirstOrDefault()?.User?.LastName,
+                        MostRecentPostUserId = sc.Posts.OrderByDescending(p => p.TimeCreated).FirstOrDefault()?.UserId,
+                        HasPosts = sc.Posts.Any(),
+                        TotalComments = sc.Posts.Sum(p => p.Comments.Count)
+                    }).ToList()
+                }).ToList()
+            };
+
+            return View(viewModel);
         }
 
         public IActionResult Privacy()
@@ -30,3 +65,4 @@ namespace FlashHack.Controllers
         }
     }
 }
+

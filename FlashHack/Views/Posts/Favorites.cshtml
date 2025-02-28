@@ -1,0 +1,88 @@
+﻿@model IEnumerable<FlashHack.Models.Post>
+
+@{
+    ViewData["Title"] = "Favorites";
+}
+
+<div class="welcome-section">
+    <h1 class="display-4 text-center">Favorites</h1>
+
+
+<div class="container mt-4">
+    @foreach (var post in Model)
+    {
+        <div class="card mb-3 post-item-index solid-line">
+            <div class="card-header d-flex justify-content-between align-items-center" style="background-color: #090019; color: white; border-radius: 10px; outline: white;">
+                <div class="d-flex flex-column">
+                    <h3>@post.Title</h3>
+                    <div>
+                        <p>@post.Content.Substring(0, Math.Min(post.Content.Length, 100))...</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-star star-icon" onclick="toggleFavorite(this, @post.Id)"></i>
+            </div>
+            <div class="card-body ms-2 mt-1">
+                <span class="text-muted">by <a asp-controller="Users" asp-action="Profile" asp-route-id="@post.User.Id" class="user-link no-underline">@post.User.FirstName @post.User.LastName</a></span>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <i class="fa-solid fa-thumbs-up" onclick="vote(@post.Id, 'true')"> </i> <span id="upvotes-@post.Id">@post.UpVotes</span>
+                        <i class="fa-solid fa-thumbs-down ms-3" onclick="vote(@post.Id, 'false')"> </i> <span id="downvotes-@post.Id">@post.DownVotes</span>
+                        <i class="fa-solid fa-comments ms-3"> </i> @post.Comments.Count
+                    </div>
+                    <div>
+                        <a asp-action="Details" asp-route-id="@post.Id" class="btn btn-sm btn-custom-dark solid-line">Read More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+</div>
+<script>
+    async function toggleFavorite(element, postId) {
+        let response;
+
+        if (element.classList.contains('fa-regular')) {
+            response = await fetch(`/Posts/AddToFavorites/${postId}`, {
+                method: "POST"
+            });
+        }
+        if (element.classList.contains('fa-solid')) {
+            response = await fetch(`/Posts/RemoveFromFavorites/${postId}`, {
+                method: "POST"
+            });
+        }
+
+        const data = await response.json();
+
+        document.getElementById("result-" + postId).textContent = data.result;
+
+        element.classList.toggle('fa-solid');
+        element.classList.toggle('fa-regular');
+    }
+
+    async function vote(postId, isUpDown) {
+        const response = await fetch(`/Posts/Vote/${postId}/${isUpDown}`, {
+            method: "POST"
+        });
+
+        const data = await response.json();
+
+        document.getElementById("result-" + postId).textContent = data.result;
+
+        countVotes(postId);
+    }
+
+    async function countVotes(postId) {
+        const response = await fetch(`/Posts/CountVotes/${postId}`, {
+            method: "GET"
+        });
+
+        const data = await response.json();
+
+        document.getElementById("upvotes-" + postId).textContent = data.upVotes;
+        document.getElementById("downvotes-" + postId).textContent = data.downVotes;
+    }
+</script>
+
+
