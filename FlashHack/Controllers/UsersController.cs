@@ -218,12 +218,7 @@ namespace FlashHack.Controllers
                 return NotFound();
             }
 
-            // Behåll lösenord om inget nytt anges
-            if (string.IsNullOrEmpty(updatedUser.Password))
-            {
-                updatedUser.Password = user.Password;
-               
-            }
+            
 
             ModelState.Clear();
             TryValidateModel(updatedUser);
@@ -243,6 +238,17 @@ namespace FlashHack.Controllers
                 user.IsPremium = updatedUser.IsPremium;
                 user.ShowEmail = updatedUser.ShowEmail;
                 user.ShowPhoneNumber = updatedUser.ShowPhoneNumber;
+
+
+                if (!string.IsNullOrEmpty(updatedUser.Password))
+                {
+                    user.Password = updatedUser.Password;
+                    
+                }
+                else
+                {
+                    Console.WriteLine("No new password provided, keeping old password.");
+                }
 
                 // Lägg till ny färdighet (om det finns)
                 if (!string.IsNullOrEmpty(skillName) && !string.IsNullOrEmpty(skillDescription) && skillRating.HasValue)
