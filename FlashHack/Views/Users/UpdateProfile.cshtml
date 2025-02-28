@@ -72,12 +72,26 @@
                     <label asp-for="Employer">Employer</label>
                     <input asp-for="Employer" class="form-control" />
                 </div>
+                @if (Model.IsPremium)
+                {
+                    <div class="form-group">
+                        <label asp-for="ShowEmployer">Show Employer</label>
+                        <input type="checkbox" asp-for="ShowEmployer" class="form-check-input" />
+                    </div>
+                }
 
                 <!-- Bio -->
                 <div class="form-group">
                     <label asp-for="Bio">Bio</label>
                     <textarea asp-for="Bio" class="form-control"></textarea>
                 </div>
+                @if (Model.IsPremium)
+                {
+                    <div class="form-group">
+                        <label asp-for="ShowBio">Show Bio</label>
+                        <input type="checkbox" asp-for="ShowBio" class="form-check-input" />
+                    </div>
+                }
 
                 <!-- Signature -->
                 <div class="form-group">
@@ -96,6 +110,14 @@
                     <label for="IsPremium">Become Premium</label>
                     <input type="checkbox" asp-for="IsPremium" class="form-check-input" />
                 </div>
+
+                @if (Model.IsPremium)
+                {
+                    <div class="form-group">
+                        <label asp-for="ShowSkills">Show Skills</label>
+                        <input type="checkbox" asp-for="ShowSkills" class="form-check-input" />
+                    </div>
+                }
 
                 <hr />
 
@@ -154,7 +176,9 @@
                 </div>
             </form>
         </div>
+
     </div>
+   
 
     <!-- Back button -->
     <div class="text-center mt-3">
