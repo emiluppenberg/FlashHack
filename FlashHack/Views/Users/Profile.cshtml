@@ -1,7 +1,9 @@
 ﻿@model FlashHack.Models.User
+@inject IHttpContextAccessor httpContextAccessor
 
 @{
     ViewData["Title"] = "User Profile";
+    var userId = httpContextAccessor.HttpContext.Session.GetInt32("UserId");
 }
 
 <div class="container mt-4">
@@ -20,8 +22,30 @@
             </div>
 
             <ul class="list-group mb-3">
-                <li class="list-group-item"><strong>Email:</strong> @Model.Email</li>
-                <li class="list-group-item"><strong>Phone:</strong> @Model.PhoneNumber</li>
+                <li class="list-group-item">
+                    <strong>Email:</strong>
+                    @if (Model.ShowEmail || userId == Model.Id)
+                    {
+                        @Model.Email
+                    }
+                    else
+                    {
+                        var email = new string('*', Model.Email.Length);
+                        @email
+                    }
+                </li>
+                <li class="list-group-item">
+                    <strong>Phone:</strong>
+                    @if (Model.ShowPhoneNumber || userId == Model.Id)
+                    {
+                        @Model.PhoneNumber
+                    }
+                    else
+                    {
+                        var phoneNumber = new string('*', Model.PhoneNumber.Length);
+                        @phoneNumber
+                    }
+                </li>
                 <li class="list-group-item"><strong>Employer:</strong> @Model.Employer</li>
                 <li class="list-group-item"><strong>Bio:</strong> @Model.Bio</li>
                 <li class="list-group-item"><strong>Signature:</strong> @Model.Signature</li>
