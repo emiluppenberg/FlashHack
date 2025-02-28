@@ -143,11 +143,11 @@ footer {
 
     .list-group-item a {
         color: white;
-        text-decoration: none; /* Removed underline */
+        text-decoration: none; 
     }
 
         .list-group-item a:hover {
-            color: white;
+            color: none;
             background-color: darkgray;
         }
 
@@ -677,6 +677,14 @@ body .text-muted {
     background: linear-gradient(to right, black, #017199)
 }
 
-profile-form-container {
+.profile-form-container {
     background-color: #004065 !important;
+}
+
+.card-header-profile {
+    background-color: #002465;
+    color: white;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    padding: 10px;
 }
