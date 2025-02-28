@@ -40,8 +40,10 @@ namespace FlashHack.Controllers
                         Id = sc.Id,
                         Name = sc.Name,
                         PostCount = sc.Posts.Count,
+                        MostRecentPostId = sc.Posts.OrderByDescending(p => p.TimeCreated).FirstOrDefault()?.Id,
                         MostRecentPostTitle = sc.Posts.OrderByDescending(p => p.TimeCreated).FirstOrDefault()?.Title,
-                        MostRecentPostUser = sc.Posts.OrderByDescending(p => p.TimeCreated).FirstOrDefault()?.User?.FirstName,
+                        MostRecentPostUser = sc.Posts.OrderByDescending(p => p.TimeCreated).FirstOrDefault()?.User?.FirstName + " " + sc.Posts.OrderByDescending(p => p.TimeCreated).FirstOrDefault()?.User?.LastName,
+                        MostRecentPostUserId = sc.Posts.OrderByDescending(p => p.TimeCreated).FirstOrDefault()?.UserId,
                         HasPosts = sc.Posts.Any(),
                         TotalComments = sc.Posts.Sum(p => p.Comments.Count)
                     }).ToList()
@@ -63,3 +65,4 @@ namespace FlashHack.Controllers
         }
     }
 }
+

@@ -4,7 +4,7 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center welcome-section">
+<div class="text-center welcome-section solid-line">
     <h1 class="display-4">Welcome to Flash-Hack</h1>
 
     <p>Welcome to FlashHack, your go-to platform for discussions and resources on various topics. Explore the categories below to find discussions that interest you.</p>
@@ -16,7 +16,7 @@
         <div class="card mb-3">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h3>@headCategory.Name</h3>
-                <span class="text-muted">What's New</span>
+                <span>What's New</span>
             </div>
             <div class="card-body">
                 <ul class="list-group">
@@ -40,11 +40,15 @@
                             <div class="d-flex flex-column align-items-end">
                                 @if (subCategory.HasPosts)
                                 {
-                                    <div class="text-muted">
-                                        @subCategory.MostRecentPostTitle
+                                    <div>
+                                        <a asp-controller="Posts" asp-action="Details" asp-route-id="@subCategory.MostRecentPostId" class="post-link no-underline">
+                                            @subCategory.MostRecentPostTitle
+                                        </a>
                                     </div>
                                     <div class="text-muted">
-                                        by @subCategory.MostRecentPostUser
+                                        by <a asp-controller="Users" asp-action="Profile" asp-route-id="@subCategory.MostRecentPostUserId" class="user-link no-underline">
+                                            @subCategory.MostRecentPostUser
+                                        </a>
                                     </div>
                                 }
                                 else
@@ -66,4 +70,5 @@
         </div>
     }
 </div>
+
 
