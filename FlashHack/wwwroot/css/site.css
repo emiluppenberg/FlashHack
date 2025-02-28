@@ -688,3 +688,11 @@ body .text-muted {
     border-radius: 10px;
     padding: 10px;
 }
+
+.create-comment-color {
+    background-color: #002456 !important;
+    color: white;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
