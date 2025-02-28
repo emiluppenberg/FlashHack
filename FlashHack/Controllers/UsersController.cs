@@ -241,6 +241,8 @@ namespace FlashHack.Controllers
                 user.Signature = updatedUser.Signature ?? string.Empty;
                 user.ProfilePicURL = updatedUser.ProfilePicURL ?? string.Empty;
                 user.IsPremium = updatedUser.IsPremium;
+                user.ShowEmail = updatedUser.ShowEmail;
+                user.ShowPhoneNumber = updatedUser.ShowPhoneNumber;
 
                 // Lägg till ny färdighet (om det finns)
                 if (!string.IsNullOrEmpty(skillName) && !string.IsNullOrEmpty(skillDescription) && skillRating.HasValue)
