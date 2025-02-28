@@ -118,8 +118,8 @@ namespace FlashHack.Controllers
         public IActionResult Create()
         {
             try
-            {   
-                if(HttpContext.Session.GetInt32("UserId") == null)
+            {
+                if (HttpContext.Session.GetInt32("UserId") == null)
                     return RedirectToAction("Login", "Users");
 
                 if (TempData["PageId"] != null)
@@ -150,9 +150,9 @@ namespace FlashHack.Controllers
                 {
                     post.TimeCreated = DateTime.Now;
                     await postRepository.AddAsync(post);
-                    var getMadePost = _context.Post.Where(t => t.Title == post.Title).OrderByDescending(t=>t.TimeCreated).FirstOrDefault();
+                    var getMadePost = _context.Post.Where(t => t.Title == post.Title).OrderByDescending(t => t.TimeCreated).FirstOrDefault();
 
-                    return RedirectToAction("Details", new {id = getMadePost.Id}); 
+                    return RedirectToAction("Details", new { id = getMadePost.Id });
                 }
                 return View(post);
             }
@@ -202,11 +202,20 @@ namespace FlashHack.Controllers
         }
 
         // GET: Posts/Delete/5
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int? postId, int? userId)
         {
-            var post = await postRepository.GetByIdAndIncludeAsync(id);
+            if (postId == null)
+            {
+                RedirectToAction("Error", "Home");
+            }
 
-            return View(post);
+            var post = await postRepository.GetByIdAndIncludeAsync((int)postId);
+            if (userId == post.UserId)
+            {
+                return View(post);
+            }
+            return View("Error", "Home");
+
         }
 
         // POST: Posts/Delete/5
@@ -220,6 +229,8 @@ namespace FlashHack.Controllers
             {
                 try
                 {
+                    var relatedVotes = _context.Vote.Where(v => v.PostId == id);
+                    _context.Vote.RemoveRange(relatedVotes);
                     await postRepository.Delete(post);
                 }
                 catch (Exception ex)
@@ -437,13 +448,13 @@ namespace FlashHack.Controllers
 
             if (userId == null)
             {
-                return new JsonResult(new { result = "Login required", value = 0});
+                return new JsonResult(new { result = "Login required", value = 0 });
             }
-            
-            var vote = new Vote() 
-            { 
-                UserId = Convert.ToInt32(userId), 
-                PostId = postId 
+
+            var vote = new Vote()
+            {
+                UserId = Convert.ToInt32(userId),
+                PostId = postId
             };
 
             if (isUpDown) vote.IsUpVote = true;
@@ -456,7 +467,7 @@ namespace FlashHack.Controllers
                 return new JsonResult(new { result = "Vote removed", value = 0 });
             }
 
-            return new JsonResult(new { result = result, value = 1});
+            return new JsonResult(new { result = result, value = 1 });
         }
 
         [HttpGet("Posts/CountVotes/{postId}")]
