@@ -1,0 +1,45 @@
+﻿document.addEventListener("DOMContentLoaded", function () {
+    const canvas = document.getElementById('matrixCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let columns;
+    let drops;
+
+    function resizeCanvas() {
+        canvas.width = document.documentElement.scrollWidth; // Ensure the canvas covers the entire scrollable width
+        canvas.height = document.documentElement.scrollHeight; // Ensure the canvas covers the entire scrollable height
+
+        columns = Math.floor(canvas.width / fontSize);
+        drops = [];
+        for (let x = 0; x < columns; x++) {
+            drops[x] = 1;
+        }
+    }
+
+    const matrix = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%";
+    const fontSize = 16;
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    function draw() {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = "#00008B"; // Dark blue color for the falling numbers
+        ctx.font = fontSize + "px arial";
+
+        for (let i = 0; i < drops.length; i++) {
+            const text = matrix[Math.floor(Math.random() * matrix.length)];
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                drops[i] = 0;
+            }
+
+            drops[i]++;
+        }
+    }
+
+    setInterval(draw, 33);
+});
