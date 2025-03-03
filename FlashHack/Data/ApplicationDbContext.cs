@@ -14,13 +14,13 @@ namespace FlashHack.Data
         {
             modelBuilder.Entity<Comment>()
                 .HasOne(c => c.User)
-                .WithMany()  
+                .WithMany()
                 .HasForeignKey(c => c.UserId)
-                .OnDelete(DeleteBehavior.NoAction); 
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Comment>()
                 .HasOne(c => c.Post)
-                .WithMany(p => p.Comments) 
+                .WithMany(p => p.Comments)
                 .HasForeignKey(c => c.PostId)
                 .OnDelete(DeleteBehavior.Cascade);
 
@@ -44,9 +44,9 @@ namespace FlashHack.Data
         public DbSet<FlashHack.Models.Skill> Skill { get; set; } = default!;
         public DbSet<FlashHack.Models.Post> Post { get; set; } = default!;
         public DbSet<FlashHack.Models.Comment> Comment { get; set; } = default!;
-        public DbSet<FlashHack.Models.Company> Company{ get; set; } = default!;
+        public DbSet<FlashHack.Models.Company> Company { get; set; } = default!;
         public DbSet<FlashHack.Models.Jobblisting> Jobblisting { get; set; } = default!;
-
+        public DbSet<FlashHack.Models.Vote> Vote { get; set; } = default!;
     }
 }
 
