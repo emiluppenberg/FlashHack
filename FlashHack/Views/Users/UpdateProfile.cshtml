@@ -131,6 +131,14 @@
                         <input type="checkbox" asp-for="ShowSkills" class="form-check-input" />
                     </div>
                 }
+                @if (Model.IsPremium)
+                {
+                    <div class="form-group">
+                        <label asp-for="ShowToRecruiter">Show profile to recruiters</label>
+                        <input type="checkbox" asp-for="ShowToRecruiter" class="form-check-input" />
+                    </div>
+                }
+
 
                 <hr />
 

@@ -266,6 +266,8 @@ namespace FlashHack.Controllers
                 user.ShowBio = updatedUser.ShowBio;
                 user.ShowRating = updatedUser.ShowRating;
                 user.ShowSkills = updatedUser.ShowSkills;
+                user.ShowToRecruiter = updatedUser.ShowToRecruiter; 
+
 
 
 
