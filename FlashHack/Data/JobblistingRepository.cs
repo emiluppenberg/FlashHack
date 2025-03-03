@@ -33,7 +33,9 @@ namespace FlashHack.Data
 
         public async Task<Jobblisting> GetByIdAsync(int id)
         {
-            return await applicationDbContext.Jobblisting.FirstOrDefaultAsync(j => j.Id == id);
+            return await applicationDbContext.Jobblisting
+                .Include(j => j.Company)
+                .FirstOrDefaultAsync(j => j.Id == id);
         }
 
         public async Task Update(Jobblisting jobblisting)

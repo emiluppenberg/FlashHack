@@ -61,5 +61,26 @@ namespace FlashHack.Controllers
 
             return View(jobblistings);
         }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+
+            var user = await userRepository.GetByIdAsync(userId.Value);
+
+            if (!user.IsPremium)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+
+            var jobblisting = await jobblistingRepository.GetByIdAsync(id);
+
+            return View(jobblisting);
+        }
     }
 }
