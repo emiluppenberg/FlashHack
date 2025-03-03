@@ -12,7 +12,7 @@
         columns = Math.floor(canvas.width / fontSize);
         drops = [];
         for (let x = 0; x < columns; x++) {
-            drops[x] = 1;
+            drops[x] = Math.floor(Math.random() * canvas.height / fontSize); // Start at random positions
         }
     }
 
