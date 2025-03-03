@@ -98,18 +98,46 @@ namespace FlashHack.Controllers
 
 
         // GET: Posts/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, int page = 1, string sortOrder = "newest")
         {
-            var vm = new PostDetailsViewModel();
-
-            var userId = HttpContext.Session.GetInt32("UserId");
-
-            if (userId != null)
+            if (id == null)
             {
-                vm.Favorites = await postRepository.GetUserFavorites(Convert.ToInt32(userId));
+                return NotFound();
             }
 
-            vm.Post = await postRepository.GetByIdAsync((int)id);
+            var post = await postRepository.GetByIdAsync((int)id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            var userId = HttpContext.Session.GetInt32("UserId");
+            var favorites = userId != null ? await postRepository.GetUserFavorites((int)userId) : new List<Post>();
+
+            const int pageSize = 10;
+            var commentsQuery = post.Comments.AsQueryable();
+
+            switch (sortOrder)
+            {
+                case "newest":
+                    commentsQuery = commentsQuery.OrderByDescending(c => c.TimeCreated);
+                    break;
+                case "oldest":
+                    commentsQuery = commentsQuery.OrderBy(c => c.TimeCreated);
+                    break;
+            }
+
+            var totalComments = commentsQuery.Count();
+            var comments = commentsQuery.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            var vm = new PostDetailsViewModel
+            {
+                Post = post,
+                Favorites = favorites,
+                CurrentPage = page,
+                TotalPages = (int)Math.Ceiling(totalComments / (double)pageSize),
+                SortOrder = sortOrder
+            };
 
             return View(vm);
         }

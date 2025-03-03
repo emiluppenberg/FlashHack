@@ -153,7 +153,7 @@ namespace FlashHack.Controllers
 
 
         // GET: Users/Profile
-        public async Task<IActionResult> Profile(int? id)
+        public async Task<IActionResult> Profile(int? id, string sortOrder)
         {
             if (id == null)
             {
@@ -165,10 +165,34 @@ namespace FlashHack.Controllers
                 }
             }
 
-            var user = await _userRepository.GetByIdAsync(id.Value);
+            var user = await _context.User
+                .Include(u => u.Posts)
+                .ThenInclude(p => p.Comments) // Include the comments for each post
+                .FirstOrDefaultAsync(u => u.Id == id.Value);
+
             if (user == null)
             {
                 return NotFound();
+            }
+
+            // Apply sorting
+            switch (sortOrder)
+            {
+                case "recent":
+                    user.Posts = user.Posts.OrderByDescending(p => p.TimeCreated).ToList();
+                    break;
+                case "oldest":
+                    user.Posts = user.Posts.OrderBy(p => p.TimeCreated).ToList();
+                    break;
+                case "most_liked":
+                    user.Posts = user.Posts.OrderByDescending(p => p.UpVotes).ToList();
+                    break;
+                case "most_comments":
+                    user.Posts = user.Posts.OrderByDescending(p => p.Comments.Count).ToList();
+                    break;
+                default:
+                    user.Posts = user.Posts.OrderByDescending(p => p.TimeCreated).ToList();
+                    break;
             }
 
             return View(user);
@@ -238,7 +262,10 @@ namespace FlashHack.Controllers
                 user.IsPremium = updatedUser.IsPremium;
                 user.ShowEmail = updatedUser.ShowEmail;
                 user.ShowPhoneNumber = updatedUser.ShowPhoneNumber;
+                user.ShowEmployer = updatedUser.ShowEmployer;
+                user.ShowBio = updatedUser.ShowBio;
                 user.ShowRating = updatedUser.ShowRating;
+                user.ShowSkills = updatedUser.ShowSkills;
 
 
 
