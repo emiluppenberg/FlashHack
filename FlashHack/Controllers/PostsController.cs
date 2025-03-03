@@ -232,17 +232,17 @@ namespace FlashHack.Controllers
         // GET: Posts/Delete/5
         public async Task<IActionResult> Delete(int? postId, int? userId)
         {
-            if (postId == null)
+            if (postId == null || HttpContext.Session.GetInt32("UserId") != userId)
             {
-                RedirectToAction("Error", "Home");
+                return RedirectToAction("Error", "Home");
             }
 
             var post = await postRepository.GetByIdAndIncludeAsync((int)postId);
-            if (userId == post.UserId)
+            if (userId == post.UserId && !post.Comments.Any())
             {
                 return View(post);
             }
-            return View("Error", "Home");
+            return RedirectToAction("Error", "Home");
 
         }
 
@@ -257,6 +257,7 @@ namespace FlashHack.Controllers
             {
                 try
                 {
+                    post.UserFavorites.Clear();
                     var relatedVotes = _context.Vote.Where(v => v.PostId == id);
                     _context.Vote.RemoveRange(relatedVotes);
                     await postRepository.Delete(post);
