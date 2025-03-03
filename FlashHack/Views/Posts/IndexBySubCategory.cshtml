@@ -7,13 +7,10 @@
     var currentSortOrder = ViewData["CurrentSortOrder"] as string ?? "newest";
 }
 
-<div class="welcome-section">
+<div class="welcome-section solid-line">
     <h1 class="display-4 text-center">@subCategoryName</h1>
 
-    <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <a asp-controller="Posts" asp-action="Create" class="btn btn-sm btn-custom-dark solid-line">Create Post</a>
-        </div>
+    <div class="container">        
         <div class="filter-bar solid-line">
             <ul class="nav nav-tabs">
                 <li class="nav-item">
@@ -30,6 +27,11 @@
                 </li>
             </ul>
         </div>
+    </div>
+</div>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <a asp-controller="Posts" asp-action="Create" class="btn btn-sm btn-custom-dark solid-line">Create Post</a>
+</div>
         @foreach (var post in Model.Posts)
         {
             <div class="card mb-3 post-item-index solid-line fade-in">
@@ -59,8 +61,8 @@
                 </div>
             </div>
         }
-    </div>
-</div>
+    
+
 <script>
     async function toggleFavorite(element, postId) {
         let response;
