@@ -12,6 +12,5 @@ namespace FlashHack.Data.DataInterfaces
         Task UpdateAsync(User user);
         Task Delete(User user);
         Task RemoveSkillAsync(Skill skill);
-
     }
 }
