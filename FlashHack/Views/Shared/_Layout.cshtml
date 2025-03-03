@@ -92,12 +92,16 @@
                                     <li class="nav-item">
                                         <a class="nav-link" asp-controller="Posts" asp-action="Index" asp-route-sortOrder="mostLiked">Most Liked Discussions</a>
                                     </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" asp-controller="JobbListing" asp-action="Index">Jobb Listings</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" asp-controller="Posts" asp-action="Favorites">Favorites</a>
-                                    </li>
+                                    @if (Context.Session.GetString("UserEmail") != null)
+                                    {
+                                        <li class="nav-item">
+                                            <a class="nav-link" asp-controller="JobbListing" asp-action="Index">Jobb Listings</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" asp-controller="Posts" asp-action="Favorites">Favorites</a>
+                                        </li>
+                                    }                                   
+                                    
                                 </ul>
                                 <form class="d-flex ms-auto" asp-controller="Posts" asp-action="Index">
                                     <input class="form-control search-input" type="search" name="searchTerm" placeholder="Search" aria-label="Search">

@@ -9,7 +9,6 @@
 
     <form class="d-flex ms-auto" method="get" asp-action="Index">
         <input class="form-control search-input" type="search" name="title" placeholder="Title" aria-label="Title">
-        <input class="form-control search-input" type="search" name="location" placeholder="Location" aria-label="Location">
         <button class="search-button" type="submit">Search</button>
     </form>
 
@@ -26,10 +25,10 @@
                         </div>
                     </div>
                     <div class="card-body ms-2 mt-1">
-                        <span class="text-muted">by <a asp-controller="Company" asp-action="Profile" asp-route-id="@jobblisting.Company.Id" class="user-link no-underline">@jobblisting.Company.Name</a></span>
+                        <span class="text-muted">by <a href="@jobblisting.Company.WebbPage" target="_blank" class="user-link no-underline">@jobblisting.Company.Name</a></span>
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <a asp-action="Details" asp-route-id="@jobblisting.Id" class="btn btn-sm btn-custom-dark solid-line">Read More</a>
+                                <a asp-action="Details" asp-route-id="@jobblisting.Id" class="btn btn-sm btn-custom-dark solid-line mt-2">Read More</a>
                             </div>
                         </div>
                     </div>
