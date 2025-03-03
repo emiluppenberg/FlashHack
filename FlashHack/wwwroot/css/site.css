@@ -624,6 +624,17 @@ body .text-muted {
         border-color: white;
         color: white;
     }
+.btn-custom-delete {
+    background-color: darkred;
+    border-color: black;
+    color: white;
+}
+
+    .btn-custom-delete:hover {
+        background-color: #9B5FFF;
+        border-color: white;
+        color: white;
+    }
 
 .solid-line{
     border: 1px white solid;
