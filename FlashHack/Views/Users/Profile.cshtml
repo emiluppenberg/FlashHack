@@ -85,6 +85,19 @@
                         @rating
                     }
                 </li>
+
+                <li class="list-group-item">
+                    <strong>Visible to Recruiters:</strong>
+                    @if (Model.ShowToRecruiter)
+                    {
+                        <span class="text-success"> Visible</span>
+                    }
+                    else
+                    {
+                        <span class="text-danger">❌ Hidden</span>
+                    }
+                </li>
+
             </ul>
 
             <!-- Skills Section -->
