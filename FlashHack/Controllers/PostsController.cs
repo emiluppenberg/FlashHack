@@ -194,17 +194,23 @@ namespace FlashHack.Controllers
         }
 
         // GET: Posts/Edit/5
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int postId, int userId)
         {
-            var post = await postRepository.GetByIdAsync(id);
-
-            if (post == null)
+            if (postId == null)
             {
-                return NotFound();
+                return RedirectToAction("Error", "Home");
+            }
+            var isAdmin = HttpContext.Session.GetString("IsAdmin");
+            if (HttpContext.Session.GetInt32("UserId") == userId || isAdmin == "True")
+            {
+                var post = await postRepository.GetByIdAndIncludeAsync((int)postId);
+                if ((userId == post.UserId || isAdmin == "True") && !post.Comments.Any())
+                {
+                    return View(post);
+                }
             }
 
-            ViewData["SubCategory"] = new SelectList(await subCategoryRepository.GetAllAsync(), "Id", "Name", post.SubCategoryId);
-            return View(post);
+            return RedirectToAction("Error", "Home");
         }
 
         // POST: Posts/Edit/5
@@ -214,17 +220,24 @@ namespace FlashHack.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Content,UpVotes,DownVotes,TimeCreated,UserId,SubCategoryId,Comments")] Post post)
         {
-            if (ModelState.IsValid)
+            try
             {
-                try
+                if (ModelState.IsValid)
                 {
-                    await postRepository.Update(post);
+                    if (!post.Comments.Any())
+                    {
+                        await postRepository.Update(post);
+                        return RedirectToAction("Details", new { id = post.Id });
+                    }
+                    else
+                    {
+                        return RedirectToAction("Error", "Home");
+                    }
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
 
             ViewData["SubCategory"] = new SelectList(await subCategoryRepository.GetAllAsync(), "Id", "Name", post.SubCategoryId);
@@ -238,11 +251,11 @@ namespace FlashHack.Controllers
             {
                 return RedirectToAction("Error", "Home");
             }
-
-            if (HttpContext.Session.GetInt32("UserId") == userId || HttpContext.Session.GetString("IsAdmin") == "True")
+            var isAdmin = HttpContext.Session.GetString("IsAdmin");
+            if (HttpContext.Session.GetInt32("UserId") == userId || isAdmin == "True")
             {
                 var post = await postRepository.GetByIdAndIncludeAsync((int)postId);
-                if (userId == post.UserId)
+                if ((userId == post.UserId || isAdmin == "True") && !post.Comments.Any())
                 {
                     return View(post);
                 }
@@ -257,24 +270,24 @@ namespace FlashHack.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var post = await postRepository.GetByIdAndIncludeAsync(id);
-
-            if (post != null)
+            try
             {
-                try
+                var post = await postRepository.GetByIdAndIncludeAsync(id);
+                if (post != null)
                 {
-                    post.UserFavorites.Clear();
-                    var relatedVotes = _context.Vote.Where(v => v.PostId == id);
-                    _context.Vote.RemoveRange(relatedVotes);
+                    post.UserFavorites.Clear(); //Ta bort favorites for att undvika cascading problem på delete
+                    var relatedVotes = _context.Vote.Where(v => v.PostId == id); //Måste hämta votes först, annars försvinner de inte från db
+                    _context.Vote.RemoveRange(relatedVotes); //Ta bort votes for att undvika cascading problem på delete
                     await postRepository.Delete(post);
+                    return RedirectToAction("IndexBySubCategory", "Posts", new { subCategoryId = post.SubCategoryId });
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
+                return RedirectToAction(nameof(Index));
             }
-
-            return RedirectToAction(nameof(Index));
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         [HttpPost("Posts/AddToFavorites/{postId}")]

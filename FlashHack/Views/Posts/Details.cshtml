@@ -45,6 +45,10 @@
                 @if (HttpContextAccessor.HttpContext.Session.GetInt32("UserId") == Model.Post.User.Id || HttpContextAccessor.HttpContext.Session.GetString("IsAdmin") == "True")
                 {
                     <a asp-action="Delete" asp-route-userId="@userId" asp-route-postId="@postId" class="btn btn-sm btn-custom-delete solid-line mt-2">Delete My Post</a>
+                    @if(!Model.Comments.Any())
+                    {
+                        <a asp-action="Edit" asp-route-userId="@userId" asp-route-postId="@postId" class="btn btn-sm btn-custom solid-line mt-2">Edit My Post</a>
+                    }          
                 }
             </div>
             <div class="comments-section mt-3">
