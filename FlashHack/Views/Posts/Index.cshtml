@@ -9,7 +9,6 @@
 <div class="welcome-section">
     <h1 class="display-4 text-center">@subCategoryName</h1>
 
-
     <div class="container mt-4">
         <div class="filter-bar solid-line">
             <ul class="nav nav-tabs">
@@ -30,7 +29,7 @@
 
         @foreach (var post in Model.Posts)
         {
-            <div class="card mb-3 post-item-index solid-line">
+            <div class="card mb-3 post-item-index solid-line fade-in">
                 <p id="result-@post.Id"></p>
                 <div class="card-header d-flex flex-column" style="background-color: #090019; color: white; border-radius: 10px; outline: white;">
                     <h3>@post.Title</h3>
@@ -106,4 +105,22 @@
 
         document.getElementById("downvotes-" + postId).textContent = data.downVotes;
     }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                } else {
+                    entry.target.classList.remove('visible');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        document.querySelectorAll('.fade-in').forEach(element => {
+            observer.observe(element);
+        });
+    });
 </script>

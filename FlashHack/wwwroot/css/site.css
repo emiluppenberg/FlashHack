@@ -743,3 +743,12 @@ body .text-muted {
     color: white;
     border-color: #1abc9c;
 }
+
+.fade-in {
+    opacity: 0;
+    transition: opacity 1s ease-in;
+}
+
+    .fade-in.visible {
+        opacity: 1;
+    }

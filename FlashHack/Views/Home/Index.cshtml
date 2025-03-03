@@ -13,7 +13,7 @@
 <div class="container mt-4">
     @foreach (var headCategory in Model.HeadCategories)
     {
-        <div class="card mb-3">
+        <div class="card mb-3 fade-in">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h3>@headCategory.Name</h3>
                 <span>What's New</span>
@@ -72,3 +72,22 @@
 </div>
 
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                } else {
+                    entry.target.classList.remove('visible');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        document.querySelectorAll('.fade-in').forEach(element => {
+            observer.observe(element);
+        });
+    });
+</script>
