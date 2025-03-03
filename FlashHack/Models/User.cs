@@ -40,6 +40,8 @@ namespace FlashHack.Models
         public bool ShowEmployer { get; set; } = true;
         public bool ShowToRecruiter { get; set; } = true;
         public bool ShowRating { get; set; } = true;
+        public bool ShowBio { get; set; } = true;
+        public bool ShowSkills { get; set; } = true;
 
     }
 }

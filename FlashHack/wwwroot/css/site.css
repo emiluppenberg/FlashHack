@@ -143,11 +143,11 @@ footer {
 
     .list-group-item a {
         color: white;
-        text-decoration: none; /* Removed underline */
+        text-decoration: none; 
     }
 
         .list-group-item a:hover {
-            color: white;
+            color: none;
             background-color: darkgray;
         }
 
@@ -677,6 +677,58 @@ body .text-muted {
     background: linear-gradient(to right, black, #017199)
 }
 
-profile-form-container {
+.profile-form-container {
     background-color: #004065 !important;
+}
+
+.card-header-profile {
+    background-color: #002465;
+    color: white;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.create-comment-color {
+    background-color: #002456 !important;
+    color: white;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.form-select, .form-select-sm {
+    background-color: #002456;
+    color: white;
+    border: 1px solid #495057;
+    border-radius: 5px;
+    padding: 0.375rem 0.75rem;
+}
+
+    .form-select:focus, .form-select-sm:focus {
+        background-color: #003366;
+        color: white;
+        border-color: #1abc9c;
+        box-shadow: none;
+    }
+
+/* Custom styles for pagination */
+.pagination .page-item .page-link {
+    background-color: #002456;
+    color: white;
+    border: 1px solid #495057;
+    border-radius: 5px;
+    margin: 0 2px;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #1abc9c;
+    border-color: #16a085;
+    color: white;
+}
+
+.pagination .page-item .page-link:hover {
+    background-color: #003366;
+    color: white;
+    border-color: #1abc9c;
 }

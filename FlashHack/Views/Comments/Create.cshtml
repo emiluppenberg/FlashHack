@@ -5,11 +5,11 @@
     var returnUrl = ViewBag.ReturnUrl ?? Url.Action("Details", "Posts", new { id = Model.PostId });
 }
 
-<div class="container mt-4">
+<div class="container mt-4 welcome-section">
     <h1 class="text-center">Create Comment</h1>
     <hr />
     <div class="row">
-        <div class="col-md-12 comment-form-container">
+        <div class="col-md-12 comment-form-container create-comment-color">
             <h4>Comment</h4>
             <form asp-action="Create" asp-route-postId="@Model.PostId">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -34,7 +34,7 @@
         </div>
     </div>
     <div class="text-center">
-        <a asp-action="Details" asp-controller="Posts" asp-route-id="@Model.PostId" class="btn back-button">Back to Post</a>
+        <a asp-action="Details" asp-controller="Posts" asp-route-id="@Model.PostId" class="btn btn-sm btn-custom-dark solid-line">Back to Post</a>
     </div>
 </div>
 
