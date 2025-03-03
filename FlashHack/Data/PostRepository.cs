@@ -32,10 +32,10 @@ namespace FlashHack.Data
         {
             return await applicationDbContext.Post
                 .Include(p => p.Votes)
-                .Include( p => p.User)
-                .Include(p =>p.SubCategory)
+                .Include(p => p.User)
+                .Include(p => p.SubCategory)
                 .Include(p => p.Comments)
-                .ThenInclude(p=>p.User)
+                .ThenInclude(p => p.User)
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
@@ -48,9 +48,11 @@ namespace FlashHack.Data
         public async Task<Post> GetByIdAndIncludeAsync(int id)
         {
             return await applicationDbContext.Post
-                .Include(x => x.User)
-                .Include(x => x.SubCategory)
-                .FirstOrDefaultAsync(x => x.Id == id);
+                .Include(p => p.User)
+                .Include(p => p.SubCategory)
+                .Include(p => p.UserFavorites)
+                .Include(p => p.Comments)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<IEnumerable<Post>> GetUserFavorites(int userId)
