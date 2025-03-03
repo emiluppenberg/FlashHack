@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Jobblisting>
+
+@{
+    ViewData["Title"] = "Jobblistings";
+}
+
+<div class="welcome-section">
+    <h1 class="display-4 text-center">Jobblistings</h1>
+
+    <form class="d-flex ms-auto" method="get" asp-action="Index">
+        <input class="form-control search-input" type="search" name="title" placeholder="Title" aria-label="Title">
+        <input class="form-control search-input" type="search" name="location" placeholder="Location" aria-label="Location">
+        <button class="search-button" type="submit">Search</button>
+    </form>
+
+    <div class="container mt-4">
+        @if (Model.Count() > 0)
+        {
+            foreach (var jobblisting in Model)
+            {
+                <div class="card mb-3 post-item-index solid-line">
+                    <div class="card-header d-flex flex-column" style="background-color: #090019; color: white; border-radius: 10px; outline: white;">
+                        <h3>@jobblisting.Title</h3>
+                        <div>
+                            <p>@jobblisting.Content.Substring(0, Math.Min(jobblisting.Content.Length, 100))...</p>
+                        </div>
+                    </div>
+                    <div class="card-body ms-2 mt-1">
+                        <span class="text-muted">by <a asp-controller="Company" asp-action="Profile" asp-route-id="@jobblisting.Company.Id" class="user-link no-underline">@jobblisting.Company.Name</a></span>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <a asp-action="Details" asp-route-id="@jobblisting.Id" class="btn btn-sm btn-custom-dark solid-line">Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else {
+            <p>No jobblistings found</p>
+        }
+    </div>
+</div>

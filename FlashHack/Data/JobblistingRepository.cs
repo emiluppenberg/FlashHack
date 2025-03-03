@@ -26,18 +26,40 @@ namespace FlashHack.Data
 
         public async Task<IEnumerable<Jobblisting>> GetAllAsync()
         {
-            return await applicationDbContext.Jobblisting.ToListAsync();
+            return await applicationDbContext.Jobblisting
+                .Include(j => j.Company)
+                .ToListAsync();
         }
 
         public async Task<Jobblisting> GetByIdAsync(int id)
         {
-            return await applicationDbContext.Jobblisting.FirstOrDefaultAsync(j => j.Id == id);
+            return await applicationDbContext.Jobblisting
+                .Include(j => j.Company)
+                .FirstOrDefaultAsync(j => j.Id == id);
         }
 
         public async Task Update(Jobblisting jobblisting)
         {
             applicationDbContext.Update(jobblisting);
             await applicationDbContext.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Jobblisting>> FindAllWithTitle(string title)
+        {
+            return await applicationDbContext.Jobblisting
+                .Include(j => j.Company)
+                .Where(j => j.Title.ToLower()
+                    .Contains(title.ToLower()))
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Jobblisting>> FindAllWithLocation(string location)
+        {
+            return await applicationDbContext.Jobblisting
+                .Include(j => j.Company)
+                .Where(j => j.Company.Location.ToLower()
+                    .Contains(location.ToLower()))
+                .ToListAsync();
         }
     }
 }

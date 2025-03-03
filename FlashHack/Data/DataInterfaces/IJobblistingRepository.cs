@@ -10,5 +10,7 @@ namespace FlashHack.Data.DataInterfaces
         Task AddAsync(Jobblisting jobblisting);
         Task Update(Jobblisting jobblisting);
         Task Delete(Jobblisting jobblisting);
+        Task<IEnumerable<Jobblisting>> FindAllWithTitle(string title);
+        Task<IEnumerable<Jobblisting>> FindAllWithLocation(string location);
     }
 }
