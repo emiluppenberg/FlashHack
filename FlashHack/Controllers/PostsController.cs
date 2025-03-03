@@ -136,11 +136,13 @@ namespace FlashHack.Controllers
                 Favorites = favorites,
                 CurrentPage = page,
                 TotalPages = (int)Math.Ceiling(totalComments / (double)pageSize),
-                SortOrder = sortOrder
+                SortOrder = sortOrder,
+                Comments = comments
             };
 
             return View(vm);
         }
+
 
         // GET: Posts/Create
         public IActionResult Create()
