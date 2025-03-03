@@ -85,8 +85,9 @@
                                     @comment.Content
                                     @if (comment.UseSignature)
                                     {
-                                        <br />
-                                        @comment.User.Signature
+                                        <div class="signature">
+                                            @comment.User.Signature
+                                        </div>
                                     }
                                 </div>
                             </div>

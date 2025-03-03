@@ -35,7 +35,11 @@
             <div class="card mb-3 post-item-index solid-line fade-in">
                 <p id="result-@post.Id"></p>
                 <div class="card-header d-flex flex-column" style="background-color: #090019; color: white; border-radius: 10px; outline: white;">
-                    <h3>@post.Title</h3>
+                    <h3>
+                        <a asp-controller="Posts" asp-action="Details" asp-route-id="@post.Id" class="post-link no-underline">
+                            @post.Title
+                        </a>
+                    </h3>
                     <div>
                         <p>@post.Content.Substring(0, Math.Min(post.Content.Length, 100))...</p>
                     </div>
