@@ -234,16 +234,20 @@ namespace FlashHack.Controllers
         // GET: Posts/Delete/5
         public async Task<IActionResult> Delete(int? postId, int? userId)
         {
-            if (postId == null || HttpContext.Session.GetInt32("UserId") != userId)
+            if (postId == null)
             {
                 return RedirectToAction("Error", "Home");
             }
 
-            var post = await postRepository.GetByIdAndIncludeAsync((int)postId);
-            if (userId == post.UserId && !post.Comments.Any())
+            if (HttpContext.Session.GetInt32("UserId") == userId || HttpContext.Session.GetString("IsAdmin") == "True")
             {
-                return View(post);
+                var post = await postRepository.GetByIdAndIncludeAsync((int)postId);
+                if (userId == post.UserId)
+                {
+                    return View(post);
+                }
             }
+
             return RedirectToAction("Error", "Home");
 
         }
@@ -510,6 +514,34 @@ namespace FlashHack.Controllers
             var downVotes = post.DownVotes;
 
             return new JsonResult(new { upVotes = upVotes, downVotes = downVotes });
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MakeAnonymous(int id)
+        {
+            try
+            {
+                var post = await postRepository.GetByIdAndIncludeAsync(id);
+                if (post != null)
+                {
+                    post.UserId = 78;
+                    postRepository.Update(post);
+                    return RedirectToAction("Details", new { id = post.Id });
+                }
+                else
+                {
+                    return RedirectToAction("Error", "Home");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return RedirectToAction("Error", "Home");
+            }
+
         }
     }
 }

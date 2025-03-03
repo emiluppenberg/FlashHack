@@ -42,7 +42,7 @@
                 </div>
             </div>
             <div>
-                @if (HttpContextAccessor.HttpContext.Session.GetInt32("UserId") == Model.Post.User.Id && !Model.Post.Comments.Any())
+                @if (HttpContextAccessor.HttpContext.Session.GetInt32("UserId") == Model.Post.User.Id || HttpContextAccessor.HttpContext.Session.GetString("IsAdmin") == "True")
                 {
                     <a asp-action="Delete" asp-route-userId="@userId" asp-route-postId="@postId" class="btn btn-sm btn-custom-delete solid-line mt-2">Delete My Post</a>
                 }
