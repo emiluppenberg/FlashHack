@@ -255,7 +255,7 @@ namespace FlashHack.Controllers
             if (HttpContext.Session.GetInt32("UserId") == userId || isAdmin == "True")
             {
                 var post = await postRepository.GetByIdAndIncludeAsync((int)postId);
-                if ((userId == post.UserId || isAdmin == "True") && !post.Comments.Any())
+                if (userId == post.UserId || isAdmin == "True")
                 {
                     return View(post);
                 }
@@ -273,7 +273,7 @@ namespace FlashHack.Controllers
             try
             {
                 var post = await postRepository.GetByIdAndIncludeAsync(id);
-                if (post != null)
+                if (post != null && !post.Comments.Any())
                 {
                     post.UserFavorites.Clear(); //Ta bort favorites for att undvika cascading problem på delete
                     var relatedVotes = _context.Vote.Where(v => v.PostId == id); //Måste hämta votes först, annars försvinner de inte från db
@@ -281,7 +281,10 @@ namespace FlashHack.Controllers
                     await postRepository.Delete(post);
                     return RedirectToAction("IndexBySubCategory", "Posts", new { subCategoryId = post.SubCategoryId });
                 }
-                return RedirectToAction(nameof(Index));
+                else
+                {
+                    return RedirectToAction("Error", "Home");
+                }
             }
             catch (Exception ex)
             {
