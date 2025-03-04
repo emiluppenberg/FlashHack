@@ -6,18 +6,18 @@
     let drops;
 
     function resizeCanvas() {
-        canvas.width = document.documentElement.scrollWidth; // Ensure the canvas covers the entire scrollable width
-        canvas.height = document.documentElement.scrollHeight; // Ensure the canvas covers the entire scrollable height
+        canvas.width = document.documentElement.scrollWidth; 
+        canvas.height = document.documentElement.scrollHeight; 
 
         columns = Math.floor(canvas.width / fontSize);
         drops = [];
         for (let x = 0; x < columns; x++) {
-            drops[x] = Math.floor(Math.random() * canvas.height / fontSize); // Start at random positions
+            drops[x] = Math.floor(Math.random() * canvas.height / fontSize); 
         }
     }
 
     const matrix = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%";
-    const fontSize = 16;
+    const fontSize = 100;
 
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
@@ -26,7 +26,7 @@
         ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        ctx.fillStyle = "#00008B"; // Dark blue color for the falling numbers
+        ctx.fillStyle = "#00008B"; 
         ctx.font = fontSize + "px arial";
 
         for (let i = 0; i < drops.length; i++) {
@@ -37,9 +37,10 @@
                 drops[i] = 0;
             }
 
-            drops[i]++;
+            drops[i] += 0.5; 
         }
     }
 
-    setInterval(draw, 33);
+    setInterval(draw, 300); 
 });
+
