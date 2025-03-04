@@ -41,6 +41,6 @@
         }
     }
 
-    setInterval(draw, 50); 
+    setInterval(draw, 60); 
 });
 
