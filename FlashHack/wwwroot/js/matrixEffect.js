@@ -17,7 +17,7 @@
     }
 
     const matrix = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%";
-    const fontSize = 40;
+    const fontSize = 20;
 
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
@@ -41,6 +41,6 @@
         }
     }
 
-    setInterval(draw, 200); 
+    setInterval(draw, 100); 
 });
 
