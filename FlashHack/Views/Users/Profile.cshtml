@@ -73,18 +73,21 @@
                 <li class="list-group-item">
                     <strong>Signature:</strong> @Model.Signature
                 </li>
-                <li class="list-group-item">
-                    <strong>Rating:</strong>
-                    @if (Model.ShowRating || userId == Model.Id)
-                    {
-                        @Model.Rating
-                    }
-                    else
-                    {
-                        var rating = new string('*', Model.Rating.ToString().Length);
-                        @rating
-                    }
-                </li>
+                @if (Model.IsPremium)
+                {
+                    <li class="list-group-item">
+                        <strong>Rating:</strong>
+                        @if (Model.ShowRating || userId == Model.Id)
+                        {
+                            @Model.Rating
+                        }
+                        else
+                        {
+                            var rating = new string('*', Model.Rating.ToString().Length);
+                            @rating
+                        }
+                    </li>
+                }
 
                 <li class="list-group-item">
                     <strong>Visible to Recruiters:</strong>

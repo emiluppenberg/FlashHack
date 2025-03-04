@@ -112,13 +112,13 @@
                 </div>
 
                 <!-- Rating -->
+                @if (Model.IsPremium)
+                {
                 <div class="form-group">
                     <label asp-for="Rating">Rating</label>
                     <input asp-for="Rating" class="form-control" disabled />
                 </div>
 
-                @if (Model.IsPremium)
-                {
                     <div class="form-group">
                         <label asp-for="ShowRating">Show rating</label>
                         <input type="checkbox" asp-for="ShowRating" class="form-check-input" />
