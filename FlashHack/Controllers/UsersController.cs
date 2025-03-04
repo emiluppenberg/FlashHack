@@ -166,8 +166,9 @@ namespace FlashHack.Controllers
             }
 
             var user = await _context.User
+                .Include(u => u.Skills)
                 .Include(u => u.Posts)
-                .ThenInclude(p => p.Comments) // Include the comments for each post
+                    .ThenInclude(p => p.Comments) // Include the comments for each post
                 .FirstOrDefaultAsync(u => u.Id == id.Value);
 
             if (user == null)
