@@ -114,6 +114,7 @@ footer {
     height: 6%;
     padding: 0;
     max-height: 0px;
+    overflow-y: hidden;
 }
     footer h5 {
         color: #1abc9c;
