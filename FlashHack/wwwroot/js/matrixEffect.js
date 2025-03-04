@@ -17,7 +17,7 @@
     }
 
     const matrix = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%";
-    const fontSize = 20;
+    const fontSize = 16;
 
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
