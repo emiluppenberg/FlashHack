@@ -766,7 +766,7 @@ body .text-muted {
 
 .fade-in {
     opacity: 0;
-    transition: opacity 1s ease-in;
+    transition: opacity 0.5s ease-in;
 }
 
     .fade-in.visible {
