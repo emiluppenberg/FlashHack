@@ -243,7 +243,10 @@ namespace FlashHack.Controllers
                 return NotFound();
             }
 
-            
+            if (string.IsNullOrEmpty(updatedUser.Password))
+            {
+                ModelState.Remove("Password"); // Ignorera lösenord vid validering
+            }
 
             ModelState.Clear();
             TryValidateModel(updatedUser);
@@ -267,7 +270,7 @@ namespace FlashHack.Controllers
                 user.ShowBio = updatedUser.ShowBio;
                 user.ShowRating = updatedUser.ShowRating;
                 user.ShowSkills = updatedUser.ShowSkills;
-                user.ShowToRecruiter = updatedUser.ShowToRecruiter; 
+                user.ShowToRecruiter = updatedUser.ShowToRecruiter;
 
 
 
@@ -275,12 +278,8 @@ namespace FlashHack.Controllers
                 if (!string.IsNullOrEmpty(updatedUser.Password))
                 {
                     user.Password = updatedUser.Password;
-                    
                 }
-                else
-                {
-                    Console.WriteLine("No new password provided, keeping old password.");
-                }
+
 
                 // Lägg till ny färdighet (om det finns)
                 if (!string.IsNullOrEmpty(skillName) && !string.IsNullOrEmpty(skillDescription) && skillRating.HasValue)
@@ -300,10 +299,7 @@ namespace FlashHack.Controllers
                 return RedirectToAction("Profile", new { id = user.Id });
             }
 
-            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-            {
-                Console.WriteLine($"   - {error.ErrorMessage}");
-            }
+            
 
             return View("UpdateProfile", user);
         }

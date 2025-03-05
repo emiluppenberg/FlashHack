@@ -19,9 +19,8 @@ namespace FlashHack.Models
         [Required]
         [EmailAddress]
         public string Email { get; set; }
-        [Required]
         [MinLength(5)]
-        public string Password { get; set; }
+        public string? Password { get; set; } 
         [MaxLength(500)]
         public string? Bio { get; set; } = string.Empty;
         public List<Skill>? Skills { get; set; } = new List<Skill>();
