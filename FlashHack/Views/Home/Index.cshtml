@@ -48,7 +48,7 @@
                                     <div class="text-muted">
                                         by <a asp-controller="Users" asp-action="Profile" asp-route-id="@subCategory.MostRecentPostUserId" class="user-link no-underline">
                                             @subCategory.MostRecentPostUser
-                                        </a>
+                                        </a> @subCategory.MostRecentTimeCreated
                                     </div>
                                 }
                                 else

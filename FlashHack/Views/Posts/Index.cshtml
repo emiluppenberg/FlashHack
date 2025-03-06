@@ -43,7 +43,7 @@
             </div>
         </div>
         <div class="card-body ms-2 mt-1">
-            <span class="text-muted">by <a asp-controller="Users" asp-action="Profile" asp-route-id="@post.User.Id" class="user-link no-underline">@post.User.FirstName @post.User.LastName</a></span>
+            <span class="text-muted">by <a asp-controller="Users" asp-action="Profile" asp-route-id="@post.User.Id" class="user-link no-underline">@post.User.FirstName @post.User.LastName</a> @post.TimeCreated</span>
             <p>@post.SubCategory.Name</p>
             <div class="d-flex justify-content-between align-items-center">
                 <div>
