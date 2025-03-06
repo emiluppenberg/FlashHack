@@ -18,12 +18,14 @@ namespace FlashHack.Controllers
         private readonly ApplicationDbContext _context;
         private readonly ICommentRepository commentRepository;
         private readonly IUserRepository userRepository;
+        private readonly IVoteRepository voteRepository;
 
-        public CommentsController(ApplicationDbContext context, ICommentRepository commentRepository, IUserRepository userRepository)
+        public CommentsController(ApplicationDbContext context, ICommentRepository commentRepository, IUserRepository userRepository, IVoteRepository voteRepository)
         {
             _context = context;
             this.commentRepository = commentRepository;
             this.userRepository = userRepository;
+            this.voteRepository = voteRepository;
         }
 
         // GET: Comments
@@ -215,6 +217,46 @@ namespace FlashHack.Controllers
         private bool CommentExists(int id)
         {
             return _context.Comment.Any(e => e.Id == id);
+        }
+
+        [HttpPost("Comments/Vote/{commentId}/{isUpDown}")]
+        public async Task<IActionResult> Vote(int commentId, bool isUpDown)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return new JsonResult(new { result = "Login required", value = 0 });
+            }
+
+            var vote = new Vote()
+            {
+                UserId = Convert.ToInt32(userId),
+                CommentId = commentId
+            };
+
+            if (isUpDown) vote.IsUpVote = true;
+            if (!isUpDown) vote.IsDownVote = true;
+
+            var result = await voteRepository.AddAsync(vote);
+
+            if (result == null)
+            {
+                return new JsonResult(new { result = "Vote removed", value = 0 });
+            }
+
+            return new JsonResult(new { result = result, value = 1 });
+        }
+
+        [HttpGet("Comments/CountVotes/{commentId}")]
+        public async Task<IActionResult> CountVotes(int commentId)
+        {
+            var comment = await commentRepository.GetByIdAsync(commentId);
+
+            var upVotes = comment.UpVotes;
+            var downVotes = comment.DownVotes;
+
+            return new JsonResult(new { upVotes = upVotes, downVotes = downVotes });
         }
     }
 }

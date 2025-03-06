@@ -77,7 +77,7 @@ namespace FlashHack.Data
                 var comment = await applicationDbContext.Comment
                     .Include(c => c.Votes)
                     .Include(c => c.User)
-                    .FirstOrDefaultAsync(c => c.Id == vote.PostId);
+                    .FirstOrDefaultAsync(c => c.Id == vote.CommentId);
 
                 var userVote = comment.Votes.Find(v => v.UserId == vote.UserId);
 

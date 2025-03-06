@@ -9,7 +9,7 @@
 
 <div class="container mt-4">
     <div class="card mb-3 post-item">
-        <p id="result-@Model.Post.Id"></p>
+        <p id="result-p-@Model.Post.Id"></p>
         <div class="card-header d-flex flex-column align-items-start card-header-custom solid-line">
             <div class="d-flex justify-content-between w-100">
                 <h3>@Model.Post.Title</h3>
@@ -33,8 +33,8 @@
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <i class="fa-solid fa-thumbs-up thumbs-icon" onclick="vote(@Model.Post.Id, 'true')"></i><span id="upvotes-@Model.Post.Id">@Model.Post.UpVotes</span>
-                    <i class="fa-solid fa-thumbs-down thumbs-icon ms-3" onclick="vote(@Model.Post.Id, 'false')"></i><span id="downvotes-@Model.Post.Id">@Model.Post.DownVotes</span>
+                    <i class="fa-solid fa-thumbs-up thumbs-icon" onclick="votePost(@Model.Post.Id, 'true')"></i><span id="upvotes-p-@Model.Post.Id">@Model.Post.UpVotes</span>
+                    <i class="fa-solid fa-thumbs-down thumbs-icon ms-3" onclick="votePost(@Model.Post.Id, 'false')"></i><span id="downvotes-p-@Model.Post.Id">@Model.Post.DownVotes</span>
                     <i class="fa-solid fa-comments ms-3"></i> @Model.Post.Comments.Count
                 </div>
                 <div>
@@ -43,8 +43,8 @@
             </div>
             <div>
                 @if (HttpContextAccessor.HttpContext.Session.GetInt32("UserId") == Model.Post.User.Id || HttpContextAccessor.HttpContext.Session.GetString("IsAdmin") == "True")
-                {                   
-                    @if(!Model.Comments.Any())
+                {
+                    @if (!Model.Comments.Any())
                     {
                         <a asp-action="Edit" asp-route-userId="@userId" asp-route-postId="@postId" class="btn btn-sm btn-custom solid-line mt-2">Edit My Post</a>
                     }
@@ -90,6 +90,10 @@
                                             @comment.User.Signature
                                         </div>
                                     }
+                                    <div class="d-flex justify-content-end">
+                                        <i class="fa-solid fa-thumbs-up thumbs-icon" onclick="voteComment(@comment.Id, 'true')"></i><span id="upvotes-c-@comment.Id">@comment.UpVotes</span>
+                                        <i class="fa-solid fa-thumbs-down thumbs-icon ms-3" onclick="voteComment(@comment.Id, 'false')"></i><span id="downvotes-c-@comment.Id">@comment.DownVotes</span>
+                                    </div>
                                 </div>
                             </div>
                         </li>
@@ -130,33 +134,54 @@
 
         const data = await response.json();
 
-        document.getElementById("result-" + postId).textContent = data.result;
+        document.getElementById("result-p-" + postId).textContent = data.result;
 
         element.classList.toggle('fa-solid');
         element.classList.toggle('fa-regular');
     }
 
-    async function vote(postId, isUpDown) {
+    async function votePost(postId, isUpDown) {
         const response = await fetch(`/Posts/Vote/${postId}/${isUpDown}`, {
             method: "POST"
         });
 
         const data = await response.json();
 
-        document.getElementById("result-" + postId).textContent = data.result;
+        document.getElementById("result-p-" + postId).textContent = data.result;
 
-        countVotes(postId);
+        countVotesPost(postId);
     }
 
-    async function countVotes(postId) {
+    async function countVotesPost(postId) {
         const response = await fetch(`/Posts/CountVotes/${postId}`, {
             method: "GET"
         });
 
         const data = await response.json();
 
-        document.getElementById("upvotes-" + postId).textContent = data.upVotes;
-        document.getElementById("downvotes-" + postId).textContent = data.downVotes;
+        document.getElementById("upvotes-p-" + postId).textContent = data.upVotes;
+        document.getElementById("downvotes-p-" + postId).textContent = data.downVotes;
+    }
+
+    async function voteComment(commentId, isUpDown) {
+        const response = await fetch(`/Comments/Vote/${commentId}/${isUpDown}`, {
+            method: "POST"
+        });
+
+        const data = await response.json();
+
+        countVotesComment(commentId);
+    }
+
+    async function countVotesComment(commentId) {
+        const response = await fetch(`/Comments/CountVotes/${commentId}`, {
+            method: "GET"
+        });
+
+        const data = await response.json();
+
+        document.getElementById("upvotes-c-" + commentId).textContent = data.upVotes;
+        document.getElementById("downvotes-c-" + commentId).textContent = data.downVotes;
     }
 
     document.addEventListener("DOMContentLoaded", function () {
