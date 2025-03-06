@@ -59,7 +59,7 @@
                                 @if (Context.Session.GetString("UserEmail") != null)
                                 {
                                     <li class="nav-item">
-                                        <span class="nav-link">Välkommen, @Context.Session.GetString("UserName")!</span>
+                                        <span class="nav-link">Welcome, @Context.Session.GetString("UserName")!</span>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" asp-controller="Users" asp-action="Logout">Log out</a>

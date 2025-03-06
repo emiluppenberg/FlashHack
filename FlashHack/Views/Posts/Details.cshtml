@@ -38,7 +38,16 @@
                     <i class="fa-solid fa-comments ms-3"></i> @Model.Post.Comments.Count
                 </div>
                 <div>
-                    <span class="text-muted">by <a asp-controller="Users" asp-action="Profile" asp-route-id="@Model.Post.User.Id" class="user-link no-underline">@Model.Post.User.FirstName @Model.Post.User.LastName</a> @Model.Post.TimeCreated</span>
+                    <span class="text-muted">by <a asp-controller="Users" asp-action="Profile" asp-route-id="@Model.Post.User.Id" class="user-link no-underline">@Model.Post.User.FirstName @Model.Post.User.LastName</a>
+                        @if (Model.Post.TimeCreated.Date == DateTime.Today)
+                        {
+                            @: Today @Model.Post.TimeCreated.ToShortTimeString()
+                        }
+                        else
+                        {
+                            @Model.Post.TimeCreated.ToString("yy/MM/dd")
+                        }
+                    </span>
                 </div>
             </div>
             <div>
@@ -82,7 +91,22 @@
                                     </div>
                                 </div>
                                 <div class="comment-content">
-                                    <p class="text-muted">@comment.TimeCreated</p>
+                                    <div class="d-flex justify-content-between">
+                                        <span class="text-muted">
+                                            @if (comment.TimeCreated.Date == DateTime.Today)
+                                            {
+                                                @:Today @comment.TimeCreated.ToShortTimeString() 
+                                            }
+                                            else
+                                            {
+                                                @comment.TimeCreated.ToString("yy/MM/dd")
+                                            }
+                                        </span>
+                                        <div class="d-flex">
+                                            <i class="fa-solid fa-thumbs-up thumbs-icon" onclick="voteComment(@comment.Id, 'true')"></i><span id="upvotes-c-@comment.Id">@comment.UpVotes</span>
+                                            <i class="fa-solid fa-thumbs-down thumbs-icon ms-3" onclick="voteComment(@comment.Id, 'false')"></i><span id="downvotes-c-@comment.Id">@comment.DownVotes</span>
+                                        </div>
+                                    </div>
                                     @comment.Content
                                     @if (comment.UseSignature)
                                     {
@@ -91,10 +115,6 @@
                                             @comment.User.Signature
                                         </div>
                                     }
-                                    <div class="d-flex justify-content-end">
-                                        <i class="fa-solid fa-thumbs-up thumbs-icon" onclick="voteComment(@comment.Id, 'true')"></i><span id="upvotes-c-@comment.Id">@comment.UpVotes</span>
-                                        <i class="fa-solid fa-thumbs-down thumbs-icon ms-3" onclick="voteComment(@comment.Id, 'false')"></i><span id="downvotes-c-@comment.Id">@comment.DownVotes</span>
-                                    </div>
                                 </div>
                             </div>
                         </li>

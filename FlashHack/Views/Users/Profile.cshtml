@@ -156,9 +156,19 @@
                     @foreach (var post in Model.Posts)
                     {
                         <li class="list-group-item">
+                            <span class="text-muted">
                             <a asp-controller="Posts" asp-action="Details" asp-route-id="@post.Id" class="post-link no-underline">
                                 @post.Title
                             </a>
+                                @if (post.TimeCreated.Date == DateTime.Today)
+                                {
+                                    @: Today @post.TimeCreated.ToShortTimeString()
+                                }
+                                else
+                                {
+                                    @post.TimeCreated.ToString("yy/MM/dd")
+                                }
+                            </span>
                             <p>@post.Content</p>
                             <div class="d-flex align-items-center">
                                 <span class="me-3">

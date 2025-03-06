@@ -48,7 +48,15 @@
                                     <div class="text-muted">
                                         by <a asp-controller="Users" asp-action="Profile" asp-route-id="@subCategory.MostRecentPostUserId" class="user-link no-underline">
                                             @subCategory.MostRecentPostUser
-                                        </a> @subCategory.MostRecentTimeCreated
+                                        </a>
+                                        @if (subCategory.MostRecentTimeCreated.Value.Date == DateTime.Today)
+                                        {
+                                            @: Today @subCategory.MostRecentTimeCreated.Value.ToShortTimeString()
+                                        }
+                                        else
+                                        {
+                                            @subCategory.MostRecentTimeCreated.Value.ToString("yy/MM/dd")
+                                        }
                                     </div>
                                 }
                                 else
@@ -78,7 +86,7 @@
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
-                    observer.unobserve(entry.target); 
+                    observer.unobserve(entry.target);
                 }
             });
         }, {
