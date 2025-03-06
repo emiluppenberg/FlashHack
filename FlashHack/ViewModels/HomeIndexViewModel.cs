@@ -20,7 +20,8 @@
         public int? MostRecentPostId { get; set; }
         public string? MostRecentPostTitle { get; set; }
         public string? MostRecentPostUser { get; set; }
-        public int? MostRecentPostUserId { get; set; } 
+        public int? MostRecentPostUserId { get; set; }
+        public DateTime? MostRecentTimeCreated { get; set; }
         public bool HasPosts { get; set; }
         public int TotalComments { get; set; }
 

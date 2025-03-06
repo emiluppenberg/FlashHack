@@ -44,6 +44,7 @@ namespace FlashHack.Controllers
                         MostRecentPostTitle = sc.Posts.OrderByDescending(p => p.TimeCreated).FirstOrDefault()?.Title,
                         MostRecentPostUser = sc.Posts.OrderByDescending(p => p.TimeCreated).FirstOrDefault()?.User?.FirstName + " " + sc.Posts.OrderByDescending(p => p.TimeCreated).FirstOrDefault()?.User?.LastName,
                         MostRecentPostUserId = sc.Posts.OrderByDescending(p => p.TimeCreated).FirstOrDefault()?.UserId,
+                        MostRecentTimeCreated = sc.Posts.OrderByDescending(p => p.TimeCreated).FirstOrDefault()?.TimeCreated,
                         HasPosts = sc.Posts.Any(),
                         TotalComments = sc.Posts.Sum(p => p.Comments.Count)
                     }).ToList()
