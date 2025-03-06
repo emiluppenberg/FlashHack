@@ -13,7 +13,7 @@
 <div class="container mt-4">
     @foreach (var headCategory in Model.HeadCategories)
     {
-        <div class="card mb-3">
+        <div class="card mb-3 fade-in">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h3>@headCategory.Name</h3>
                 <span>What's New</span>
@@ -49,6 +49,14 @@
                                         by <a asp-controller="Users" asp-action="Profile" asp-route-id="@subCategory.MostRecentPostUserId" class="user-link no-underline">
                                             @subCategory.MostRecentPostUser
                                         </a>
+                                        @if (subCategory.MostRecentTimeCreated.Value.Date == DateTime.Today)
+                                        {
+                                            @: Today @subCategory.MostRecentTimeCreated.Value.ToShortTimeString()
+                                        }
+                                        else
+                                        {
+                                            @subCategory.MostRecentTimeCreated.Value.ToString("yy/MM/dd")
+                                        }
                                     </div>
                                 }
                                 else
@@ -72,3 +80,21 @@
 </div>
 
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        document.querySelectorAll('.fade-in').forEach(element => {
+            observer.observe(element);
+        });
+    });
+</script>

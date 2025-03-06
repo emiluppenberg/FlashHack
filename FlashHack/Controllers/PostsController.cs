@@ -136,18 +136,20 @@ namespace FlashHack.Controllers
                 Favorites = favorites,
                 CurrentPage = page,
                 TotalPages = (int)Math.Ceiling(totalComments / (double)pageSize),
-                SortOrder = sortOrder
+                SortOrder = sortOrder,
+                Comments = comments
             };
 
             return View(vm);
         }
 
+
         // GET: Posts/Create
         public IActionResult Create()
         {
             try
-            {   
-                if(HttpContext.Session.GetInt32("UserId") == null)
+            {
+                if (HttpContext.Session.GetInt32("UserId") == null)
                     return RedirectToAction("Login", "Users");
 
                 if (TempData["PageId"] != null)
@@ -178,9 +180,9 @@ namespace FlashHack.Controllers
                 {
                     post.TimeCreated = DateTime.Now;
                     await postRepository.AddAsync(post);
-                    var getMadePost = _context.Post.Where(t => t.Title == post.Title).OrderByDescending(t=>t.TimeCreated).FirstOrDefault();
+                    var getMadePost = _context.Post.Where(t => t.Title == post.Title).OrderByDescending(t => t.TimeCreated).FirstOrDefault();
 
-                    return RedirectToAction("Details", new {id = getMadePost.Id}); 
+                    return RedirectToAction("Details", new { id = getMadePost.Id });
                 }
                 return View(post);
             }
@@ -192,17 +194,23 @@ namespace FlashHack.Controllers
         }
 
         // GET: Posts/Edit/5
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int postId, int userId)
         {
-            var post = await postRepository.GetByIdAsync(id);
-
-            if (post == null)
+            if (postId == null)
             {
-                return NotFound();
+                return RedirectToAction("Error", "Home");
+            }
+            var isAdmin = HttpContext.Session.GetString("IsAdmin");
+            if (HttpContext.Session.GetInt32("UserId") == userId || isAdmin == "True")
+            {
+                var post = await postRepository.GetByIdAndIncludeAsync((int)postId);
+                if ((userId == post.UserId || isAdmin == "True") && !post.Comments.Any())
+                {
+                    return View(post);
+                }
             }
 
-            ViewData["SubCategory"] = new SelectList(await subCategoryRepository.GetAllAsync(), "Id", "Name", post.SubCategoryId);
-            return View(post);
+            return RedirectToAction("Error", "Home");
         }
 
         // POST: Posts/Edit/5
@@ -212,17 +220,24 @@ namespace FlashHack.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Content,UpVotes,DownVotes,TimeCreated,UserId,SubCategoryId,Comments")] Post post)
         {
-            if (ModelState.IsValid)
+            try
             {
-                try
+                if (ModelState.IsValid)
                 {
-                    await postRepository.Update(post);
+                    if (!post.Comments.Any())
+                    {
+                        await postRepository.Update(post);
+                        return RedirectToAction("Details", new { id = post.Id });
+                    }
+                    else
+                    {
+                        return RedirectToAction("Error", "Home");
+                    }
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
 
             ViewData["SubCategory"] = new SelectList(await subCategoryRepository.GetAllAsync(), "Id", "Name", post.SubCategoryId);
@@ -230,11 +245,24 @@ namespace FlashHack.Controllers
         }
 
         // GET: Posts/Delete/5
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int? postId, int? userId)
         {
-            var post = await postRepository.GetByIdAndIncludeAsync(id);
+            if (postId == null)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+            var isAdmin = HttpContext.Session.GetString("IsAdmin");
+            if (HttpContext.Session.GetInt32("UserId") == userId || isAdmin == "True")
+            {
+                var post = await postRepository.GetByIdAndIncludeAsync((int)postId);
+                if (userId == post.UserId || isAdmin == "True")
+                {
+                    return View(post);
+                }
+            }
 
-            return View(post);
+            return RedirectToAction("Error", "Home");
+
         }
 
         // POST: Posts/Delete/5
@@ -242,21 +270,27 @@ namespace FlashHack.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var post = await postRepository.GetByIdAndIncludeAsync(id);
-
-            if (post != null)
+            try
             {
-                try
+                var post = await postRepository.GetByIdAndIncludeAsync(id);
+                if (post != null && !post.Comments.Any())
                 {
+                    post.UserFavorites.Clear(); //Ta bort favorites for att undvika cascading problem på delete
+                    var relatedVotes = _context.Vote.Where(v => v.PostId == id); //Måste hämta votes först, annars försvinner de inte från db
+                    _context.Vote.RemoveRange(relatedVotes); //Ta bort votes for att undvika cascading problem på delete
                     await postRepository.Delete(post);
+                    return RedirectToAction("IndexBySubCategory", "Posts", new { subCategoryId = post.SubCategoryId });
                 }
-                catch (Exception ex)
+                else
                 {
-                    Console.WriteLine(ex.Message);
+                    return RedirectToAction("Error", "Home");
                 }
             }
-
-            return RedirectToAction(nameof(Index));
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         [HttpPost("Posts/AddToFavorites/{postId}")]
@@ -465,13 +499,13 @@ namespace FlashHack.Controllers
 
             if (userId == null)
             {
-                return new JsonResult(new { result = "Login required", value = 0});
+                return new JsonResult(new { result = "Login required", value = 0 });
             }
-            
-            var vote = new Vote() 
-            { 
-                UserId = Convert.ToInt32(userId), 
-                PostId = postId 
+
+            var vote = new Vote()
+            {
+                UserId = Convert.ToInt32(userId),
+                PostId = postId
             };
 
             if (isUpDown) vote.IsUpVote = true;
@@ -484,7 +518,7 @@ namespace FlashHack.Controllers
                 return new JsonResult(new { result = "Vote removed", value = 0 });
             }
 
-            return new JsonResult(new { result = result, value = 1});
+            return new JsonResult(new { result = result, value = 1 });
         }
 
         [HttpGet("Posts/CountVotes/{postId}")]
@@ -496,6 +530,34 @@ namespace FlashHack.Controllers
             var downVotes = post.DownVotes;
 
             return new JsonResult(new { upVotes = upVotes, downVotes = downVotes });
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MakeAnonymous(int id)
+        {
+            try
+            {
+                var post = await postRepository.GetByIdAndIncludeAsync(id);
+                if (post != null)
+                {
+                    post.UserId = 78;
+                    postRepository.Update(post);
+                    return RedirectToAction("Details", new { id = post.Id });
+                }
+                else
+                {
+                    return RedirectToAction("Error", "Home");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return RedirectToAction("Error", "Home");
+            }
+
         }
     }
 }

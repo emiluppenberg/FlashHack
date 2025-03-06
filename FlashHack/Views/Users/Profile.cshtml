@@ -46,27 +46,86 @@
                         @phoneNumber
                     }
                 </li>
-                <li class="list-group-item"><strong>Employer:</strong> @Model.Employer</li>
-                <li class="list-group-item"><strong>Bio:</strong> @Model.Bio</li>
-                <li class="list-group-item"><strong>Signature:</strong> @Model.Signature</li>
-                <li class="list-group-item"><strong>Rating:</strong> @Model.Rating</li>
+                <li class="list-group-item">
+                    <strong>Employer:</strong>
+                    @if (Model.ShowEmployer || userId == Model.Id)
+                    {
+                        @Model.Employer
+                    }
+                    else
+                    {
+                        var employer = new string('*', Model.Employer.Length);
+                        @employer
+                    }
+                </li>
+                <li class="list-group-item">
+                    <strong>Bio:</strong>
+                    @if (Model.ShowBio || userId == Model.Id)
+                    {
+                        @Model.Bio
+                    }
+                    else
+                    {
+                        var bio = new string('*', Model.Bio.Length);
+                        @bio
+                    }
+                </li>
+                <li class="list-group-item">
+                    <strong>Signature:</strong> @Model.Signature
+                </li>
+                @if (Model.IsPremium)
+                {
+                    <li class="list-group-item">
+                        <strong>Rating:</strong>
+                        @if (Model.ShowRating || userId == Model.Id)
+                        {
+                            @Model.Rating
+                        }
+                        else
+                        {
+                            var rating = new string('*', Model.Rating.ToString().Length);
+                            @rating
+                        }
+                    </li>
+                }
+
+                <li class="list-group-item">
+                    <strong>Visible to Recruiters:</strong>
+                    @if (Model.ShowToRecruiter)
+                    {
+                        <span class="text-success"> Visible</span>
+                    }
+                    else
+                    {
+                        <span class="text-danger">❌ Hidden</span>
+                    }
+                </li>
+
             </ul>
 
             <!-- Skills Section -->
             <h4>Skills</h4>
-            @if (Model.Skills != null && Model.Skills.Any())
+            @if (Model.ShowSkills || userId == Model.Id)
             {
-                @foreach (var skill in Model.Skills)
+                if (Model.Skills != null && Model.Skills.Any())
                 {
-                    <div class="mb-2">
-                        <strong>@skill.SkillName</strong> (Rating: @skill.SkillRating/5)
-                        <p>@skill.SkillDescription</p>
-                    </div>
+                    @foreach (var skill in Model.Skills)
+                    {
+                        <div class="mb-2">
+                            <strong>@skill.SkillName</strong> (Rating: @skill.SkillRating/5)
+                            <p>@skill.SkillDescription</p>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p>No skills added yet.</p>
                 }
             }
             else
             {
-                <p>No skills added yet.</p>
+                var hiddenSkills = new string('*', 10);
+                <p>@hiddenSkills</p>
             }
 
             @if (Context.Session.GetInt32("UserId") == Model.Id)
@@ -97,9 +156,19 @@
                     @foreach (var post in Model.Posts)
                     {
                         <li class="list-group-item">
+                            <span class="text-muted">
                             <a asp-controller="Posts" asp-action="Details" asp-route-id="@post.Id" class="post-link no-underline">
                                 @post.Title
                             </a>
+                                @if (post.TimeCreated.Date == DateTime.Today)
+                                {
+                                    @: Today @post.TimeCreated.ToShortTimeString()
+                                }
+                                else
+                                {
+                                    @post.TimeCreated.ToString("yy/MM/dd")
+                                }
+                            </span>
                             <p>@post.Content</p>
                             <div class="d-flex align-items-center">
                                 <span class="me-3">

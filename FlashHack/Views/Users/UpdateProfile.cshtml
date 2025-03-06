@@ -60,24 +60,40 @@
                     </div>
                 }
 
+
                 <!-- Password (Optional) -->
                 <div class="form-group">
                     <label asp-for="Password">New Password (Optional)</label>
-                    <input asp-for="Password" type="password" class="form-control" placeholder="Leave blank to keep current password" />
+                    <input asp-for="Password" type="password" class="form-control" placeholder="Leave blank to keep current password" autocomplete="new-password" />
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
+
 
                 <!-- Employer -->
                 <div class="form-group">
                     <label asp-for="Employer">Employer</label>
                     <input asp-for="Employer" class="form-control" />
                 </div>
+                @if (Model.IsPremium)
+                {
+                    <div class="form-group">
+                        <label asp-for="ShowEmployer">Show Employer</label>
+                        <input type="checkbox" asp-for="ShowEmployer" class="form-check-input" />
+                    </div>
+                }
 
                 <!-- Bio -->
                 <div class="form-group">
                     <label asp-for="Bio">Bio</label>
                     <textarea asp-for="Bio" class="form-control"></textarea>
                 </div>
+                @if (Model.IsPremium)
+                {
+                    <div class="form-group">
+                        <label asp-for="ShowBio">Show Bio</label>
+                        <input type="checkbox" asp-for="ShowBio" class="form-check-input" />
+                    </div>
+                }
 
                 <!-- Signature -->
                 <div class="form-group">
@@ -96,6 +112,35 @@
                     <label for="IsPremium">Become Premium</label>
                     <input type="checkbox" asp-for="IsPremium" class="form-check-input" />
                 </div>
+
+                <!-- Rating -->
+                @if (Model.IsPremium)
+                {
+                <div class="form-group">
+                    <label asp-for="Rating">Rating</label>
+                    <input asp-for="Rating" class="form-control" disabled />
+                </div>
+
+                    <div class="form-group">
+                        <label asp-for="ShowRating">Show rating</label>
+                        <input type="checkbox" asp-for="ShowRating" class="form-check-input" />
+                    </div>
+                }
+                @if (Model.IsPremium)
+                {
+                    <div class="form-group">
+                        <label asp-for="ShowSkills">Show Skills</label>
+                        <input type="checkbox" asp-for="ShowSkills" class="form-check-input" />
+                    </div>
+                }
+                @if (Model.IsPremium)
+                {
+                    <div class="form-group">
+                        <label asp-for="ShowToRecruiter">Show profile to recruiters</label>
+                        <input type="checkbox" asp-for="ShowToRecruiter" class="form-check-input" />
+                    </div>
+                }
+
 
                 <hr />
 
@@ -154,7 +199,9 @@
                 </div>
             </form>
         </div>
+
     </div>
+   
 
     <!-- Back button -->
     <div class="text-center mt-3">
